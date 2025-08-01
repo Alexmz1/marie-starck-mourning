@@ -1,0 +1,44 @@
+/* Styles personnalisés pour les boutons avec la couleur #858585 */
+
+.btn-primary-gray {
+  background-color: #858585;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-gray:hover {
+  background-color: #6b6b6b;
+  transform: translateY(-1px);
+}
+
+.btn-secondary-gray {
+  border: 2px solid #858585;
+  color: black;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary-gray:hover {
+  background-color: #858585;
+  color: white;
+}
+
+.btn-aten-gray {
+  background-color: #858585;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-aten-gray:hover {
+  background-color: #6b6b6b;
+}
+
+.btn-compo-gray {
+  background-color: #858585;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-compo-gray:hover {
+  background-color: #6b6b6b;
+}
