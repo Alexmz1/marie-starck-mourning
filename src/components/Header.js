@@ -1,22 +1,58 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState(null);
 
-  // Liste des compositions pour le menu déroulant
-const compositions = [
-    { name: 'Dessus de cercueil classique' },
-    { name: 'Dessus de cercueil goutte' },
-    { name: 'Dessus cercueil rond' },
-    { name: 'Devant de tombe' },
-    { name: 'Coussins (panier oreiller)' },
-    { name: 'Bouquet gerbe' },
-    { name: 'Cœurs' },
-    { name: 'Couronnes' },
-    { name: 'Croix' },
-    { name: 'Formes spéciales' }
-];
+  // Fonction pour gérer le scroll vers les sections
+  const handleSectionClick = (href, e) => {
+    const [path, hash] = href.split('#');
+    
+    // Si on est déjà sur la bonne page, faire le scroll directement
+    if (window.location.pathname === path) {
+      e.preventDefault();
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+      setIsMenuOpen(false);
+      setActiveSubmenu(null);
+    }
+    // Sinon, naviguer vers la page avec l'ancre
+  };
+
+  // Menus de navigation
+  const deuilMenu = [
+    { name: 'Croix', href: '/deuil#croix' },
+    { name: 'Cœurs', href: '/deuil#coeurs' },
+    { name: 'Couronnes', href: '/deuil#couronnes' },
+    { name: 'Coussins', href: '/deuil#coussins' },
+    { name: 'Dessus de cercueil', href: '/deuil#dessus-cercueil' },
+    { name: 'Devant de tombe', href: '/deuil#devant-tombe' },
+    { name: 'Bouquet gerbe', href: '/deuil#bouquet-gerbe' },
+    { name: 'Formes spéciales', href: '/deuil#formes-speciales' }
+  ];
+
+  const boutiqueMenu = [
+    { name: 'Compositions à offrir', href: '/boutique#compositions-offrir' },
+    { name: 'Bouquets frais', href: '/boutique#bouquets-frais' },
+    { name: 'Plantes d\'intérieur', href: '/boutique#plantes-interieur' },
+    { name: 'Plantes d\'extérieur', href: '/boutique#plantes-exterieur' },
+    { name: 'Créations saisonnières', href: '/boutique#creations-saisonnieres' }
+  ];
+
+  const mariageMenu = [
+    { name: 'Bouquet de mariée', href: '/mariage#bouquet-mariee' },
+    { name: 'Décoration cérémonie', href: '/mariage#decoration-ceremonie' },
+    { name: 'Centres de table', href: '/mariage#centres-table' },
+    { name: 'Boutonnières', href: '/mariage#boutonnieres' },
+    { name: 'Arche florale', href: '/mariage#arche-florale' }
+  ];
 
   return (
     <header className="text-black sticky top-0 z-50 border-b" style={{backgroundColor: '#858585', borderColor: '#858585'}}>
@@ -26,10 +62,10 @@ const compositions = [
           {/* Titre */}
           <div className="py-3 text-center">
             <h1 className="text-sm font-light text-white tracking-tight leading-tight">
-              L'Atelier Fleurs de Deuil – Marie Starck
+              Atelier Floral de Marie Starck
             </h1>
             <p className="text-xs text-white font-light leading-none mt-1">
-              Compositions Florales de Deuil
+              Créations Florales sur Mesure
             </p>
           </div>
           
@@ -55,13 +91,13 @@ const compositions = [
             {/* Contact et Instagram mobile */}
             <div className="flex items-center space-x-3">
                 <a 
-                    href="tel:0123456789" 
+                    href="tel:0603059195" 
                     className="text-xs text-white hover:text-gray-200 transition-colors duration-300"
                 >
-                    01 23 45 67 89
+                    06 03 05 91 95
                 </a>
                 <a 
-                    href="https://www.instagram.com/mariestarckfleursdeuil/" 
+                    href="https://www.instagram.com/mariestarck/" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white hover:text-gray-200 transition-colors duration-300"
@@ -77,19 +113,107 @@ const compositions = [
           {/* Menu mobile déroulant */}
           {isMenuOpen && (
             <div className="border-t border-white/20 py-4">
-              <nav className="space-y-3">
-                <a href="#accueil" className="block text-white hover:text-gray-200 text-sm font-light py-2">
+              <nav className="space-y-2">
+                <Link href="/" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Accueil
-                </a>
-                <a href="#compositions" className="block text-white hover:text-gray-200 text-sm font-light py-2">
-                  Nos Compositions
-                </a>
-                <a href="#atelier" className="block text-white hover:text-gray-200 text-sm font-light py-2">
+                </Link>
+                
+                {/* Menu Deuil mobile avec sous-menu déroulant */}
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'deuil' ? null : 'deuil')}
+                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
+                  >
+                    <span>Deuil</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'deuil' ? 'rotate-180' : ''}`} 
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
+                  {activeSubmenu === 'deuil' && (
+                    <div className="pl-4 space-y-1">
+                      {deuilMenu.map((item) => (
+                        <Link 
+                          key={item.name} 
+                          href={item.href} 
+                          onClick={(e) => handleSectionClick(item.href, e)}
+                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Menu Boutique mobile avec sous-menu déroulant */}
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'boutique' ? null : 'boutique')}
+                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
+                  >
+                    <span>Boutique</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'boutique' ? 'rotate-180' : ''}`} 
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
+                  {activeSubmenu === 'boutique' && (
+                    <div className="pl-4 space-y-1">
+                      {boutiqueMenu.map((item) => (
+                        <Link 
+                          key={item.name} 
+                          href={item.href} 
+                          onClick={(e) => handleSectionClick(item.href, e)}
+                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Menu Mariage mobile avec sous-menu déroulant */}
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'mariage' ? null : 'mariage')}
+                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
+                  >
+                    <span>Mariage</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'mariage' ? 'rotate-180' : ''}`} 
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
+                  {activeSubmenu === 'mariage' && (
+                    <div className="pl-4 space-y-1">
+                      {mariageMenu.map((item) => (
+                        <Link 
+                          key={item.name} 
+                          href={item.href} 
+                          onClick={(e) => handleSectionClick(item.href, e)}
+                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Link href="/atelier" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Notre Atelier
-                </a>
-                <a href="#contact" className="block text-white hover:text-gray-200 text-sm font-light py-2">
+                </Link>
+                <Link href="/contact" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Contact
-                </a>
+                </Link>
               </nav>
             </div>
           )}
@@ -100,65 +224,121 @@ const compositions = [
           {/* Logo */}
           <div className="flex-shrink-0">
             <h1 className="text-base lg:text-lg font-light text-white tracking-tight leading-tight">
-              L'Atelier Fleurs de Deuil – Marie Starck
+              Atelier Floral de Marie Starck
             </h1>
             <p className="text-xs text-white font-light leading-none">
-              Compositions Florales de Deuil
+              Créations Florales sur Mesure
             </p>
           </div>
 
           {/* Navigation desktop - centré absolument par rapport à la page */}
           <nav className="hidden md:flex space-x-6 lg:space-x-8 absolute left-1/2 transform -translate-x-1/2">
-            <a 
-              href="#accueil" 
+            <Link 
+              href="/" 
               className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
             >
               Accueil
-            </a>
+            </Link>
             
-            {/* Menu déroulant Compositions */}
-            <div 
-              className="relative group"
-            >
-              <a 
-                href="#compositions" 
+            {/* Menu déroulant Deuil */}
+            <div className="relative group">
+              <Link 
+                href="/deuil" 
                 className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
               >
-                Nos Compositions
+                Deuil
                 <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
                 </svg>
-              </a>
+              </Link>
               
-              {/* Dropdown menu */}
+              {/* Dropdown menu Deuil */}
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
                 <div className="py-2">
-                  {compositions.map((composition, index) => (
-                    <a
+                  {deuilMenu.map((item, index) => (
+                    <Link
                       key={index}
-                      href="#compositions"
+                      href={item.href}
+                      onClick={(e) => handleSectionClick(item.href, e)}
                       className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                     >
-                      <div className="font-light text-black">{composition.name}</div>
-                      <div className="text-xs text-gray-500 mt-1">{composition.price}</div>
-                    </a>
+                      <div className="font-light text-black">{item.name}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Menu déroulant Boutique */}
+            <div className="relative group">
+              <Link 
+                href="/boutique" 
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
+              >
+                Boutique
+                <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </Link>
+              
+              {/* Dropdown menu Boutique */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+                <div className="py-2">
+                  {boutiqueMenu.map((item, index) => (
+                    <Link
+                      key={index}
+                      href={item.href}
+                      onClick={(e) => handleSectionClick(item.href, e)}
+                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <div className="font-light text-black">{item.name}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Menu déroulant Mariage */}
+            <div className="relative group">
+              <Link 
+                href="/mariage" 
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
+              >
+                Mariage
+                <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </Link>
+              
+              {/* Dropdown menu Mariage */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+                <div className="py-2">
+                  {mariageMenu.map((item, index) => (
+                    <Link
+                      key={index}
+                      href={item.href}
+                      onClick={(e) => handleSectionClick(item.href, e)}
+                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <div className="font-light text-black">{item.name}</div>
+                    </Link>
                   ))}
                 </div>
               </div>
             </div>
             
-            <a 
-              href="#atelier" 
+            <Link 
+              href="/atelier" 
               className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
             >
               Notre Atelier
-            </a>
-            <a 
-              href="#contact" 
+            </Link>
+            <Link 
+              href="/contact" 
               className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
             >
               Contact
-            </a>
+            </Link>
           </nav>
 
           {/* Droite - Instagram et Contact */}
@@ -166,16 +346,16 @@ const compositions = [
             {/* Contact info (hidden on small screens) */}
             <div className="hidden lg:flex flex-col text-right">
               <a 
-                href="tel:0123456789" 
+                href="tel:0603059195" 
                 className="text-sm font-light text-white hover:text-gray-200 transition-colors duration-300"
               >
-                01 23 45 67 89
+                06 03 05 91 95
               </a>
             </div>
 
             {/* Instagram */}
             <a 
-              href="https://www.instagram.com/mariestarckfleursdeuil/" 
+              href="https://www.instagram.com/mariestarck/" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-white hover:text-gray-200 transition-colors duration-300"

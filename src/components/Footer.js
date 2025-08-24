@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="text-white" style={{backgroundColor: '#858585'}}>
@@ -8,8 +10,8 @@ export default function Footer() {
             {/* Informations contact */}
             <div className="lg:col-span-2">
               <div className="mb-6">
-                <h3 className="text-2xl font-light mb-2">L'Atelier Fleurs de Deuil – Marie Starck</h3>
-                <p className="text-gray-200 font-light">Compositions Florales de Deuil</p>
+                <h3 className="text-2xl font-light mb-2">Atelier Floral de Marie Starck</h3>
+                <p className="text-gray-200 font-light">Créations Florales sur Mesure</p>
               </div>
               
               <div className="space-y-4">
@@ -21,8 +23,8 @@ export default function Footer() {
                   </div>
                   <div>
                     <p className="text-sm text-white font-light">Téléphone</p>
-                    <a href="tel:0123456789" className="text-lg font-light hover:text-gray-200 transition-colors duration-300">
-                      01 23 45 67 89
+                    <a href="tel:0603059195" className="text-lg font-light hover:text-gray-200 transition-colors duration-300">
+                      06 03 05 91 95
                     </a>
                   </div>
                 </div>
@@ -43,37 +45,39 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Services - Nos compositions */}
+            {/* Services - Navigation principale */}
             <div>
-                <h4 className="text-lg font-light mb-6 text-white">Nos Compositions</h4>
+                <h4 className="text-lg font-light mb-6 text-white">Nos Services</h4>
                 <ul className="space-y-2">
                     {[
-                        'Dessus de cercueil classique',
-                        'Dessus de cercueil goutte', 
-                        'Dessus cercueil rond',
-                        'Devant de tombe'
+                        { name: 'Deuil', href: '/deuil' },
+                        { name: 'Boutique', href: '/boutique' }, 
+                        { name: 'Mariage', href: '/mariage' },
+                        { name: 'Notre Atelier', href: '/atelier' }
                     ].map((service) => (
-                        <li key={service}>
-                            <a href="#compositions" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                        <li key={service.name}>
+                            <Link href={service.href} className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
                                 <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
-                                {service}
-                            </a>
+                                {service.name}
+                            </Link>
                         </li>
                     ))}
-                    <li>
-                        <span className="text-white font-light text-sm ml-4">et bien d&apos;autres</span>
-                    </li>
                 </ul>
             </div>
             <div>
               <h4 className="text-lg font-light mb-6 text-white">Informations</h4>
               <ul className="space-y-3">
-                {['À propos', 'Conditions de vente', 'Mentions légales', 'Politique de confidentialité'].map((info) => (
-                  <li key={info}>
-                    <a href="#" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group">
+                {[
+                  { name: 'À propos', href: '/atelier' },
+                  { name: 'Conditions de vente', href: '/conditions-vente' },
+                  { name: 'Mentions légales', href: '/mentions-legales' },
+                  { name: 'Politique de confidentialité', href: '/politique-confidentialite' }
+                ].map((info) => (
+                  <li key={info.name}>
+                    <Link href={info.href} className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group">
                       <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
-                      {info}
-                    </a>
+                      {info.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
