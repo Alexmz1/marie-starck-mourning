@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function AtelierSection() {
   return (
     <section id="atelier" className="py-20 px-4 sm:px-6 lg:px-8" style={{backgroundColor: '#faf8f3'}}>
@@ -29,10 +31,10 @@ export default function AtelierSection() {
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 max-w-2xl mx-auto text-left">
               {[
-                { icon: "🌸", title: "Fleurs fraîches", desc: "Sélectionnées quotidiennement" },
-                { icon: "✋", title: "Fait main", desc: "Créations artisanales uniques" },
-                { icon: "🚚", title: "Livraison", desc: "Dans toute la région" },
-                { icon: "💬", title: "Conseil", desc: "Accompagnement personnalisé" }
+                { title: "Fleurs fraîches", desc: "Sélectionnées quotidiennement" },
+                { title: "Fait main", desc: "Créations artisanales uniques" },
+                { title: "Livraison", desc: "Dans toute la région" },
+                { title: "Conseil", desc: "Accompagnement personnalisé" }
               ].map((feature, index) => (
                 <div key={index} className="flex items-start space-x-2">
                   <div className="text-2xl flex-shrink-0">{feature.icon}</div>
@@ -45,12 +47,12 @@ export default function AtelierSection() {
             </div>
 
             <div className="pt-6">
-              <a href="#contact" className="btn-aten-gray px-8 py-3 font-light inline-flex items-center">
+              <Link href="/contact" className="btn-aten-gray px-8 py-3 font-light inline-flex items-center">
                 Nous contacter
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

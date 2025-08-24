@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import ProductCard from './ProductCard';
 
-// Données exemple pour les produits
+// Données exemple pour les produits - 2 de chaque catégorie
 const featuredProducts = [
   {
     id: 1,
@@ -18,71 +19,79 @@ const featuredProducts = [
   },
   {
     id: 3,
-    name: "Coussin Pastel",
-    description: "Douceur et sérénité dans des tons apaisants",
-    priceRange: "à partir de 180€",
-    category: "Coussins"
+    name: "Bouquet Romantique",
+    description: "Composition florale délicate et parfumée",
+    priceRange: "à partir de 45€",
+    category: "Bouquets"
   },
   {
     id: 4,
-    name: "Dessus de Cercueil",
-    description: "Hommage final élégant et respectueux",
-    priceRange: "à partir de 320€",
-    category: "Cercueil"
+    name: "Plante Verte Monstera",
+    description: "Monstera délicieuse pour votre intérieur",
+    priceRange: "à partir de 35€",
+    category: "Plantes"
   },
   {
     id: 5,
-    name: "Gerbe Piquée",
-    description: "Pour accompagner le recueillement en silence",
+    name: "Bouquet de Mariée",
+    description: "Bouquet unique pour votre jour J",
     priceRange: "à partir de 120€",
-    category: "Gerbes"
+    category: "Mariage"
   },
   {
     id: 6,
-    name: "Croix Florale",
-    description: "Symbole spirituel et message de réconfort",
-    priceRange: "à partir de 250€",
-    category: "Croix"
+    name: "Centre de Table",
+    description: "Élégance florale pour votre réception",
+    priceRange: "à partir de 55€",
+    category: "Mariage"
   }
 ];
 
 export default function CompositionsSection() {
-return (
-    <section id="compositions" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-                <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #858585'}}>
-                    Nos créations
-                </div>
-                <h2 className="text-4xl md:text-5xl font-light text-black mb-6">
-                    Nos Compositions Coup de Cœur
-                </h2>
-                <p className="text-xl text-gray-700 font-light max-w-3xl mx-auto leading-relaxed">
-                    Découvrez notre sélection de compositions florales favorites, créées avec soin 
-                    pour honorer la mémoire de vos proches dans le respect et la dignité.
-                </p>
-            </div>
-
-            {/* Produits coup de cœur */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                {featuredProducts.map((product, index) => (
-                    <div 
-                        key={product.id} 
-                        className="opacity-0 animate-[fadeInUp_0.6s_ease-out_forwards] h-full"
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                        <ProductCard product={product} />
-                    </div>
-                ))}
-            </div>
-
-            {/* Bouton uniquement */}
-            <div className="text-center">
-                <a href="#" className="btn-compo-gray px-8 py-3 font-light">
-                    Voir toutes nos compositions
-                </a>
-            </div>
+  return (
+    <section id="compositions" className="py-20 px-4 sm:px-6 lg:px-8" style={{backgroundColor: '#faf8f3'}}>
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #858585'}}>
+            Nos créations
+          </div>
+          <h2 className="text-4xl md:text-5xl font-light text-black mb-6">
+            Nos Compositions Coup de Cœur
+          </h2>
+          <p className="text-xl text-gray-700 font-light max-w-3xl mx-auto leading-relaxed">
+            Découvrez notre sélection de créations florales favorites. Du deuil au mariage, 
+            en passant par notre boutique, nous créons avec soin pour tous vos moments importants.
+          </p>
         </div>
+
+        {/* Produits coup de cœur */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {featuredProducts.map((product, index) => (
+            <div 
+              key={product.id} 
+              className="opacity-0 animate-[fadeInUp_0.6s_ease-out_forwards] h-full"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+
+        {/* Boutons d'action */}
+        <div className="text-center">
+          <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <Link href="/deuil" className="btn-compo-gray px-8 py-3 font-light inline-block">
+              Compositions de deuil
+            </Link>
+            <Link href="/boutique" className="btn-secondary-gray px-8 py-3 font-light inline-block">
+              Notre boutique
+            </Link>
+            <Link href="/mariage" className="btn-compo-gray px-8 py-3 font-light inline-block">
+              Compositions mariage
+            </Link>
+          </div>
+        </div>
+      </div>
     </section>
-);
+  );
 }

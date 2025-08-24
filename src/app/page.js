@@ -6,7 +6,7 @@ import AtelierSection from '../components/AtelierSection';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{backgroundColor: '#faf8f3'}}>
       <Header />
       
       <main>
