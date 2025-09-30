@@ -8,7 +8,7 @@ export default function AtelierSection() {
           {/* Contenu texte */}
           <div className="space-y-8 text-center">
             <div>
-              <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #858585'}}>
+              <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #276f88'}}>
                 Mon engagement
               </div>
               <h2 className="text-4xl md:text-5xl font-light text-black mb-6">

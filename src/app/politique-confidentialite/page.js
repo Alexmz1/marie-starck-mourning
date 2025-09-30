@@ -12,7 +12,7 @@ export default function Page() {
         <div className="relative overflow-hidden" style={{backgroundColor: '#faf8f3'}}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #858585'}}>
+              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #276f88'}}>
                 Confidentialité
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-black mb-8 tracking-tight">
@@ -31,7 +31,7 @@ export default function Page() {
             <div className="space-y-12">
               
               <div>
-                <div className="w-24 h-0.5 mx-auto mb-8" style={{backgroundColor: '#858585'}}></div>
+                <div className="w-24 h-0.5 mx-auto mb-8" style={{backgroundColor: '#276f88'}}></div>
                 <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Collecte des données</h2>
                 <div className="space-y-4 text-gray-700 font-light leading-relaxed">
                   <p>
@@ -47,7 +47,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#858585', opacity: 0.3}}></div>
+                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
               </div>
 
               <div>
@@ -67,7 +67,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#858585', opacity: 0.3}}></div>
+                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
               </div>
 
               <div>
@@ -85,7 +85,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#858585', opacity: 0.3}}></div>
+                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
               </div>
 
               <div>
@@ -107,7 +107,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#858585', opacity: 0.3}}></div>
+                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
               </div>
 
               <div>
@@ -120,7 +120,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#858585', opacity: 0.3}}></div>
+                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
               </div>
 
               <div>

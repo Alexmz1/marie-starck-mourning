@@ -52,7 +52,7 @@ export default function CompositionsSection() {
     <section id="compositions" className="py-20 px-4 sm:px-6 lg:px-8" style={{backgroundColor: '#faf8f3'}}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #858585'}}>
+          <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #276f88'}}>
             Nos créations
           </div>
           <h2 className="text-4xl md:text-5xl font-light text-black mb-6">

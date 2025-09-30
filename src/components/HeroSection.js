@@ -6,7 +6,7 @@ export default function HeroSection() {
       <div className="hero-content text-center max-w-5xl relative z-10">
         <div className="space-y-8">
           <div className="space-y-4">
-            <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #858585'}}>
+            <div className="inline-block px-4 py-2 text-black text-sm font-light mb-4" style={{border: '1px solid #276f88'}}>
               Artisan fleuriste
             </div>
           </div>

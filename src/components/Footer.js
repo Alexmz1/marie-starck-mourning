@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="text-white" style={{backgroundColor: '#858585'}}>
+    <footer className="text-white" style={{backgroundColor: '#276f88'}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section principale */}
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
             {/* Informations contact */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <div className="mb-6">
                 <h3 className="text-2xl font-light mb-2">Atelier Floral de Marie Starck</h3>
                 <p className="text-gray-200 font-light">Créations Florales sur Mesure</p>
@@ -45,54 +45,109 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Services - Navigation principale */}
+            {/* Services particuliers */}
             <div>
-                <h4 className="text-lg font-light mb-6 text-white">Nos Services</h4>
-                <ul className="space-y-2">
-                    {[
-                        { name: 'Deuil', href: '/deuil' },
-                        { name: 'Boutique', href: '/boutique' }, 
-                        { name: 'Mariage', href: '/mariage' },
-                        { name: 'Notre Atelier', href: '/atelier' }
-                    ].map((service) => (
-                        <li key={service.name}>
-                            <Link href={service.href} className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
-                                <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
-                                {service.name}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+              <h4 className="text-lg font-light mb-6 text-white">Particuliers</h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/deuil" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Deuil
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/boutique" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Boutique
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/mariage" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Mariage
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/atelier" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Notre Atelier
+                  </Link>
+                </li>
+              </ul>
             </div>
+
+            {/* Services professionnels */}
+            <div>
+              <h4 className="text-lg font-light mb-6 text-white">Professionnels</h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/entreprises#abonnements-floraux" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Abonnements floraux
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/entreprises#evenements-seminaires" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Événements
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/entreprises#vegetalisation-espaces" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Végétalisation
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/entreprises#arbre-noel" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Arbre de Noël
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact-entreprises" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Devis entreprise
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Informations légales */}
             <div>
               <h4 className="text-lg font-light mb-6 text-white">Informations</h4>
-              <ul className="space-y-3">
-                {[
-                  { name: 'À propos', href: '/atelier' },
-                  { name: 'Conditions de vente', href: '/conditions-vente' },
-                  { name: 'Mentions légales', href: '/mentions-legales' },
-                  { name: 'Politique de confidentialité', href: '/politique-confidentialite' }
-                ].map((info) => (
-                  <li key={info.name}>
-                    <Link href={info.href} className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group">
-                      <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
-                      {info.name}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/contact" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/mentions-legales" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Mentions Légales
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/politique-confidentialite" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Confidentialité
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cgv" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    CGV
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/livraisons" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
+                    Livraisons
+                  </Link>
+                </li>
               </ul>
-              
-              <div className="mt-8 p-4 bg-white/10 rounded-lg">
-                <div className="flex items-center space-x-2 mb-2">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <span className="text-sm font-light text-white">Paiement sécurisé</span>
-                </div>
-                <p className="text-xs text-white font-light">
-                  Virement bancaire ou carte bancaire
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -119,27 +174,33 @@ export default function Footer() {
                 <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span className="text-xs text-white font-light">et attention</span>
+                <span className="text-xs text-white font-light">en France</span>
               </div>
             </div>
 
             {/* Version desktop */}
-            <div className="hidden md:flex items-center space-x-4">
-              <p className="text-sm font-light text-white">
-                © 2025 L'Atelier Fleurs de Deuil – Marie Starck - Tous droits réservés
-              </p>
-              <div className="w-px h-4 bg-white/20"></div>
-              <p className="text-sm font-light text-white">
-                Créations artisanales
-              </p>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-2">
-              <span className="text-xs text-white font-light">Réalisé avec</span>
-              <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-              </svg>
-              <span className="text-xs text-white font-light">et attention</span>
+            <div className="hidden md:flex flex-col md:flex-row justify-between items-center w-full space-y-2 md:space-y-0">
+              <div className="flex items-center space-x-6">
+                <p className="text-sm font-light text-white">
+                  © 2025 L'Atelier Fleurs de Deuil – Marie Starck
+                </p>
+                <span className="text-white opacity-50">|</span>
+                <p className="text-sm font-light text-white">
+                  Tous droits réservés
+                </p>
+                <span className="text-white opacity-50">|</span>
+                <p className="text-sm font-light text-white">
+                  Créations artisanales
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-white font-light">Réalisé avec</span>
+                <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <span className="text-xs text-white font-light">en France</span>
+              </div>
             </div>
           </div>
         </div>

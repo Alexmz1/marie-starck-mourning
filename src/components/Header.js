@@ -54,8 +54,15 @@ export default function Header() {
     { name: 'Arche florale', href: '/mariage#arche-florale' }
   ];
 
+  const entreprisesMenu = [
+    { name: 'Abonnements floraux', href: '/entreprises#abonnements-floraux' },
+    { name: 'Événements & Séminaires', href: '/entreprises#evenements-seminaires' },
+    { name: 'Végétalisation d\'espaces', href: '/entreprises#vegetalisation-espaces' },
+    { name: 'Arbre de Noël', href: '/entreprises#arbre-noel' }
+  ];
+
   return (
-    <header className="text-black sticky top-0 z-50 border-b" style={{backgroundColor: '#858585', borderColor: '#858585'}}>
+    <header className="text-black sticky top-0 z-50 border-b" style={{backgroundColor: '#276f88', borderColor: '#276f88'}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Version mobile */}
         <div className="md:hidden">
@@ -208,6 +215,36 @@ export default function Header() {
                   )}
                 </div>
 
+                {/* Menu Entreprises mobile avec sous-menu déroulant */}
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'entreprises' ? null : 'entreprises')}
+                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
+                  >
+                    <span>Entreprises</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'entreprises' ? 'rotate-180' : ''}`} 
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
+                  {activeSubmenu === 'entreprises' && (
+                    <div className="pl-4 space-y-1">
+                      {entreprisesMenu.map((item) => (
+                        <Link 
+                          key={item.name} 
+                          href={item.href} 
+                          onClick={(e) => handleSectionClick(item.href, e)}
+                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <Link href="/atelier" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Notre Atelier
                 </Link>
@@ -232,10 +269,10 @@ export default function Header() {
           </div>
 
           {/* Navigation desktop - centré absolument par rapport à la page */}
-          <nav className="hidden md:flex space-x-6 lg:space-x-8 absolute left-1/2 transform -translate-x-1/2">
+          <nav className="hidden md:flex space-x-4 lg:space-x-6 absolute left-1/2 transform -translate-x-1/2">
             <Link 
               href="/" 
-              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
+              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 whitespace-nowrap"
             >
               Accueil
             </Link>
@@ -244,7 +281,7 @@ export default function Header() {
             <div className="relative group">
               <Link 
                 href="/deuil" 
-                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
               >
                 Deuil
                 <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,7 +310,7 @@ export default function Header() {
             <div className="relative group">
               <Link 
                 href="/boutique" 
-                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
               >
                 Boutique
                 <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -302,7 +339,7 @@ export default function Header() {
             <div className="relative group">
               <Link 
                 href="/mariage" 
-                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center"
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
               >
                 Mariage
                 <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,16 +363,45 @@ export default function Header() {
                 </div>
               </div>
             </div>
+
+            {/* Menu déroulant Entreprises */}
+            <div className="relative group">
+              <Link 
+                href="/entreprises" 
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
+              >
+                Entreprises
+                <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </Link>
+              
+              {/* Dropdown menu Entreprises */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+                <div className="py-2">
+                  {entreprisesMenu.map((item, index) => (
+                    <Link
+                      key={index}
+                      href={item.href}
+                      onClick={(e) => handleSectionClick(item.href, e)}
+                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <div className="font-light text-black">{item.name}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
             
             <Link 
               href="/atelier" 
-              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
+              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 whitespace-nowrap"
             >
-              Notre Atelier
+              Atelier
             </Link>
             <Link 
               href="/contact" 
-              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300"
+              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 whitespace-nowrap"
             >
               Contact
             </Link>

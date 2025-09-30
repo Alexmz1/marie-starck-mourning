@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -43,8 +44,8 @@ const ContactPage = () => {
         <div className="relative overflow-hidden" style={{backgroundColor: '#faf8f3'}}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #858585'}}>
-                PRENONS CONTACT
+                            <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #276f88'}}>
+                CONTACT
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-black mb-8 tracking-tight">
                 Contact
@@ -64,7 +65,7 @@ const ContactPage = () => {
               
               <div className="text-center group">
                 <div className="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-8 h-8" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                   </svg>
                 </div>
@@ -77,7 +78,7 @@ const ContactPage = () => {
 
               <div className="text-center group">
                 <div className="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-8 h-8" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                   </svg>
                 </div>
@@ -90,7 +91,7 @@ const ContactPage = () => {
 
               <div className="text-center group">
                 <div className="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-8 h-8" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                   </svg>
@@ -162,6 +163,16 @@ const ContactPage = () => {
                 Partagez-nous vos besoins, nous vous répondrons dans les plus brefs délais 
                 pour créer ensemble quelque chose de beau et de respectueux.
               </p>
+              
+              {/* Redirection entreprises */}
+              <div className="mt-8 p-4 bg-white/50 rounded-lg border border-gray-200">
+                <p className="text-sm text-gray-600 font-light">
+                  Vous êtes une entreprise ? 
+                  <Link href="/contact-entreprises" className="ml-1 text-black font-normal hover:underline transition-all duration-300" style={{color: '#276f88'}}>
+                    Utilisez notre formulaire spécialisé
+                  </Link>
+                </p>
+              </div>
             </div>
 
             <form className="space-y-8">
@@ -260,7 +271,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg"
-                  style={{backgroundColor: '#858585'}}
+                  style={{backgroundColor: '#276f88'}}
                 >
                   ENVOYER LE MESSAGE
                 </button>

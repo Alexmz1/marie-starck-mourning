@@ -15,7 +15,7 @@ const AtelierPage = () => {
         <div className="relative overflow-hidden" style={{backgroundColor: '#faf8f3'}}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #858585'}}>
+              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #276f88'}}>
                 NOTRE SAVOIR-FAIRE
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-black mb-8 tracking-tight">
@@ -54,7 +54,7 @@ const AtelierPage = () => {
               
               <div className="text-center group">
                 <div className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-10 h-10" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-10 h-10" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                   </svg>
                 </div>
@@ -67,7 +67,7 @@ const AtelierPage = () => {
 
               <div className="text-center group">
                 <div className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-10 h-10" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-10 h-10" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
                   </svg>
                 </div>
@@ -80,7 +80,7 @@ const AtelierPage = () => {
 
               <div className="text-center group">
                 <div className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center bg-white shadow-lg group-hover:shadow-xl transition-all duration-500">
-                  <svg className="w-10 h-10" style={{color: '#858585'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-10 h-10" style={{color: '#276f88'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                 </div>
@@ -116,8 +116,8 @@ const AtelierPage = () => {
                 { number: "04", title: "Livraison", desc: "Accompagner jusqu'au dernier moment" }
               ].map((step, index) => (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center border-2" style={{borderColor: '#858585'}}>
-                    <span className="text-xl font-light" style={{color: '#858585'}}>{step.number}</span>
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center border-2" style={{borderColor: '#276f88'}}>
+                    <span className="text-xl font-light" style={{color: '#276f88'}}>{step.number}</span>
                   </div>
                   <h3 className="text-lg font-light text-black mb-3 tracking-wide">{step.title}</h3>
                   <p className="text-gray-600 font-light text-sm leading-relaxed">{step.desc}</p>

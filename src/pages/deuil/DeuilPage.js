@@ -129,7 +129,7 @@ const DeuilPage = () => {
         <div className="relative overflow-hidden" style={{backgroundColor: '#faf8f3'}}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #858585'}}>
+              <div className="inline-block px-6 py-3 text-black text-sm font-light mb-6 tracking-wider" style={{border: '1px solid #276f88'}}>
                 COMPOSITIONS DE DEUIL
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-black mb-8 tracking-tight">
