@@ -126,7 +126,7 @@ export default function ProduitPage() {
               {/* Product Info */}
               <div className="space-y-8">
                 <div>
-                  <div className="inline-block px-4 py-2 text-black text-xs font-light mb-4 tracking-wider" style={{border: '1px solid #858585'}}>
+                  <div className="inline-block px-4 py-2 text-black text-xs font-light mb-4 tracking-wider" style={{border: '1px solid #276f88'}}>
                     {type?.replace(/-/g, ' ').toUpperCase()}
                   </div>
                   <h1 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight capitalize">
@@ -135,7 +135,7 @@ export default function ProduitPage() {
                   <p className="text-xl text-gray-600 font-light leading-relaxed mb-6">
                     {productData.description}
                   </p>
-                  <div className="text-3xl font-light text-black mb-8" style={{color: '#858585'}}>
+                  <div className="text-3xl font-light text-black mb-8" style={{color: '#276f88'}}>
                     {productData.price}
                   </div>
                 </div>
@@ -250,7 +250,7 @@ export default function ProduitPage() {
                           <Link
                             href="/contact"
                             className="inline-flex items-center text-xs font-light hover:underline"
-                            style={{color: '#858585'}}
+                            style={{color: '#276f88'}}
                           >
                             Voir plus de détails →
                           </Link>
