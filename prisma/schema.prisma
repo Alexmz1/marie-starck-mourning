@@ -1,0 +1,231 @@
+// Prisma schema for Marie Starck Floral Atelier
+// Business: Flower arrangements, bouquets, funeral compositions, weddings, corporate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Product categories
+enum Category {
+  FUNERAL      // Deuil - crosses, hearts, crowns, cushions, casket sprays
+  WEDDING      // Mariage - bridal bouquets, decorations, centerpieces
+  BOUTIQUE     // Boutique - gifts, fresh bouquets, plants
+  CORPORATE    // Entreprises - subscriptions, events, office plants
+}
+
+enum ProductType {
+  CROSS              // Croix
+  HEART              // Cœur
+  CROWN              // Couronne
+  CUSHION            // Coussin
+  CASKET_SPRAY       // Dessus de cercueil
+  GRAVE_DECORATION   // Devant de tombe
+  BOUQUET_WREATH     // Bouquet gerbe
+  SPECIAL_SHAPE      // Formes spéciales
+  BRIDAL_BOUQUET     // Bouquet de mariée
+  BUTTONHOLE         // Boutonnière
+  CORSAGE            // Corsage
+  CENTERPIECE        // Centre de table
+  CHURCH_DECORATION  // Décoration d'église
+  GIFT_COMPOSITION   // Composition à offrir
+  FRESH_BOUQUET      // Bouquet frais
+  INDOOR_PLANT       // Plante d'intérieur
+  OUTDOOR_PLANT      // Plante d'extérieur
+  SEASONAL_CREATION  // Création saisonnière
+  SUBSCRIPTION       // Abonnement floral
+  EVENT_DECORATION   // Décoration événement
+  OFFICE_PLANT       // Plante de bureau
+}
+
+enum OrderStatus {
+  PENDING     // En attente
+  CONFIRMED   // Confirmée
+  IN_PROGRESS // En cours de préparation
+  READY       // Prête
+  DELIVERED   // Livrée
+  CANCELLED   // Annulée
+}
+
+enum CustomerType {
+  INDIVIDUAL  // Particulier
+  BUSINESS    // Entreprise
+}
+
+// Core models
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  category    Category
+  type        ProductType
+  images      String[]    // Array of image URLs
+  inStock     Boolean     @default(true)
+  featured    Boolean     @default(false)
+  
+  // SEO
+  slug        String      @unique
+  metaTitle   String?
+  metaDescription String?
+  
+  // Timestamps
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  // Relations
+  orderItems  OrderItem[]
+  
+  @@map("products")
+}
+
+model Customer {
+  id           String       @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String       @unique
+  phone        String
+  type         CustomerType @default(INDIVIDUAL)
+  
+  // Business customers
+  companyName  String?
+  siret        String?
+  
+  // Address
+  address      String?
+  city         String?
+  postalCode   String?
+  
+  // Timestamps
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  
+  // Relations
+  orders       Order[]
+  subscriptions Subscription[]
+  
+  @@map("customers")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderNumber  String      @unique
+  status       OrderStatus @default(PENDING)
+  
+  // Customer info
+  customerId   String
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  
+  // Delivery info
+  deliveryDate DateTime?
+  deliveryAddress String?
+  deliveryCity    String?
+  deliveryPostalCode String?
+  deliveryInstructions String?
+  
+  // Funeral specific
+  deceasedName String?     // Nom du défunt
+  ceremonyDate DateTime?   // Date de cérémonie
+  
+  // Wedding specific
+  weddingDate  DateTime?
+  venue        String?     // Lieu de réception
+  
+  // Pricing
+  subtotal     Float
+  deliveryFee  Float       @default(0)
+  total        Float
+  
+  // Payment
+  paymentMethod String?
+  paymentStatus String?    @default("pending")
+  
+  // Notes
+  notes        String?
+  
+  // Timestamps
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  
+  // Relations
+  items        OrderItem[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  
+  quantity  Int     @default(1)
+  unitPrice Float
+  total     Float
+  
+  // Custom requirements
+  customMessage String? // Message personnalisé pour les cartes
+  customColor   String? // Couleur spécifique demandée
+  
+  @@map("order_items")
+}
+
+// Corporate subscriptions
+model Subscription {
+  id           String   @id @default(cuid())
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id])
+  
+  name         String   // Ex: "Abonnement bureau mensuel"
+  frequency    String   // "weekly", "monthly", "quarterly"
+  startDate    DateTime
+  endDate      DateTime?
+  isActive     Boolean  @default(true)
+  
+  // Pricing
+  monthlyPrice Float
+  
+  // Delivery info
+  deliveryAddress String
+  deliveryInstructions String?
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("subscriptions")
+}
+
+// Contact forms and inquiries
+model Inquiry {
+  id          String       @id @default(cuid())
+  type        CustomerType @default(INDIVIDUAL)
+  
+  // Contact info
+  firstName   String
+  lastName    String?
+  email       String
+  phone       String
+  companyName String?      // For business inquiries
+  
+  // Inquiry details
+  subject     String
+  message     String
+  category    Category?
+  services    String[]     // Interested services for business
+  contactPreference String? // "phone", "email", "meeting"
+  
+  // Status
+  status      String       @default("new") // "new", "contacted", "quoted", "closed"
+  
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  @@map("inquiries")
+}

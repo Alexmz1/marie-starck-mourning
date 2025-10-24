@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^6.18.0",
     "daisyui": "^5.0.50",
+    "dotenv": "^17.2.3",
     "next": "15.3.5",
+    "prisma": "^6.18.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
