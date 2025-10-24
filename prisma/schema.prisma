@@ -12,34 +12,55 @@ datasource db {
 
 // Product categories
 enum Category {
-  FUNERAL      // Deuil - crosses, hearts, crowns, cushions, casket sprays
-  WEDDING      // Mariage - bridal bouquets, decorations, centerpieces
-  BOUTIQUE     // Boutique - gifts, fresh bouquets, plants
-  CORPORATE    // Entreprises - subscriptions, events, office plants
+  DEUIL      // Deuil - crosses, hearts, crowns, cushions, casket sprays
+  MARIAGE    // Mariage - bridal bouquets, decorations, centerpieces
+  BOUTIQUE   // Boutique - gifts, fresh bouquets, plants
 }
 
-enum ProductType {
-  CROSS              // Croix
-  HEART              // Cœur
-  CROWN              // Couronne
-  CUSHION            // Coussin
-  CASKET_SPRAY       // Dessus de cercueil
-  GRAVE_DECORATION   // Devant de tombe
-  BOUQUET_WREATH     // Bouquet gerbe
-  SPECIAL_SHAPE      // Formes spéciales
-  BRIDAL_BOUQUET     // Bouquet de mariée
-  BUTTONHOLE         // Boutonnière
+// Sous-catégories basées sur le header du site
+enum SubCategory {
+  // Deuil
+  CROIX              // Croix
+  COEUR              // Cœur
+  COURONNE           // Couronne
+  COUSSIN            // Coussin
+  DESSUS_CERCUEIL    // Dessus de cercueil
+  DEVANT_TOMBE       // Devant de tombe
+  BOUQUET_GERBE      // Bouquet gerbe
+  FORMES_SPECIALES   // Formes spéciales
+  
+  // Mariage
+  BOUQUET_MARIEE     // Bouquet de mariée
+  BOUTONNIERE        // Boutonnière
   CORSAGE            // Corsage
-  CENTERPIECE        // Centre de table
-  CHURCH_DECORATION  // Décoration d'église
-  GIFT_COMPOSITION   // Composition à offrir
-  FRESH_BOUQUET      // Bouquet frais
-  INDOOR_PLANT       // Plante d'intérieur
-  OUTDOOR_PLANT      // Plante d'extérieur
-  SEASONAL_CREATION  // Création saisonnière
-  SUBSCRIPTION       // Abonnement floral
-  EVENT_DECORATION   // Décoration événement
-  OFFICE_PLANT       // Plante de bureau
+  CENTRE_TABLE       // Centre de table
+  DECORATION_EGLISE  // Décoration d'église
+  
+  // Boutique
+  COMPOSITION_OFFRIR // Composition à offrir
+  BOUQUET_FRAIS      // Bouquet frais
+  PLANTE_INTERIEUR   // Plante d'intérieur
+  PLANTE_EXTERIEUR   // Plante d'extérieur
+  CREATION_SAISONNIERE // Création saisonnière
+}
+
+enum Size {
+  PETIT     // Petit
+  MOYEN     // Moyen
+  GRAND     // Grand
+  TRES_GRAND // Très grand
+}
+
+enum Color {
+  BLANC     // Blanc
+  ROUGE     // Rouge
+  ROSE      // Rose
+  JAUNE     // Jaune
+  ORANGE    // Orange
+  VIOLET    // Violet
+  BLEU      // Bleu
+  MULTICOLORE // Multicolore
+  NATUREL   // Couleurs naturelles
 }
 
 enum OrderStatus {
@@ -59,11 +80,10 @@ enum CustomerType {
 // Core models
 model Product {
   id          String      @id @default(cuid())
-  name        String
-  description String?
-  price       Float
-  category    Category
-  type        ProductType
+  name        String      // Nom du produit
+  description String?     // Description du produit
+  category    Category    // Catégorie principale (Deuil, Mariage, Boutique)
+  subCategory SubCategory // Sous-catégorie (celles du header)
   images      String[]    // Array of image URLs
   inStock     Boolean     @default(true)
   featured    Boolean     @default(false)
@@ -77,10 +97,40 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   
-  // Relations
-  orderItems  OrderItem[]
+  // Relations - Prix variables selon taille
+  productVariants ProductVariant[]
+  // Couleurs disponibles pour ce produit
+  productColors   ProductColor[]
+  orderItems      OrderItem[]
   
   @@map("products")
+}
+
+// Table pour gérer les prix selon les tailles
+model ProductVariant {
+  id        String @id @default(cuid())
+  productId String
+  size      Size   // Taille du produit
+  price     Float  // Prix pour cette taille
+  
+  // Relations
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@unique([productId, size]) // Un produit ne peut avoir qu'un seul prix par taille
+  @@map("product_variants")
+}
+
+// Table pour gérer les couleurs disponibles par produit
+model ProductColor {
+  id        String @id @default(cuid())
+  productId String
+  color     Color  // Couleur disponible
+  
+  // Relations
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@unique([productId, color]) // Une couleur ne peut être ajoutée qu'une fois par produit
+  @@map("product_colors")
 }
 
 model Customer {
@@ -165,12 +215,15 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   
   quantity  Int     @default(1)
-  unitPrice Float
+  unitPrice Float   // Prix unitaire selon la taille choisie
   total     Float
+  
+  // Choix du client
+  selectedSize  Size?  // Taille choisie par le client
+  selectedColor Color? // Couleur choisie par le client
   
   // Custom requirements
   customMessage String? // Message personnalisé pour les cartes
-  customColor   String? // Couleur spécifique demandée
   
   @@map("order_items")
 }
