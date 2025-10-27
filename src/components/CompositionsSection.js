@@ -1,8 +1,11 @@
-import Link from 'next/link';
-import ProductCard from './ProductCard';
+'use client'
 
-// Données exemple pour les produits - 2 de chaque catégorie
-const featuredProducts = [
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import ProductCard from './ProductCard'
+
+// Données exemple pour les produits - gardées en fallback
+const fallbackProducts = [
   {
     id: 1,
     name: "Couronne Traditionnelle",
@@ -45,9 +48,32 @@ const featuredProducts = [
     priceRange: "à partir de 55€",
     category: "Mariage"
   }
-];
+]
 
 export default function CompositionsSection() {
+  const [featuredProducts, setFeaturedProducts] = useState(fallbackProducts)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedProducts()
+  }, [])
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      const response = await fetch('/api/products?featured=true&limit=6')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.length > 0) {
+          setFeaturedProducts(data)
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des produits coup de cœur:', error)
+      // On garde les produits fallback en cas d'erreur
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <section id="compositions" className="py-20 px-4 sm:px-6 lg:px-8" style={{backgroundColor: '#faf8f3'}}>
       <div className="max-w-7xl mx-auto">
@@ -65,17 +91,23 @@ export default function CompositionsSection() {
         </div>
 
         {/* Produits coup de cœur */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {featuredProducts.map((product, index) => (
-            <div 
-              key={product.id} 
-              className="opacity-0 animate-[fadeInUp_0.6s_ease-out_forwards] h-full"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-gray-500 font-light">Chargement des créations...</div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {featuredProducts.map((product, index) => (
+              <div 
+                key={product.id} 
+                className="opacity-0 animate-[fadeInUp_0.6s_ease-out_forwards] h-full"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Boutons d'action */}
         <div className="text-center">

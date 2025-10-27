@@ -1,13 +1,18 @@
 // /src/pages/deuil/DeuilPage.js
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
 
 const DeuilPage = () => {
-  const deuilCategories = {
+  const [deuilProducts, setDeuilProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  
+  // Données exemple pour les sous-catégories si pas de produits en BDD
+  const fallbackCategories = {
     'dessus-cercueil-classique': {
       title: 'Dessus de cercueil classique',
       price: '250€ à 300€',
@@ -120,6 +125,45 @@ const DeuilPage = () => {
     }
   };
 
+  useEffect(() => {
+    fetchDeuilProducts()
+  }, [])
+
+  const fetchDeuilProducts = async () => {
+    try {
+      const response = await fetch('/api/products?category=DEUIL')
+      if (response.ok) {
+        const data = await response.json()
+        setDeuilProducts(data)
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des produits deuil:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Grouper les produits par sous-catégorie
+  const groupedProducts = deuilProducts.reduce((acc, product) => {
+    if (!acc[product.subCategory]) {
+      acc[product.subCategory] = []
+    }
+    acc[product.subCategory].push(product)
+    return acc
+  }, {})
+
+  // Noms des sous-catégories en français
+  const subCategoryNames = {
+    'COUSSIN': 'Coussins de fleurs',
+    'CROIX': 'Croix de fleurs',
+    'COEUR': 'Cœur floral',
+    'COURONNE': 'Couronne de fleurs',
+    'DESSUS_CERCUEIL': 'Dessus de cercueil',
+    'DEVANT_TOMBE': 'Devant de tombe',
+    'BOUQUET_GERBE': 'Bouquet gerbe',
+    'FORMES_SPECIALES': 'Formes spéciales'
+  }
+
   return (
     <div className="min-h-screen" style={{backgroundColor: '#faf8f3'}}>
       <Header />
@@ -159,61 +203,92 @@ const DeuilPage = () => {
             </div>
 
             {/* Categories Sections */}
-            {Object.entries(deuilCategories).map(([key, category], sectionIndex) => (
-              <div key={key} id={key} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
-                <div className="text-center mb-12">
-                  <div className="mb-4">
-                    <h3 className="text-3xl md:text-4xl font-light text-black mb-2 tracking-tight">
-                      {category.title}
-                    </h3>
-                    <div className="text-lg font-light" style={{color: '#858585'}}>
-                      ({category.price})
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="text-gray-500 font-light">Chargement des compositions...</div>
+              </div>
+            ) : deuilProducts.length > 0 ? (
+              // Affichage des vrais produits de la BDD
+              <>
+                {Object.entries(groupedProducts).map(([subCategory, products], sectionIndex) => (
+                  <div key={subCategory} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
+                    <div className="text-center mb-12">
+                      <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
+                        {subCategoryNames[subCategory] || subCategory}
+                      </h3>
+                      <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
+                        {products.length} composition{products.length > 1 ? 's' : ''} disponible{products.length > 1 ? 's' : ''}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {products.map((product) => (
+                        <div key={product.id}>
+                          <ProductCard product={product} />
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <div className="w-16 h-0.5 mx-auto mb-6" style={{backgroundColor: '#858585'}}></div>
-                  <p className="text-lg text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
-                    {category.description}
-                  </p>
-                </div>
+                ))}
+              </>
+            ) : (
+              // Affichage des catégories fallback si pas de produits en BDD
+              Object.entries(fallbackCategories).map(([key, category], sectionIndex) => (
+                <div key={key} id={key} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
+                  <div className="text-center mb-12">
+                    <div className="mb-4">
+                      <h3 className="text-3xl md:text-4xl font-light text-black mb-2 tracking-tight">
+                        {category.title}
+                      </h3>
+                      <div className="text-lg font-light" style={{color: '#858585'}}>
+                        ({category.price})
+                      </div>
+                    </div>
+                    <div className="w-16 h-0.5 mx-auto mb-6" style={{backgroundColor: '#858585'}}></div>
+                    <p className="text-lg text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
+                      {category.description}
+                    </p>
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {category.products.map((product, index) => (
-                    <Link
-                      key={product.name}
-                      href={`/produit/deuil/${key}/${product.name.toLowerCase().replace(/\s+/g, '-').replace(/[àáâã]/g, 'a').replace(/[èéêë]/g, 'e').replace(/[ùúûü]/g, 'u').replace(/[ç]/g, 'c').replace(/[œ]/g, 'oe')}`}
-                      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
-                    >
-                      <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-gray-100 to-gray-200">
-                        <div className="w-full h-40 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                          </svg>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {category.products.map((product, index) => (
+                      <Link
+                        key={product.name}
+                        href={`/produit/deuil/${key}/${product.name.toLowerCase().replace(/\s+/g, '-').replace(/[àáâã]/g, 'a').replace(/[èéêë]/g, 'e').replace(/[ùúûü]/g, 'u').replace(/[ç]/g, 'c').replace(/[œ]/g, 'oe')}`}
+                        className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                      >
+                        <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-gray-100 to-gray-200">
+                          <div className="w-full h-40 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                            </svg>
+                          </div>
                         </div>
-                      </div>
-                      <div className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="text-lg font-light text-black group-hover:text-gray-600 transition-colors duration-300">
-                            {product.name}
-                          </h4>
-                          <span className="text-lg font-light" style={{color: '#858585'}}>
-                            {product.price}
-                          </span>
+                        <div className="p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="text-lg font-light text-black group-hover:text-gray-600 transition-colors duration-300">
+                              {product.name}
+                            </h4>
+                            <span className="text-lg font-light" style={{color: '#858585'}}>
+                              {product.price}
+                            </span>
+                          </div>
+                          <p className="text-gray-600 font-light text-sm leading-relaxed">
+                            {product.description}
+                          </p>
+                          <div className="mt-3 flex items-center text-sm font-light group-hover:translate-x-1 transition-transform duration-300" style={{color: '#858585'}}>
+                            <span>Voir le produit</span>
+                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                          </div>
                         </div>
-                        <p className="text-gray-600 font-light text-sm leading-relaxed">
-                          {product.description}
-                        </p>
-                        <div className="mt-3 flex items-center text-sm font-light group-hover:translate-x-1 transition-transform duration-300" style={{color: '#858585'}}>
-                          <span>Voir le produit</span>
-                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                          </svg>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
