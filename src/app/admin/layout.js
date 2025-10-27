@@ -3,6 +3,15 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { 
+  ChartBarIcon, 
+  SparklesIcon, 
+  ArchiveBoxIcon, 
+  UsersIcon, 
+  ChartPieIcon,
+  Bars3Icon,
+  GlobeAltIcon
+} from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -10,27 +19,27 @@ const menuItems = [
   {
     title: 'Tableau de bord',
     href: '/admin',
-    icon: '📊'
+    icon: ChartBarIcon
   },
   {
     title: 'Produits',
     href: '/admin/products',
-    icon: '🌸'
+    icon: SparklesIcon
   },
   {
     title: 'Commandes',
     href: '/admin/orders',
-    icon: '📦'
+    icon: ArchiveBoxIcon
   },
   {
     title: 'Clients',
     href: '/admin/customers',
-    icon: '👥'
+    icon: UsersIcon
   },
   {
     title: 'Statistiques',
     href: '/admin/stats',
-    icon: '📈'
+    icon: ChartPieIcon
   }
 ]
 
@@ -48,7 +57,7 @@ export default function AdminLayout({ children }) {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-md lg:hidden"
             >
-              <span className="text-2xl">☰</span>
+              <Bars3Icon className="h-6 w-6" />
             </button>
             <h1 className="text-xl font-light text-gray-900 ml-2" style={{ color: PRIMARY_COLOR }}>
               Marie Starck - Admin
@@ -57,9 +66,10 @@ export default function AdminLayout({ children }) {
           <div className="flex items-center space-x-4">
             <Link
               href="/"
-              className="text-sm font-light text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-sm font-light text-gray-600 hover:text-gray-900 transition-colors flex items-center"
             >
-              🌐 Voir le site
+              <GlobeAltIcon className="h-4 w-4 mr-1" />
+              Voir le site
             </Link>
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: PRIMARY_COLOR }}>
               <span className="text-white text-sm font-light">MS</span>
@@ -79,6 +89,7 @@ export default function AdminLayout({ children }) {
             <nav className="flex-1 px-4 py-6 space-y-2">
               {menuItems.map((item) => {
                 const isActive = pathname === item.href
+                const IconComponent = item.icon
                 return (
                   <Link
                     key={item.href}
@@ -92,7 +103,7 @@ export default function AdminLayout({ children }) {
                     style={isActive ? { backgroundColor: PRIMARY_COLOR, borderColor: PRIMARY_COLOR } : {}}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <span className="mr-3 text-lg">{item.icon}</span>
+                    <IconComponent className="mr-3 h-5 w-5" />
                     {item.title}
                   </Link>
                 )

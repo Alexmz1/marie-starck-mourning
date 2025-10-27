@@ -1,4 +1,13 @@
 import { prisma } from '../../../lib/prisma'
+import { 
+  SparklesIcon, 
+  UsersIcon, 
+  ArchiveBoxIcon,
+  PlusIcon,
+  ClipboardDocumentListIcon,
+  FolderIcon,
+  CheckCircleIcon
+} from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -53,11 +62,11 @@ async function getAdminStats() {
   }
 }
 
-const StatCard = ({ title, value, icon }) => (
+const StatCard = ({ title, value, icon: IconComponent }) => (
   <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
     <div className="flex items-center">
       <div className="flex-shrink-0">
-        <span className="text-3xl">{icon}</span>
+        <IconComponent className="h-8 w-8 text-gray-400" />
       </div>
       <div className="ml-5 w-0 flex-1">
         <dl>
@@ -73,14 +82,14 @@ const StatCard = ({ title, value, icon }) => (
   </div>
 )
 
-const QuickAction = ({ title, description, href, icon }) => (
+const QuickAction = ({ title, description, href, icon: IconComponent }) => (
   <a
     href={href}
     className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
   >
     <div className="flex items-center">
       <div className="rounded-lg p-3" style={{ backgroundColor: PRIMARY_COLOR }}>
-        <span className="text-white text-xl">{icon}</span>
+        <IconComponent className="h-6 w-6 text-white" />
       </div>
       <div className="ml-4">
         <h3 className="text-lg font-light text-gray-900">{title}</h3>
@@ -101,7 +110,7 @@ export default async function AdminDashboard() {
           Tableau de bord
         </h1>
         <p className="mt-2 text-sm font-light text-gray-600">
-          Vue d'ensemble de votre atelier floral
+          Vue d'ensemble de vos produits et commandes
         </p>
       </div>
 
@@ -110,17 +119,17 @@ export default async function AdminDashboard() {
         <StatCard
           title="Produits"
           value={stats.productsCount}
-          icon="🌸"
+          icon={SparklesIcon}
         />
         <StatCard
           title="Clients"
           value={stats.customersCount}
-          icon="👥"
+          icon={UsersIcon}
         />
         <StatCard
           title="Commandes"
           value={stats.ordersCount}
-          icon="📦"
+          icon={ArchiveBoxIcon}
         />
       </div>
 
@@ -137,19 +146,19 @@ export default async function AdminDashboard() {
               title="Ajouter un produit"
               description="Créer un nouveau produit floral"
               href="/admin/products/new"
-              icon="➕"
+              icon={PlusIcon}
             />
             <QuickAction
               title="Voir les commandes"
               description="Gérer les commandes en cours"
               href="/admin/orders"
-              icon="📋"
+              icon={ClipboardDocumentListIcon}
             />
             <QuickAction
               title="Base de données"
               description="Ouvrir Prisma Studio"
               href="http://localhost:5555"
-              icon="🗄️"
+              icon={FolderIcon}
             />
           </div>
         </div>
@@ -164,7 +173,7 @@ export default async function AdminDashboard() {
           <div className="p-8">
             {stats.recentOrders.length === 0 ? (
               <div className="text-center py-8">
-                <span className="text-4xl mb-4 block">📦</span>
+                <ArchiveBoxIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="font-light text-gray-600">Aucune commande pour le moment</p>
                 <p className="text-sm font-light text-gray-500 mt-2">
                   Les nouvelles commandes apparaîtront ici
@@ -217,7 +226,10 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div>
             <span className="font-light text-gray-700">Base de données:</span>
-            <span className="ml-2 text-green-600">✅ Connectée</span>
+            <span className="ml-2 text-green-600 flex items-center">
+              <CheckCircleIcon className="h-4 w-4 mr-1" />
+              Connectée
+            </span>
           </div>
           <div>
             <span className="font-light text-gray-700">Environnement:</span>

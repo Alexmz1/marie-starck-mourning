@@ -3,6 +3,15 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ProductActions from './ProductActions'
+import { 
+  PlusIcon, 
+  MagnifyingGlassIcon,
+  TagIcon,
+  PaintBrushIcon,
+  ArchiveBoxIcon,
+  StarIcon,
+  FolderIcon
+} from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -29,10 +38,22 @@ const ProductCard = ({ product }) => {
       : `${product.productVariants[0].price}€ - ${product.productVariants[product.productVariants.length - 1].price}€`
     : 'Prix non défini'
 
-  const categoryEmoji = {
-    'DEUIL': '🕊️',
-    'MARIAGE': '💒',
-    'BOUTIQUE': '🌺'
+  const categoryIcons = {
+    'DEUIL': (
+      <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+    ),
+    'MARIAGE': (
+      <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+      </svg>
+    ),
+    'BOUTIQUE': (
+      <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.001 3.001 0 0 1-.621-1.72C1.378 7.43 1.914 7.03 2.538 7.03h18.924c.624 0 1.16.4 1.039 1.599a3.001 3.001 0 0 1-.621 1.72m-18.5 0v-5.25A3.75 3.75 0 0 1 6.75 0h10.5A3.75 3.75 0 0 1 21 3.75v5.25m0 0h.008v.008H21V8.25Z" />
+      </svg>
+    )
   }
 
   const subCategoryNames = {
@@ -61,8 +82,8 @@ const ProductCard = ({ product }) => {
       <div className="p-8">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center mb-2">
-              <span className="text-2xl mr-2">{categoryEmoji[product.category]}</span>
+            <div className="flex items-center mb-4">
+              <div className="mr-3">{categoryIcons[product.category]}</div>
               <div>
                 <h3 className="text-lg font-light text-gray-900">{product.name}</h3>
                 <p className="text-sm font-light text-gray-600">
@@ -85,9 +106,20 @@ const ProductCard = ({ product }) => {
             </div>
 
             <div className="flex items-center gap-4 text-sm font-light text-gray-600">
-              <span>🎨 {product.productColors.length} couleur{product.productColors.length > 1 ? 's' : ''}</span>
-              <span>📦 {product._count.orderItems} commande{product._count.orderItems > 1 ? 's' : ''}</span>
-              {product.featured && <span className="text-yellow-600">⭐ En vedette</span>}
+              <span className="flex items-center">
+                <PaintBrushIcon className="h-4 w-4 mr-1" />
+                {product.productColors.length} couleur{product.productColors.length > 1 ? 's' : ''}
+              </span>
+              <span className="flex items-center">
+                <ArchiveBoxIcon className="h-4 w-4 mr-1" />
+                {product._count.orderItems} commande{product._count.orderItems > 1 ? 's' : ''}
+              </span>
+              {product.featured && (
+                <span className="text-yellow-600 flex items-center">
+                  <StarIcon className="h-4 w-4 mr-1" />
+                  En vedette
+                </span>
+              )}
             </div>
           </div>
 
@@ -224,10 +256,11 @@ export default function ProductsPage() {
         <Link
           href="/admin/products/new"
           prefetch={false}
-          className="py-3 px-6 text-white rounded-lg font-light transition-colors hover:opacity-90"
+          className="py-3 px-6 text-white rounded-lg font-light transition-colors hover:opacity-90 flex items-center"
           style={{ backgroundColor: PRIMARY_COLOR }}
         >
-          ➕ Ajouter un produit
+          <PlusIcon className="h-5 w-5 mr-2" />
+          Ajouter un produit
         </Link>
       </div>
 
@@ -266,8 +299,9 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Barre de recherche */}
           <div className="md:col-span-1">
-            <label className="block text-sm font-medium text-gray-800 mb-2">
-              🔍 Rechercher
+            <label className="block text-sm font-medium text-gray-800 mb-2 flex items-center">
+              <MagnifyingGlassIcon className="h-4 w-4 mr-2" />
+              Rechercher
             </label>
             <input
               type="text"
@@ -280,8 +314,9 @@ export default function ProductsPage() {
 
           {/* Dropdown Catégorie */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-800 mb-2">
-              📂 Catégorie
+            <label className="block text-sm font-medium text-gray-800 mb-2 flex items-center">
+              <FolderIcon className="h-4 w-4 mr-2" />
+              Catégorie
             </label>
             <div
               className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -322,8 +357,9 @@ export default function ProductsPage() {
 
           {/* Dropdown Statut */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-800 mb-2">
-              🏷️ Statut
+            <label className="block text-sm font-medium text-gray-800 mb-2 flex items-center">
+              <TagIcon className="h-4 w-4 mr-2" />
+              Statut
             </label>
             <div
               className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -377,7 +413,13 @@ export default function ProductsPage() {
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-12 text-center">
           {products.length === 0 ? (
             <>
-              <span className="text-6xl mb-4 block">🌸</span>
+              <div className="flex justify-center mb-4">
+                <div className="h-16 w-16 rounded-full bg-pink-100 flex items-center justify-center">
+                  <svg className="h-8 w-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                  </svg>
+                </div>
+              </div>
               <h3 className="text-xl font-light text-gray-900 mb-2">
                 Aucun produit pour le moment
               </h3>
@@ -395,7 +437,7 @@ export default function ProductsPage() {
             </>
           ) : (
             <>
-              <span className="text-6xl mb-4 block">🔍</span>
+              <MagnifyingGlassIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-light text-gray-900 mb-2">
                 Aucun résultat trouvé
               </h3>
