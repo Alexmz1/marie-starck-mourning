@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Header from '../../../components/Header'
 import Footer from '../../../components/Footer'
+import useCartStore from '../../../store/cartStore'
+import { ShoppingBagIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -39,9 +41,11 @@ const CATEGORIES = {
 export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { addItem } = useCartStore()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [addedToCart, setAddedToCart] = useState(false)
   
   // États pour les sélections
   const [selectedVariant, setSelectedVariant] = useState(null)
@@ -97,21 +101,19 @@ export default function ProductDetailPage() {
       return
     }
 
-    // Ici on ajouterait la logique d'ajout au panier
-    const cartItem = {
-      productId: product.id,
-      productName: product.name,
-      variantId: selectedVariant.id,
+    // Ajouter au panier via Zustand
+    addItem(product, selectedVariant, selectedColor, quantity)
+    
+    // Feedback visuel
+    setAddedToCart(true)
+    setTimeout(() => setAddedToCart(false), 2000)
+    
+    console.log('Produit ajouté au panier:', {
+      product: product.name,
       size: selectedVariant.size,
-      price: selectedVariant.price,
-      colorId: selectedColor?.id,
       color: selectedColor?.color,
-      quantity: quantity,
-      image: product.images[0] || null
-    }
-
-    console.log('Ajout au panier:', cartItem)
-    alert(`Produit ajouté au panier !\n${product.name} - ${SIZES[selectedVariant.size]} ${selectedColor ? `- ${COLORS[selectedColor.color]?.label}` : ''} - Quantité: ${quantity}`)
+      quantity
+    })
   }
 
   // Fermer tous les dropdowns
@@ -408,9 +410,22 @@ export default function ProductDetailPage() {
               <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
-                  className="btn-primary-gray w-full py-4 px-8 font-light tracking-wide"
+                  className={`btn-primary-gray w-full py-4 px-8 font-light tracking-wide flex items-center justify-center transition-all duration-200 ${
+                    addedToCart ? 'bg-green-600 border-green-600 text-white' : ''
+                  }`}
+                  disabled={addedToCart}
                 >
-                  AJOUTER AU PANIER
+                  {addedToCart ? (
+                    <>
+                      <CheckIcon className="h-5 w-5 mr-2" />
+                      AJOUTÉ AU PANIER
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBagIcon className="h-5 w-5 mr-2" />
+                      AJOUTER AU PANIER
+                    </>
+                  )}
                 </button>
                 
                 <div className="flex items-center space-x-4 text-sm text-gray-600 font-light">
