@@ -44,7 +44,7 @@ export default function ProductCard({ product }) {
       className="group bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden h-full flex flex-col"
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+      <div className="relative aspect-[3/4] overflow-hidden flex-shrink-0">
         <img 
           src={imageUrl}
           alt={product.name}
@@ -68,29 +68,35 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Contenu */}
-      <div className="p-6 space-y-4 flex-1 flex flex-col">
+      <div className="p-3 space-y-2 flex-1 flex flex-col">
         <div>
-          <h3 className="text-xl font-light text-black group-hover:text-gray-800 transition-colors duration-300">
+          <h3 className="text-sm font-light text-black group-hover:text-gray-800 transition-colors duration-300 leading-tight">
             {product.name}
           </h3>
-          <p className="text-sm text-gray-500 font-light mt-1">{displayCategory}</p>
+          <p className="text-xs text-gray-500 font-light">{displayCategory}</p>
           {isDbProduct && product.variants && product.variants.length > 0 && (
             <p className="text-xs text-gray-400 font-light">
-              {product.variants.length} taille{product.variants.length > 1 ? 's' : ''} disponible{product.variants.length > 1 ? 's' : ''}
+              {product.variants.length} taille{product.variants.length > 1 ? 's' : ''}
             </p>
           )}
         </div>
         
-        <p className="text-gray-700 font-light leading-relaxed flex-1">
+        <p className="text-xs text-gray-700 font-light leading-relaxed flex-1 overflow-hidden" 
+           style={{
+             display: '-webkit-box',
+             WebkitLineClamp: 2,
+             WebkitBoxOrient: 'vertical',
+             textOverflow: 'ellipsis'
+           }}>
           {product.description}
         </p>
         
         {/* Couleurs disponibles pour les produits de la BDD */}
         {isDbProduct && product.colors && product.colors.length > 0 && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <span className="text-xs text-gray-500">Couleurs:</span>
             <div className="flex space-x-1">
-              {product.colors.slice(0, 4).map((color, index) => {
+              {product.colors.slice(0, 3).map((color, index) => {
                 const colorClasses = {
                   'BLANC': 'bg-white border-2 border-gray-300',
                   'ROUGE': 'bg-red-500',
@@ -104,26 +110,26 @@ export default function ProductCard({ product }) {
                 return (
                   <div
                     key={index}
-                    className={`w-4 h-4 rounded-full ${colorClasses[color] || 'bg-gray-300'}`}
+                    className={`w-2.5 h-2.5 rounded-full ${colorClasses[color] || 'bg-gray-300'}`}
                     title={color}
                   />
                 )
               })}
-              {product.colors.length > 4 && (
-                <span className="text-xs text-gray-400">+{product.colors.length - 4}</span>
+              {product.colors.length > 3 && (
+                <span className="text-xs text-gray-400">+{product.colors.length - 3}</span>
               )}
             </div>
           </div>
         )}
         
-        <div className="flex justify-between items-center pt-2 mt-auto">
+        <div className="flex justify-between items-center pt-1 mt-auto">
           <div>
-            <p className="text-lg font-light text-black">
+            <p className="text-sm font-light text-black">
               {product.priceRange}
             </p>
           </div>
-          <div className="bg-black text-white px-4 py-2 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 hover:bg-gray-800">
-            {isDbProduct ? 'Voir détails' : 'Plus d\'infos'}
+          <div className="bg-black text-white px-2 py-1 text-xs font-light opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 hover:bg-gray-800">
+            {isDbProduct ? 'Voir' : 'Infos'}
           </div>
         </div>
       </div>
