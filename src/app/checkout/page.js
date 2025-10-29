@@ -462,19 +462,6 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 </div>
-
-                {/* Bouton de validation */}
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={!deliveryInfo.calculated || deliveryInfo.error || !dateValidation.valid}
-                    className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    style={{backgroundColor: PRIMARY_COLOR}}
-                  >
-                    <TruckIcon className="h-5 w-5 mr-2" />
-                    PROCÉDER AU PAIEMENT
-                  </button>
-                </div>
               </form>
             </div>
 
@@ -511,12 +498,25 @@ export default function CheckoutPage() {
                         <p className="text-xs text-gray-500">
                           {SIZES[item.size]} {item.color && `• ${item.color.name}`}
                         </p>
+                        {/* Affichage des options */}
+                        {item.options?.ribbon?.enabled && (
+                          <div className="space-y-1 mt-1">
+                            <p className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>
+                              + Ruban avec message (+5€)
+                            </p>
+                            {item.options.ribbon.message && (
+                              <p className="text-xs font-light text-gray-600 italic">
+                                "{item.options.ribbon.message}"
+                              </p>
+                            )}
+                          </div>
+                        )}
                         <p className="text-xs text-gray-500">
                           Quantité: {item.quantity}
                         </p>
                       </div>
                       <div className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
-                        {(item.price * item.quantity).toFixed(2)}€
+                        {((item.totalPrice || item.price) * item.quantity).toFixed(2)}€
                       </div>
                     </div>
                   ))}
