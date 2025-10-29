@@ -28,7 +28,26 @@ const COLORS = {
   'ORANGE': { label: 'Orange', colorClass: 'bg-orange-400' },
   'VIOLET': { label: 'Violet', colorClass: 'bg-purple-500' },
   'BLEU': { label: 'Bleu', colorClass: 'bg-blue-500' },
-  'VERT': { label: 'Vert', colorClass: 'bg-green-500' }
+  'VERT': { label: 'Vert', colorClass: 'bg-green-500' },
+  'MULTICOLORE': { label: 'Multicolore', colorClass: 'bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400' },
+  'NATUREL': { label: 'Couleurs naturelles', colorClass: 'bg-gradient-to-r from-green-400 to-amber-400' }
+}
+
+// Fonction pour formater les dimensions
+const formatDimensions = (variant) => {
+  if (!variant) return null
+  
+  const dimensions = []
+  
+  if (variant.diameter) {
+    return `Ø ${variant.diameter} cm`
+  }
+  
+  if (variant.height) dimensions.push(`H: ${variant.height} cm`)
+  if (variant.width) dimensions.push(`L: ${variant.width} cm`)
+  if (variant.depth) dimensions.push(`P: ${variant.depth} cm`)
+  
+  return dimensions.length > 0 ? dimensions.join(' × ') : null
 }
 
 // Traduction des catégories
@@ -271,8 +290,19 @@ export default function ProductDetailPage() {
                   {selectedVariant ? `${selectedVariant.price}€` : 'Sélectionnez une taille'}
                 </div>
                 {selectedVariant && (
-                  <div className="text-sm text-gray-600 mt-1">
-                    Taille {SIZES[selectedVariant.size]}
+                  <div className="space-y-2 mt-3">
+                    <div className="text-sm text-gray-600">
+                      Taille {SIZES[selectedVariant.size]}
+                    </div>
+                    {/* Affichage des dimensions */}
+                    {formatDimensions(selectedVariant) && (
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">Dimensions :</span>
+                        <span className="ml-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                          {formatDimensions(selectedVariant)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

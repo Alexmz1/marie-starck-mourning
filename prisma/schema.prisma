@@ -113,6 +113,12 @@ model ProductVariant {
   size      Size   // Taille du produit
   price     Float  // Prix pour cette taille
   
+  // Dimensions (en cm)
+  height    Float? // Hauteur en cm
+  width     Float? // Largeur en cm
+  depth     Float? // Profondeur en cm
+  diameter  Float? // Diamètre en cm (pour les formes circulaires)
+  
   // Relations
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   

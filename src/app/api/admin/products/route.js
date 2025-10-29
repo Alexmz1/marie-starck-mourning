@@ -4,10 +4,14 @@ import { NextResponse } from 'next/server'
 export async function POST(request) {
   try {
     const data = await request.json()
-    console.log('Données reçues pour création:', data)
+    console.log('🔍 Données reçues pour création:', JSON.stringify(data, null, 2))
     
     // Validation des données requises
     if (!data.name || !data.category || !data.subCategory) {
+      console.log('❌ Validation échouée: champs manquants')
+      console.log('- name:', data.name)
+      console.log('- category:', data.category) 
+      console.log('- subCategory:', data.subCategory)
       return NextResponse.json(
         { message: 'Les champs nom, catégorie et sous-catégorie sont requis' },
         { status: 400 }
@@ -15,6 +19,8 @@ export async function POST(request) {
     }
 
     if (!data.variants || data.variants.length === 0) {
+      console.log('❌ Validation échouée: pas de variantes')
+      console.log('- variants:', data.variants)
       return NextResponse.json(
         { error: 'Au moins une variante de prix est requise' },
         { status: 400 }
@@ -22,11 +28,16 @@ export async function POST(request) {
     }
 
     if (!data.colors || data.colors.length === 0) {
+      console.log('❌ Validation échouée: pas de couleurs')
+      console.log('- colors:', data.colors)
       return NextResponse.json(
         { error: 'Au moins une couleur est requise' },
         { status: 400 }
       )
     }
+
+    console.log('✅ Validation des données réussie')
+    console.log('📊 Variants à créer:', data.variants)
 
     // Vérifier l'unicité du slug
     const existingProduct = await prisma.product.findUnique({
@@ -56,10 +67,19 @@ export async function POST(request) {
         
         // Créer les variants de prix
         productVariants: {
-          create: data.variants.map(variant => ({
-            size: variant.size,
-            price: parseFloat(variant.price)
-          }))
+          create: data.variants.map((variant, index) => {
+            console.log(`🔧 Traitement variant ${index}:`, variant)
+            const processedVariant = {
+              size: variant.size,
+              price: parseFloat(variant.price),
+              height: variant.height ? parseFloat(variant.height) : null,
+              width: variant.width ? parseFloat(variant.width) : null,
+              depth: variant.depth ? parseFloat(variant.depth) : null,
+              diameter: variant.diameter ? parseFloat(variant.diameter) : null
+            }
+            console.log(`✅ Variant ${index} traité:`, processedVariant)
+            return processedVariant
+          })
         },
         
         // Créer les couleurs disponibles

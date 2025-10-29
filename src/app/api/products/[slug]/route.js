@@ -52,7 +52,11 @@ export async function GET(request, { params }) {
       variants: product.productVariants.map(v => ({
         id: v.id,
         size: v.size,
-        price: parseFloat(v.price)
+        price: parseFloat(v.price),
+        height: v.height,
+        width: v.width,
+        depth: v.depth,
+        diameter: v.diameter
       })),
       colors: product.productColors.map(c => ({
         id: c.id,

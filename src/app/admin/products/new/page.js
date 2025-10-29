@@ -71,7 +71,14 @@ export default function NewProductPage() {
   })
   
   const [variants, setVariants] = useState([
-    { size: 'MOYEN', price: '' }
+    { 
+      size: 'MOYEN', 
+      price: '',
+      height: '',
+      width: '',
+      depth: '',
+      diameter: ''
+    }
   ])
   
   const [selectedColors, setSelectedColors] = useState([])
@@ -115,7 +122,14 @@ export default function NewProductPage() {
   }
 
   const addVariant = () => {
-    setVariants(prev => [...prev, { size: 'MOYEN', price: '' }])
+    setVariants(prev => [...prev, { 
+      size: 'MOYEN', 
+      price: '',
+      height: '',
+      width: '',
+      depth: '',
+      diameter: ''
+    }])
   }
 
   const removeVariant = (index) => {
@@ -222,7 +236,14 @@ export default function NewProductPage() {
     setLoading(true)
 
     // Validation
-    const validVariants = variants.filter(v => v.price && parseFloat(v.price) > 0)
+    const validVariants = variants.filter(v => v.price && parseFloat(v.price) > 0).map(v => ({
+      size: v.size,
+      price: parseFloat(v.price),
+      height: v.height ? parseFloat(v.height) : null,
+      width: v.width ? parseFloat(v.width) : null,
+      depth: v.depth ? parseFloat(v.depth) : null,
+      diameter: v.diameter ? parseFloat(v.diameter) : null
+    }))
     
     if (!formData.name || !formData.description || !formData.category || !formData.subCategory) {
       alert('Veuillez remplir tous les champs obligatoires')
@@ -262,6 +283,9 @@ export default function NewProductPage() {
         images: imageUrls
       }
 
+      console.log('📤 Données envoyées au serveur:', JSON.stringify(productData, null, 2))
+      console.log('📋 Valid variants détaillés:', validVariants)
+
       const response = await fetch('/api/admin/products', {
         method: 'POST',
         headers: {
@@ -271,11 +295,14 @@ export default function NewProductPage() {
       })
 
       if (response.ok) {
+        console.log('✅ Produit créé avec succès')
         router.push('/admin/products')
         router.refresh()
       } else {
-        const error = await response.json()
-        alert('Erreur: ' + (error.message || 'Erreur inconnue'))
+        console.error('❌ Erreur lors de la création:', response.status, response.statusText)
+        const error = await response.json().catch(() => ({ message: 'Erreur de parsing de la réponse' }))
+        console.error('📜 Détails de l\'erreur:', error)
+        alert('Erreur: ' + (error.message || error.error || 'Erreur inconnue'))
       }
     } catch (error) {
       console.error('Erreur:', error)
@@ -528,72 +555,137 @@ export default function NewProductPage() {
           
           <div className="space-y-4">
             {variants.map((variant, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                {/* Dropdown Taille */}
-                <div className="flex-1 relative">
-                  <div
-                    className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleSizeDropdown(index)
-                    }}
-                  >
-                    <span className="text-gray-800">
-                      {SIZES.find(s => s.value === variant.size)?.label || 'Sélectionner une taille'}
-                    </span>
-                    <svg 
-                      className={`w-5 h-5 text-gray-500 transition-transform ${sizeDropdowns[index] ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
+              <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center space-x-4 mb-4">
+                  {/* Dropdown Taille */}
+                  <div className="flex-1 relative">
+                    <div
+                      className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleSizeDropdown(index)
+                      }}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                  {sizeDropdowns[index] && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto" onClick={(e) => e.stopPropagation()}>
-                      {SIZES.map((size) => (
-                        <div
-                          key={size.value}
-                          className="py-3 px-4 hover:bg-gray-50 cursor-pointer text-gray-800 transition-colors"
-                          onClick={() => {
-                            handleVariantChange(index, 'size', size.value)
-                            toggleSizeDropdown(index)
-                          }}
-                        >
-                          {size.label}
-                        </div>
-                      ))}
+                      <span className="text-gray-800">
+                        {SIZES.find(s => s.value === variant.size)?.label || 'Sélectionner une taille'}
+                      </span>
+                      <svg 
+                        className={`w-5 h-5 text-gray-500 transition-transform ${sizeDropdowns[index] ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                      </svg>
                     </div>
+                    {sizeDropdowns[index] && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto" onClick={(e) => e.stopPropagation()}>
+                        {SIZES.map((size) => (
+                          <div
+                            key={size.value}
+                            className="py-3 px-4 hover:bg-gray-50 cursor-pointer text-gray-800 transition-colors"
+                            onClick={() => {
+                              handleVariantChange(index, 'size', size.value)
+                              toggleSizeDropdown(index)
+                            }}
+                          >
+                            {size.label}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Input Prix */}
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      value={variant.price}
+                      onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                      placeholder="Prix en €"
+                      required
+                      className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      step="0.01"
+                      min="0"
+                    />
+                  </div>
+                  
+                  {/* Bouton Supprimer */}
+                  {variants.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeVariant(index)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   )}
                 </div>
                 
-                {/* Input Prix */}
-                <div className="flex-1">
-                  <input
-                    type="number"
-                    value={variant.price}
-                    onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
-                    placeholder="Prix en €"
-                    required
-                    className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    step="0.01"
-                    min="0"
-                  />
+                {/* Dimensions */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Hauteur (cm)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.height}
+                      onChange={(e) => handleVariantChange(index, 'height', e.target.value)}
+                      placeholder="0"
+                      className="w-full py-2 px-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      step="0.1"
+                      min="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Largeur (cm)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.width}
+                      onChange={(e) => handleVariantChange(index, 'width', e.target.value)}
+                      placeholder="0"
+                      className="w-full py-2 px-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      step="0.1"
+                      min="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Profondeur (cm)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.depth}
+                      onChange={(e) => handleVariantChange(index, 'depth', e.target.value)}
+                      placeholder="0"
+                      className="w-full py-2 px-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      step="0.1"
+                      min="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Diamètre (cm)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.diameter}
+                      onChange={(e) => handleVariantChange(index, 'diameter', e.target.value)}
+                      placeholder="0"
+                      className="w-full py-2 px-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      step="0.1"
+                      min="0"
+                    />
+                  </div>
                 </div>
-                
-                {/* Bouton Supprimer */}
-                {variants.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeVariant(index)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
               </div>
             ))}
           </div>

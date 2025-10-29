@@ -73,7 +73,11 @@ export async function GET(request) {
         maxPrice,
         variants: product.productVariants.map(v => ({
           size: v.size,
-          price: parseFloat(v.price)
+          price: parseFloat(v.price),
+          height: v.height,
+          width: v.width,
+          depth: v.depth,
+          diameter: v.diameter
         })),
         colors: product.productColors.map(c => c.color),
         featured: product.featured,

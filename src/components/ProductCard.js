@@ -70,26 +70,11 @@ export default function ProductCard({ product }) {
       {/* Contenu */}
       <div className="p-3 space-y-2 flex-1 flex flex-col">
         <div>
-          <h3 className="text-sm font-light text-black group-hover:text-gray-800 transition-colors duration-300 leading-tight">
+          <h3 className="text-lg font-light text-black group-hover:text-gray-800 transition-colors duration-300 leading-tight">
             {product.name}
           </h3>
           <p className="text-xs text-gray-500 font-light">{displayCategory}</p>
-          {isDbProduct && product.variants && product.variants.length > 0 && (
-            <p className="text-xs text-gray-400 font-light">
-              {product.variants.length} taille{product.variants.length > 1 ? 's' : ''}
-            </p>
-          )}
         </div>
-        
-        <p className="text-xs text-gray-700 font-light leading-relaxed flex-1 overflow-hidden" 
-           style={{
-             display: '-webkit-box',
-             WebkitLineClamp: 2,
-             WebkitBoxOrient: 'vertical',
-             textOverflow: 'ellipsis'
-           }}>
-          {product.description}
-        </p>
         
         {/* Couleurs disponibles pour les produits de la BDD */}
         {isDbProduct && product.colors && product.colors.length > 0 && (

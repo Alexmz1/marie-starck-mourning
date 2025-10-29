@@ -69,7 +69,11 @@ export async function PUT(request, { params }) {
             ?.filter(variant => variant.size && variant.price)
             .map(variant => ({
               size: variant.size,
-              price: parseFloat(variant.price)
+              price: parseFloat(variant.price),
+              height: variant.height ? parseFloat(variant.height) : null,
+              width: variant.width ? parseFloat(variant.width) : null,
+              depth: variant.depth ? parseFloat(variant.depth) : null,
+              diameter: variant.diameter ? parseFloat(variant.diameter) : null
             })) || []
         },
         productColors: {
