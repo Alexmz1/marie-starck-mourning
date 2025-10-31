@@ -37,11 +37,11 @@ enum SubCategory {
   DECORATION_EGLISE  // Décoration d'église
   
   // Boutique
+  PRODUIT_SAISON     // Produit de saison
   COMPOSITION_OFFRIR // Composition à offrir
   BOUQUET_FRAIS      // Bouquet frais
   PLANTE_INTERIEUR   // Plante d'intérieur
   PLANTE_EXTERIEUR   // Plante d'extérieur
-  CREATION_SAISONNIERE // Création saisonnière
 }
 
 enum Size {
@@ -52,15 +52,14 @@ enum Size {
 }
 
 enum Color {
-  BLANC     // Blanc
-  ROUGE     // Rouge
-  ROSE      // Rose
-  JAUNE     // Jaune
-  ORANGE    // Orange
-  VIOLET    // Violet
-  BLEU      // Bleu
-  MULTICOLORE // Multicolore
-  NATUREL   // Couleurs naturelles
+  BLANC         // Blanc
+  ROSE_PALE     // Rose pâle
+  ROSE_FUSHIA   // Rose fushia
+  ROUGE         // Rouge
+  BLEU_VIOLET   // Bleu violet
+  JAUNE         // Jaune
+  ORANGE        // Orange
+  MULTICOLORE   // Multicolore
 }
 
 enum OrderStatus {
