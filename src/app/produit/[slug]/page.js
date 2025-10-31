@@ -235,13 +235,14 @@ export default function ProductDetailPage() {
             {/* Images */}
             <div className="space-y-4">
               {/* Image principale */}
-              <div className="aspect-square rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200">
+              <div className="aspect-[4/5] rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200">
                 {product.images && product.images.length > 0 ? (
                   <Image
                     src={product.images[currentImageIndex]}
                     alt={product.name}
                     width={600}
-                    height={600}
+                    height={750}
+                    priority={currentImageIndex === 0}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -271,6 +272,7 @@ export default function ProductDetailPage() {
                         alt={`${product.name} - Image ${index + 1}`}
                         width={150}
                         height={150}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </button>
