@@ -70,11 +70,11 @@ const ProductCard = ({ product }) => {
     'CORSAGE': 'Corsage',
     'CENTRE_TABLE': 'Centre de table',
     'DECORATION_EGLISE': 'Décoration d\'église',
+    'PRODUIT_SAISON': 'Produit de saison',
     'COMPOSITION_OFFRIR': 'Composition à offrir',
     'BOUQUET_FRAIS': 'Bouquet frais',
     'PLANTE_INTERIEUR': 'Plante d\'intérieur',
-    'PLANTE_EXTERIEUR': 'Plante d\'extérieur',
-    'CREATION_SAISONNIERE': 'Création saisonnière'
+    'PLANTE_EXTERIEUR': 'Plante d\'extérieur'
   }
 
   return (

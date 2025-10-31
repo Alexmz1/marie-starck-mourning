@@ -44,11 +44,11 @@ export default function Header() {
   ];
 
   const boutiqueMenu = [
+    { name: 'Produits de saison', href: '/boutique#produits-saison' },
     { name: 'Compositions à offrir', href: '/boutique#compositions-offrir' },
     { name: 'Bouquets frais', href: '/boutique#bouquets-frais' },
     { name: 'Plantes d\'intérieur', href: '/boutique#plantes-interieur' },
-    { name: 'Plantes d\'extérieur', href: '/boutique#plantes-exterieur' },
-    { name: 'Créations saisonnières', href: '/boutique#creations-saisonnieres' }
+    { name: 'Plantes d\'extérieur', href: '/boutique#plantes-exterieur' }
   ];
 
   const mariageMenu = [

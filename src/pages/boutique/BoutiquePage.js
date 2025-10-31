@@ -13,6 +13,16 @@ const BoutiquePage = () => {
   
   // Données exemple pour les sous-catégories si pas de produits en BDD
   const fallbackProducts = {
+    'produits-saison': {
+      title: 'Produits de saison',
+      description: 'Découvrez nos créations uniques selon les saisons, mettant en valeur les fleurs et plantes du moment.',
+      products: [
+        { name: 'Composition Automnale', description: 'Tons chauds et couleurs d\'automne', price: '55€' },
+        { name: 'Bouquet Hivernal', description: 'Branches et baies pour l\'hiver', price: '48€' },
+        { name: 'Création Printanière', description: 'Fraîcheur et renaissance du printemps', price: '52€' },
+        { name: 'Arrangement Estival', description: 'Couleurs vives de l\'été', price: '60€' }
+      ]
+    },
     'compositions-offrir': {
       title: 'Compositions à offrir',
       description: 'Créations florales élégantes pour toutes les occasions spéciales et moments de partage.',
@@ -52,16 +62,6 @@ const BoutiquePage = () => {
         { name: 'Hortensia Bleu', description: 'Floraison spectaculaire estivale', price: '28€' },
         { name: 'Géranium Lierre', description: 'Idéal pour jardinières et balcons', price: '12€' }
       ]
-    },
-    'creations-saisonnieres': {
-      title: 'Créations saisonnières',
-      description: 'Collections temporaires qui évoluent au rythme des saisons et des tendances florales.',
-      products: [
-        { name: 'Couronne d\'Automne', description: 'Feuillages dorés et baies colorées', price: '55€' },
-        { name: 'Centre de Table Hivernal', description: 'Ambiance chaleureuse de saison', price: '48€' },
-        { name: 'Composition Festive', description: 'Créations pour occasions spéciales', price: '65€' },
-        { name: 'Bouquet de Saison', description: 'Fleurs du moment sublimées', price: '38€' }
-      ]
     }
   };
 
@@ -94,20 +94,20 @@ const BoutiquePage = () => {
 
   // Définir toutes les sous-catégories possibles pour maintenir la structure
   const allSubCategories = [
+    'PRODUIT_SAISON',
     'COMPOSITION_OFFRIR',
     'BOUQUET_FRAIS',
     'PLANTE_INTERIEUR',
-    'PLANTE_EXTERIEUR',
-    'CREATION_SAISONNIERE'
+    'PLANTE_EXTERIEUR'
   ]
 
   // Noms des sous-catégories en français
   const subCategoryNames = {
+    'PRODUIT_SAISON': 'Produits de saison',
     'COMPOSITION_OFFRIR': 'Compositions à offrir',
     'BOUQUET_FRAIS': 'Bouquets frais',
     'PLANTE_INTERIEUR': 'Plantes d\'intérieur',
-    'PLANTE_EXTERIEUR': 'Plantes d\'extérieur',
-    'CREATION_SAISONNIERE': 'Créations saisonnières'
+    'PLANTE_EXTERIEUR': 'Plantes d\'extérieur'
   }
 
   return (

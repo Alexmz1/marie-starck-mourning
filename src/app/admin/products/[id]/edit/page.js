@@ -31,11 +31,11 @@ const SUB_CATEGORIES = {
     { value: 'DECORATION_EGLISE', label: 'Décoration d\'église' }
   ],
   BOUTIQUE: [
+    { value: 'PRODUIT_SAISON', label: 'Produit de saison' },
     { value: 'COMPOSITION_OFFRIR', label: 'Composition à offrir' },
     { value: 'BOUQUET_FRAIS', label: 'Bouquet frais' },
     { value: 'PLANTE_INTERIEUR', label: 'Plante d\'intérieur' },
-    { value: 'PLANTE_EXTERIEUR', label: 'Plante d\'extérieur' },
-    { value: 'CREATION_SAISONNIERE', label: 'Création saisonnière' }
+    { value: 'PLANTE_EXTERIEUR', label: 'Plante d\'extérieur' }
   ]
 }
 
