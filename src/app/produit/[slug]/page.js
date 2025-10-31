@@ -22,15 +22,13 @@ const SIZES = {
 // Configuration des couleurs avec leurs classes CSS
 const COLORS = {
   'BLANC': { label: 'Blanc', colorClass: 'bg-white border-2 border-gray-300' },
+  'ROSE_PALE': { label: 'Rose pâle', colorClass: 'bg-pink-200' },
+  'ROSE_FUSHIA': { label: 'Rose fushia', colorClass: 'bg-pink-500' },
   'ROUGE': { label: 'Rouge', colorClass: 'bg-red-500' },
-  'ROSE': { label: 'Rose', colorClass: 'bg-pink-400' },
+  'BLEU_VIOLET': { label: 'Bleu violet', colorClass: 'bg-indigo-500' },
   'JAUNE': { label: 'Jaune', colorClass: 'bg-yellow-400' },
   'ORANGE': { label: 'Orange', colorClass: 'bg-orange-400' },
-  'VIOLET': { label: 'Violet', colorClass: 'bg-purple-500' },
-  'BLEU': { label: 'Bleu', colorClass: 'bg-blue-500' },
-  'VERT': { label: 'Vert', colorClass: 'bg-green-500' },
-  'MULTICOLORE': { label: 'Multicolore', colorClass: 'bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400' },
-  'NATUREL': { label: 'Couleurs naturelles', colorClass: 'bg-gradient-to-r from-green-400 to-amber-400' }
+  'MULTICOLORE': { label: 'Multicolore', colorClass: 'bg-gradient-to-r from-pink-300 via-orange-300 via-yellow-300 to-indigo-300' }
 }
 
 // Fonction pour formater les dimensions

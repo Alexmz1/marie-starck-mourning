@@ -84,13 +84,13 @@ export default function ProductCard({ product }) {
               {product.colors.slice(0, 3).map((color, index) => {
                 const colorClasses = {
                   'BLANC': 'bg-white border-2 border-gray-300',
+                  'ROSE_PALE': 'bg-pink-200',
+                  'ROSE_FUSHIA': 'bg-pink-500',
                   'ROUGE': 'bg-red-500',
-                  'ROSE': 'bg-pink-400',
+                  'BLEU_VIOLET': 'bg-indigo-500',
                   'JAUNE': 'bg-yellow-400',
                   'ORANGE': 'bg-orange-400',
-                  'VIOLET': 'bg-purple-500',
-                  'BLEU': 'bg-blue-500',
-                  'VERT': 'bg-green-500'
+                  'MULTICOLORE': 'bg-gradient-to-r from-pink-300 via-orange-300 via-yellow-300 to-indigo-300'
                 }
                 return (
                   <div
