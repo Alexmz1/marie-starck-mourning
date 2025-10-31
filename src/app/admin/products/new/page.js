@@ -48,13 +48,13 @@ const SIZES = [
 
 const COLORS = [
   { value: 'BLANC', label: 'Blanc', color: 'bg-white border-2 border-gray-300' },
+  { value: 'ROSE_PALE', label: 'Rose pâle', color: 'bg-pink-200' },
+  { value: 'ROSE_FUSHIA', label: 'Rose fushia', color: 'bg-pink-500' },
   { value: 'ROUGE', label: 'Rouge', color: 'bg-red-500' },
-  { value: 'ROSE', label: 'Rose', color: 'bg-pink-400' },
+  { value: 'BLEU_VIOLET', label: 'Bleu violet', color: 'bg-indigo-500' },
   { value: 'JAUNE', label: 'Jaune', color: 'bg-yellow-400' },
   { value: 'ORANGE', label: 'Orange', color: 'bg-orange-400' },
-  { value: 'VIOLET', label: 'Violet', color: 'bg-purple-500' },
-  { value: 'BLEU', label: 'Bleu', color: 'bg-blue-500' },
-  { value: 'VERT', label: 'Vert', color: 'bg-green-500' }
+  { value: 'MULTICOLORE', label: 'Multicolore', color: 'bg-gradient-to-r from-pink-300 via-orange-300 via-yellow-300 to-indigo-300' }
 ]
 
 export default function NewProductPage() {
