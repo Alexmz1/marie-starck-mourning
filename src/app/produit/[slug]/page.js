@@ -349,10 +349,11 @@ export default function ProductDetailPage() {
                       }}
                     >
                       <span className={selectedVariant ? "text-gray-800" : "text-gray-500"}>
-                                              {selectedVariant 
-                                                ? `${SIZES[selectedVariant.size]} - ${selectedVariant.price}€`
-                                                : 'Sélectionner une taille'}
-                                            </span>
+                        {selectedVariant 
+                          ? `${SIZES[selectedVariant.size]} - ${selectedVariant.price}€`
+                          : 'Veuillez choisir une taille'
+                        }
+                      </span>
                       <svg 
                         className={`w-5 h-5 text-gray-500 transition-transform ${sizeDropdownOpen ? 'rotate-180' : ''}`} 
                         fill="none" 
