@@ -302,7 +302,7 @@ export default function Header() {
               </Link>
               
               {/* Dropdown menu Deuil */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
                 <div className="py-2">
                   {deuilMenu.map((item, index) => (
                     <Link
@@ -331,7 +331,7 @@ export default function Header() {
               </Link>
               
               {/* Dropdown menu Boutique */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
                 <div className="py-2">
                   {boutiqueMenu.map((item, index) => (
                     <Link
@@ -360,7 +360,7 @@ export default function Header() {
               </Link>
               
               {/* Dropdown menu Mariage */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
                 <div className="py-2">
                   {mariageMenu.map((item, index) => (
                     <Link
@@ -389,7 +389,7 @@ export default function Header() {
               </Link>
               
               {/* Dropdown menu Entreprises */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
                 <div className="py-2">
                   {entreprisesMenu.map((item, index) => (
                     <Link
