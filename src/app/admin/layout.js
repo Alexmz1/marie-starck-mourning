@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import AdminLogin from '@/components/AdminLogin'
 import { 
   ChartBarIcon, 
   SparklesIcon, 
@@ -10,7 +11,8 @@ import {
   UsersIcon, 
   ChartPieIcon,
   Bars3Icon,
-  GlobeAltIcon
+  GlobeAltIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
@@ -45,7 +47,39 @@ const menuItems = [
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const pathname = usePathname()
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur est déjà authentifié
+    const authenticated = sessionStorage.getItem('admin_authenticated')
+    setIsAuthenticated(authenticated === 'true')
+    setIsLoading(false)
+  }, [])
+
+  const handleLogin = () => {
+    setIsAuthenticated(true)
+  }
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('admin_authenticated')
+    setIsAuthenticated(false)
+  }
+
+  // Afficher le loader pendant la vérification
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: PRIMARY_COLOR }}></div>
+      </div>
+    )
+  }
+
+  // Afficher la page de login si pas authentifié
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={handleLogin} />
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,6 +105,14 @@ export default function AdminLayout({ children }) {
               <GlobeAltIcon className="h-4 w-4 mr-1" />
               Voir le site
             </Link>
+            <button
+              onClick={handleLogout}
+              className="text-sm font-light text-gray-600 hover:text-gray-900 transition-colors flex items-center"
+              title="Se déconnecter"
+            >
+              <ArrowRightOnRectangleIcon className="h-4 w-4 mr-1" />
+              Déconnexion
+            </button>
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: PRIMARY_COLOR }}>
               <span className="text-white text-sm font-light">MS</span>
             </div>
