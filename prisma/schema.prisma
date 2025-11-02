@@ -52,6 +52,7 @@ enum Size {
 }
 
 enum Color {
+  MULTICOLORE   // Multicolore
   BLANC         // Blanc
   ROSE_PALE     // Rose pâle
   ROSE_FUSHIA   // Rose fushia
@@ -59,7 +60,6 @@ enum Color {
   BLEU_VIOLET   // Bleu violet
   JAUNE         // Jaune
   ORANGE        // Orange
-  MULTICOLORE   // Multicolore
 }
 
 enum OrderStatus {

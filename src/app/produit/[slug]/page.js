@@ -91,10 +91,8 @@ export default function ProductDetailPage() {
       if (response.ok) {
         const data = await response.json()
         setProduct(data)
-        // Sélectionner la première variante par défaut
-        if (data.variants && data.variants.length > 0) {
-          setSelectedVariant(data.variants[0])
-        }
+        // Ne pas présélectionner de variante pour que l'utilisateur voit toutes les options
+        // setSelectedVariant(data.variants[0]) // Supprimé
         // Sélectionner la première couleur par défaut
         if (data.colors && data.colors.length > 0) {
           setSelectedColor(data.colors[0])
@@ -307,9 +305,15 @@ export default function ProductDetailPage() {
 
               {/* Prix */}
               <div className="border-t border-b border-gray-200 py-6">
-                <div className="text-3xl font-light text-gray-900">
-                  {selectedVariant ? `${selectedVariant.price}€` : 'Sélectionnez une taille'}
-                </div>
+                {selectedVariant ? (
+                  <div className="text-3xl font-light text-gray-900">
+                    {selectedVariant.price}€
+                  </div>
+                ) : (
+                  <div className="text-lg font-light text-gray-500 italic">
+                    Prix affiché après sélection de la taille
+                  </div>
+                )}
                 
                 {selectedVariant && (
                   <div className="space-y-2 mt-3">
@@ -344,12 +348,11 @@ export default function ProductDetailPage() {
                         setSizeDropdownOpen(!sizeDropdownOpen)
                       }}
                     >
-                      <span className="text-gray-800">
-                        {selectedVariant 
-                          ? `${SIZES[selectedVariant.size]} - ${selectedVariant.price}€`
-                          : 'Sélectionner une taille'
-                        }
-                      </span>
+                      <span className={selectedVariant ? "text-gray-800" : "text-gray-500"}>
+                                              {selectedVariant 
+                                                ? `${SIZES[selectedVariant.size]} - ${selectedVariant.price}€`
+                                                : 'Sélectionner une taille'}
+                                            </span>
                       <svg 
                         className={`w-5 h-5 text-gray-500 transition-transform ${sizeDropdownOpen ? 'rotate-180' : ''}`} 
                         fill="none" 
