@@ -9,11 +9,12 @@ const useCartStore = create(
       isOpen: false,
 
       // Actions du panier
-      addItem: (product, variant, selectedColor, quantity = 1) => {
+      addItem: (product, variant, selectedColor, quantity = 1, options = {}) => {
         const { items } = get()
         
-        // Créer un ID unique pour cet item (produit + taille + couleur)
-        const itemId = `${product.id}-${variant.size}-${selectedColor?.id || 'no-color'}`
+        // Créer un ID unique pour cet item (produit + taille + couleur + options)
+        const optionsKey = options.ribbon ? `-ribbon-${options.ribbon.message}` : ''
+        const itemId = `${product.id}-${variant.size}-${selectedColor?.id || 'no-color'}${optionsKey}`
         
         // Vérifier si l'item existe déjà
         const existingItemIndex = items.findIndex(item => item.id === itemId)
@@ -24,6 +25,12 @@ const useCartStore = create(
           updatedItems[existingItemIndex].quantity += quantity
           set({ items: updatedItems })
         } else {
+          // Calculer le prix total avec les options
+          let totalPrice = variant.price
+          if (options.ribbon?.enabled) {
+            totalPrice += options.ribbon.price
+          }
+
           // Sinon, ajouter un nouvel item
           const newItem = {
             id: itemId,
@@ -34,12 +41,14 @@ const useCartStore = create(
             category: product.category,
             size: variant.size,
             price: variant.price,
+            totalPrice: totalPrice, // Prix avec options
             color: selectedColor ? {
               id: selectedColor.id,
               name: selectedColor.color,
               hex: selectedColor.hex
             } : null,
             quantity: quantity,
+            options: options, // Stockage des options
             addedAt: new Date().toISOString()
           }
           
@@ -90,7 +99,11 @@ const useCartStore = create(
 
       getTotalPrice: () => {
         const { items } = get()
-        return items.reduce((total, item) => total + (item.price * item.quantity), 0)
+        return items.reduce((total, item) => {
+          // Utiliser totalPrice s'il existe, sinon utiliser price
+          const itemPrice = item.totalPrice || item.price
+          return total + (itemPrice * item.quantity)
+        }, 0)
       },
 
       // Obtenir les items groupés par catégorie

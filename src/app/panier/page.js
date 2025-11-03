@@ -174,6 +174,19 @@ export default function CartPage() {
                                 </div>
                               </div>
                             )}
+                            {/* Affichage des options */}
+                            {item.options?.ribbon?.enabled && (
+                              <div className="space-y-1">
+                                <p className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
+                                  + Ruban avec message (+5€)
+                                </p>
+                                {item.options.ribbon.message && (
+                                  <p className="text-sm font-light text-gray-600 italic">
+                                    "{item.options.ribbon.message}"
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                         <button
@@ -207,11 +220,11 @@ export default function CartPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-lg font-medium text-gray-900">
-                            {(item.price * item.quantity).toFixed(2)}€
+                            {((item.totalPrice || item.price) * item.quantity).toFixed(2)}€
                           </p>
                           {item.quantity > 1 && (
                             <p className="text-sm text-gray-500">
-                              {item.price}€ l'unité
+                              {(item.totalPrice || item.price).toFixed(2)}€ l'unité
                             </p>
                           )}
                         </div>
@@ -273,7 +286,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Livraison</span>
-                    <span className="text-sm text-gray-500">Selon zone (5€ à 20€)</span>
+                    <span className="text-sm text-gray-500">Selon zone (0€ à 20€)</span>
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex justify-between">

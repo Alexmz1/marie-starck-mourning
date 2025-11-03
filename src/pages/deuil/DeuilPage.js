@@ -152,6 +152,18 @@ const DeuilPage = () => {
     return acc
   }, {})
 
+  // Définir toutes les sous-catégories possibles pour maintenir la structure
+  const allSubCategories = [
+    'COUSSIN',
+    'CROIX', 
+    'COEUR',
+    'COURONNE',
+    'DESSUS_CERCUEIL',
+    'DEVANT_TOMBE',
+    'BOUQUET_GERBE',
+    'FORMES_SPECIALES'
+  ]
+
   // Noms des sous-catégories en français
   const subCategoryNames = {
     'COUSSIN': 'Coussins de fleurs',
@@ -208,28 +220,37 @@ const DeuilPage = () => {
                 <div className="text-gray-500 font-light">Chargement des compositions...</div>
               </div>
             ) : deuilProducts.length > 0 ? (
-              // Affichage des vrais produits de la BDD
+              // Affichage des vrais produits de la BDD avec structure dynamique
               <>
-                {Object.entries(groupedProducts).map(([subCategory, products], sectionIndex) => (
-                  <div key={subCategory} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
-                    <div className="text-center mb-12">
-                      <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
-                        {subCategoryNames[subCategory] || subCategory}
-                      </h3>
-                      <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
-                        {products.length} composition{products.length > 1 ? 's' : ''} disponible{products.length > 1 ? 's' : ''}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      {products.map((product) => (
-                        <div key={product.id}>
-                          <ProductCard product={product} />
+                {allSubCategories
+                  .filter(subCategory => {
+                    const categoryProducts = groupedProducts[subCategory] || []
+                    return categoryProducts.length > 0
+                  })
+                  .map((subCategory, sectionIndex) => {
+                    const categoryProducts = groupedProducts[subCategory] || []
+                  
+                    return (
+                      <div key={subCategory} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
+                        <div className="text-center mb-12">
+                          <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
+                            {subCategoryNames[subCategory]}
+                          </h3>
+                          <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
+                            Compositions florales créées avec respect et dans la tradition
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                          {categoryProducts.map((product) => (
+                            <div key={product.id}>
+                              <ProductCard product={product} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
               </>
             ) : (
               // Affichage des catégories fallback si pas de produits en BDD

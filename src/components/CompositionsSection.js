@@ -60,7 +60,7 @@ export default function CompositionsSection() {
 
   const fetchFeaturedProducts = async () => {
     try {
-      const response = await fetch('/api/products?featured=true&limit=6')
+      const response = await fetch('/api/products?featured=true&limit=8')
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
@@ -96,7 +96,7 @@ export default function CompositionsSection() {
             <div className="text-gray-500 font-light">Chargement des créations...</div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-16">
             {featuredProducts.map((product, index) => (
               <div 
                 key={product.id} 

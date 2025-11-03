@@ -22,15 +22,13 @@ const SIZES = {
 // Configuration des couleurs avec leurs classes CSS
 const COLORS = {
   'BLANC': { label: 'Blanc', colorClass: 'bg-white border-2 border-gray-300' },
+  'ROSE_PALE': { label: 'Rose pâle', colorClass: 'bg-pink-200' },
+  'ROSE_FUSHIA': { label: 'Rose fushia', colorClass: 'bg-pink-500' },
   'ROUGE': { label: 'Rouge', colorClass: 'bg-red-500' },
-  'ROSE': { label: 'Rose', colorClass: 'bg-pink-400' },
+  'BLEU_VIOLET': { label: 'Bleu violet', colorClass: 'bg-indigo-500' },
   'JAUNE': { label: 'Jaune', colorClass: 'bg-yellow-400' },
   'ORANGE': { label: 'Orange', colorClass: 'bg-orange-400' },
-  'VIOLET': { label: 'Violet', colorClass: 'bg-purple-500' },
-  'BLEU': { label: 'Bleu', colorClass: 'bg-blue-500' },
-  'VERT': { label: 'Vert', colorClass: 'bg-green-500' },
-  'MULTICOLORE': { label: 'Multicolore', colorClass: 'bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400' },
-  'NATUREL': { label: 'Couleurs naturelles', colorClass: 'bg-gradient-to-r from-green-400 to-amber-400' }
+  'MULTICOLORE': { label: 'Multicolore', colorClass: 'bg-gradient-to-r from-pink-300 via-orange-300 via-yellow-300 to-indigo-300' }
 }
 
 // Fonction pour formater les dimensions
@@ -77,6 +75,10 @@ export default function ProductDetailPage() {
   const [quantityDropdownOpen, setQuantityDropdownOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(null)
 
+  // États pour l'option ruban message (produits deuil)
+  const [ribbonOption, setRibbonOption] = useState(false)
+  const [ribbonMessage, setRibbonMessage] = useState('')
+
   useEffect(() => {
     if (params.slug) {
       fetchProduct()
@@ -89,10 +91,8 @@ export default function ProductDetailPage() {
       if (response.ok) {
         const data = await response.json()
         setProduct(data)
-        // Sélectionner la première variante par défaut
-        if (data.variants && data.variants.length > 0) {
-          setSelectedVariant(data.variants[0])
-        }
+        // Ne pas présélectionner de variante pour que l'utilisateur voit toutes les options
+        // setSelectedVariant(data.variants[0]) // Supprimé
         // Sélectionner la première couleur par défaut
         if (data.colors && data.colors.length > 0) {
           setSelectedColor(data.colors[0])
@@ -120,8 +120,24 @@ export default function ProductDetailPage() {
       return
     }
 
+    // Vérifier si le message du ruban est requis quand l'option est cochée
+    if (ribbonOption && ribbonMessage.trim() === '') {
+      alert('Veuillez saisir le message pour le ruban')
+      return
+    }
+
+    // Préparer les options
+    const options = {}
+    if (ribbonOption) {
+      options.ribbon = {
+        enabled: true,
+        message: ribbonMessage.trim(),
+        price: 5
+      }
+    }
+
     // Ajouter au panier via Zustand
-    addItem(product, selectedVariant, selectedColor, quantity)
+    addItem(product, selectedVariant, selectedColor, quantity, options)
     
     // Feedback visuel
     setAddedToCart(true)
@@ -131,7 +147,8 @@ export default function ProductDetailPage() {
       product: product.name,
       size: selectedVariant.size,
       color: selectedColor?.color,
-      quantity
+      quantity,
+      options
     })
   }
 
@@ -216,13 +233,14 @@ export default function ProductDetailPage() {
             {/* Images */}
             <div className="space-y-4">
               {/* Image principale */}
-              <div className="aspect-square rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200">
+              <div className="aspect-[4/5] rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200">
                 {product.images && product.images.length > 0 ? (
                   <Image
                     src={product.images[currentImageIndex]}
                     alt={product.name}
                     width={600}
-                    height={600}
+                    height={750}
+                    priority={currentImageIndex === 0}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -252,6 +270,7 @@ export default function ProductDetailPage() {
                         alt={`${product.name} - Image ${index + 1}`}
                         width={150}
                         height={150}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </button>
@@ -286,9 +305,16 @@ export default function ProductDetailPage() {
 
               {/* Prix */}
               <div className="border-t border-b border-gray-200 py-6">
-                <div className="text-3xl font-light text-gray-900">
-                  {selectedVariant ? `${selectedVariant.price}€` : 'Sélectionnez une taille'}
-                </div>
+                {selectedVariant ? (
+                  <div className="text-3xl font-light text-gray-900">
+                    {selectedVariant.price}€
+                  </div>
+                ) : (
+                  <div className="text-lg font-light text-gray-500 italic">
+                    Prix affiché après sélection de la taille
+                  </div>
+                )}
+                
                 {selectedVariant && (
                   <div className="space-y-2 mt-3">
                     <div className="text-sm text-gray-600">
@@ -322,10 +348,10 @@ export default function ProductDetailPage() {
                         setSizeDropdownOpen(!sizeDropdownOpen)
                       }}
                     >
-                      <span className="text-gray-800">
+                      <span className={selectedVariant ? "text-gray-800" : "text-gray-500"}>
                         {selectedVariant 
                           ? `${SIZES[selectedVariant.size]} - ${selectedVariant.price}€`
-                          : 'Sélectionner une taille'
+                          : 'Veuillez choisir une taille'
                         }
                       </span>
                       <svg 
@@ -435,6 +461,78 @@ export default function ProductDetailPage() {
                   )}
                 </div>
               </div>
+
+              {/* Option ruban message (seulement pour les produits deuil) */}
+              {product.category === 'DEUIL' && (
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                  <h3 className="text-lg font-light text-gray-900 mb-4" style={{ color: PRIMARY_COLOR }}>
+                    Options personnalisées
+                  </h3>
+                  
+                  <div className="flex items-start space-x-4">
+                    {/* Checkbox avec même style que la page admin */}
+                    <label className="flex items-start cursor-pointer group flex-shrink-0">
+                      <div className="relative mt-1">
+                        <input
+                          type="checkbox"
+                          checked={ribbonOption}
+                          onChange={(e) => {
+                            setRibbonOption(e.target.checked)
+                            if (!e.target.checked) {
+                              setRibbonMessage('')
+                            }
+                          }}
+                          className="sr-only"
+                        />
+                        <div className={`w-5 h-5 rounded border-2 transition-all group-hover:scale-110 ${
+                          ribbonOption 
+                            ? 'border-gray-800 bg-gray-800' 
+                            : 'border-gray-300 bg-white'
+                        }`}>
+                          {ribbonOption && (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900">
+                          Ruban avec message personnel (+5€)
+                        </div>
+                        <div className="text-xs font-light text-gray-600 mt-1">
+                          Ajoutez un message personnel sur un ruban
+                        </div>
+                      </div>
+                    </label>
+                    
+                    {/* Zone de texte à droite */}
+                    <div className="flex-1">
+                      <textarea
+                        value={ribbonMessage}
+                        onChange={(e) => setRibbonMessage(e.target.value)}
+                        placeholder={ribbonOption ? "Votre message personnel..." : "Cochez l'option pour activer"}
+                        maxLength={100}
+                        rows={3}
+                        disabled={!ribbonOption}
+                        className={`w-full py-3 px-4 border rounded-lg font-light resize-none transition-all ${
+                          ribbonOption 
+                            ? 'bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500' 
+                            : 'bg-gray-50 border-gray-200 text-gray-400 placeholder-gray-400 cursor-not-allowed'
+                        }`}
+                        style={{ fontSize: '14px', lineHeight: '1.5' }}
+                      />
+                      {ribbonOption && (
+                        <div className="text-xs font-light text-gray-500 mt-2">
+                          {ribbonMessage.length}/100 caractères
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="space-y-4">

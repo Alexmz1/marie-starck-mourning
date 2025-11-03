@@ -152,9 +152,22 @@ export default function CartDrawer({ isOpen, onClose }) {
                                 <span>{item.color.name}</span>
                               </div>
                             )}
+                            {/* Affichage des options */}
+                            {item.options?.ribbon?.enabled && (
+                              <div className="space-y-1">
+                                <div className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>
+                                  + Ruban avec message (+5€)
+                                </div>
+                                {item.options.ribbon.message && (
+                                  <div className="text-xs font-light text-gray-600 italic truncate">
+                                    "{item.options.ribbon.message}"
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                           <div className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
-                            {item.price.toFixed(2)} €
+                            {(item.totalPrice || item.price).toFixed(2)} €
                           </div>
 
                           {/* Contrôles quantité */}

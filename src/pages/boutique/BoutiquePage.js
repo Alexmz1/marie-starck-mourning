@@ -13,6 +13,16 @@ const BoutiquePage = () => {
   
   // Données exemple pour les sous-catégories si pas de produits en BDD
   const fallbackProducts = {
+    'produits-saison': {
+      title: 'Produits de saison',
+      description: 'Découvrez nos créations uniques selon les saisons, mettant en valeur les fleurs et plantes du moment.',
+      products: [
+        { name: 'Composition Automnale', description: 'Tons chauds et couleurs d\'automne', price: '55€' },
+        { name: 'Bouquet Hivernal', description: 'Branches et baies pour l\'hiver', price: '48€' },
+        { name: 'Création Printanière', description: 'Fraîcheur et renaissance du printemps', price: '52€' },
+        { name: 'Arrangement Estival', description: 'Couleurs vives de l\'été', price: '60€' }
+      ]
+    },
     'compositions-offrir': {
       title: 'Compositions à offrir',
       description: 'Créations florales élégantes pour toutes les occasions spéciales et moments de partage.',
@@ -52,16 +62,6 @@ const BoutiquePage = () => {
         { name: 'Hortensia Bleu', description: 'Floraison spectaculaire estivale', price: '28€' },
         { name: 'Géranium Lierre', description: 'Idéal pour jardinières et balcons', price: '12€' }
       ]
-    },
-    'creations-saisonnieres': {
-      title: 'Créations saisonnières',
-      description: 'Collections temporaires qui évoluent au rythme des saisons et des tendances florales.',
-      products: [
-        { name: 'Couronne d\'Automne', description: 'Feuillages dorés et baies colorées', price: '55€' },
-        { name: 'Centre de Table Hivernal', description: 'Ambiance chaleureuse de saison', price: '48€' },
-        { name: 'Composition Festive', description: 'Créations pour occasions spéciales', price: '65€' },
-        { name: 'Bouquet de Saison', description: 'Fleurs du moment sublimées', price: '38€' }
-      ]
     }
   };
 
@@ -92,13 +92,22 @@ const BoutiquePage = () => {
     return acc
   }, {})
 
+  // Définir toutes les sous-catégories possibles pour maintenir la structure
+  const allSubCategories = [
+    'PRODUIT_SAISON',
+    'COMPOSITION_OFFRIR',
+    'BOUQUET_FRAIS',
+    'PLANTE_INTERIEUR',
+    'PLANTE_EXTERIEUR'
+  ]
+
   // Noms des sous-catégories en français
   const subCategoryNames = {
+    'PRODUIT_SAISON': 'Produits de saison',
     'COMPOSITION_OFFRIR': 'Compositions à offrir',
     'BOUQUET_FRAIS': 'Bouquets frais',
     'PLANTE_INTERIEUR': 'Plantes d\'intérieur',
-    'PLANTE_EXTERIEUR': 'Plantes d\'extérieur',
-    'CREATION_SAISONNIERE': 'Créations saisonnières'
+    'PLANTE_EXTERIEUR': 'Plantes d\'extérieur'
   }
 
   return (
@@ -129,7 +138,7 @@ const BoutiquePage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-light text-black mb-8 tracking-tight">
-                Nos Produits
+                Notre Boutique
               </h2>
               <div className="w-24 h-0.5 mx-auto mb-8" style={{backgroundColor: '#858585'}}></div>
               <p className="text-xl text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
@@ -144,28 +153,37 @@ const BoutiquePage = () => {
                 <div className="text-gray-500 font-light">Chargement des produits...</div>
               </div>
             ) : boutiqueProducts.length > 0 ? (
-              // Affichage des vrais produits de la BDD
+              // Affichage des vrais produits de la BDD avec structure dynamique
               <>
-                {Object.entries(groupedProducts).map(([subCategory, products], sectionIndex) => (
-                  <div key={subCategory} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
-                    <div className="text-center mb-12">
-                      <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
-                        {subCategoryNames[subCategory] || subCategory}
-                      </h3>
-                      <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
-                        {products.length} produit{products.length > 1 ? 's' : ''} disponible{products.length > 1 ? 's' : ''}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      {products.map((product) => (
-                        <div key={product.id}>
-                          <ProductCard product={product} />
+                {allSubCategories
+                  .filter(subCategory => {
+                    const categoryProducts = groupedProducts[subCategory] || []
+                    return categoryProducts.length > 0
+                  })
+                  .map((subCategory, sectionIndex) => {
+                    const categoryProducts = groupedProducts[subCategory] || []
+                  
+                    return (
+                      <div key={subCategory} className={`mb-24 ${sectionIndex > 0 ? 'pt-16 border-t border-gray-200' : ''}`}>
+                        <div className="text-center mb-12">
+                          <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
+                            {subCategoryNames[subCategory]}
+                          </h3>
+                          <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
+                            Créations et produits sélectionnés avec soin
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                          {categoryProducts.map((product) => (
+                            <div key={product.id}>
+                              <ProductCard product={product} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
               </>
             ) : (
               // Affichage des produits fallback si pas de produits en BDD

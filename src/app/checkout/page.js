@@ -46,14 +46,18 @@ export default function CheckoutPage() {
     email: '',
     phone: '',
     
-    // Adresse de livraison
+    // Type de livraison
+    deliveryType: 'delivery', // 'delivery' ou 'pickup'
+    
+    // Adresse de livraison (seulement si delivery)
     address: '',
     city: '',
     postalCode: '',
     additionalInfo: '',
     
-    // Livraison
+    // Livraison/Récupération
     deliveryDate: '',
+    pickupDate: '',
     specialInstructions: ''
   })
 
@@ -88,9 +92,23 @@ export default function CheckoutPage() {
     setAvailableDates(getAvailableDeliveryDates(4))
   }, [items, router])
 
-  // Calcul automatique des frais de livraison quand l'adresse change
+  // Calcul automatique des frais de livraison quand l'adresse change (seulement pour la livraison)
   useEffect(() => {
     const calculateFee = async () => {
+      // Pas de calcul de frais pour le Click & Collect
+      if (formData.deliveryType === 'pickup') {
+        setDeliveryInfo({
+          calculating: false,
+          calculated: true,
+          fee: 0,
+          zone: null,
+          distance: null,
+          error: null
+        })
+        setIsCalculatingFee(false)
+        return
+      }
+
       if (formData.address && formData.city) {
         setIsCalculatingFee(true)
         setDeliveryInfo(prev => ({ ...prev, calculating: true, error: null }))
@@ -149,15 +167,16 @@ export default function CheckoutPage() {
 
     const timeoutId = setTimeout(calculateFee, 1000) // Délai pour éviter trop de requêtes
     return () => clearTimeout(timeoutId)
-  }, [formData.address, formData.city, formData.postalCode])
+  }, [formData.address, formData.city, formData.postalCode, formData.deliveryType])
 
-  // Validation de la date de livraison
+  // Validation de la date de livraison/récupération
   useEffect(() => {
-    if (formData.deliveryDate) {
-      const validation = isValidDeliveryDate(formData.deliveryDate)
+    const dateToValidate = formData.deliveryType === 'delivery' ? formData.deliveryDate : formData.pickupDate
+    if (dateToValidate) {
+      const validation = isValidDeliveryDate(dateToValidate)
       setDateValidation(validation)
     }
-  }, [formData.deliveryDate])
+  }, [formData.deliveryDate, formData.pickupDate, formData.deliveryType])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -170,14 +189,17 @@ export default function CheckoutPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    // Validation finale
-    if (!deliveryInfo.calculated || deliveryInfo.error) {
-      alert('Veuillez vérifier l\'adresse de livraison.')
-      return
+    // Validation finale pour la livraison
+    if (formData.deliveryType === 'delivery') {
+      if (!deliveryInfo.calculated || deliveryInfo.error) {
+        alert('Veuillez vérifier l\'adresse de livraison.')
+        return
+      }
     }
 
     if (!dateValidation.valid) {
-      alert('Veuillez sélectionner une date de livraison valide.')
+      const dateType = formData.deliveryType === 'delivery' ? 'livraison' : 'récupération'
+      alert(`Veuillez sélectionner une date de ${dateType} valide.`)
       return
     }
 
@@ -188,8 +210,8 @@ export default function CheckoutPage() {
       delivery: deliveryInfo,
       totals: {
         subtotal: getTotalPrice(),
-        deliveryFee: deliveryInfo.fee,
-        total: getTotalPrice() + deliveryInfo.fee
+        deliveryFee: formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee,
+        total: getTotalPrice() + (formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee)
       }
     })
 
@@ -198,7 +220,7 @@ export default function CheckoutPage() {
   }
 
   const subtotal = getTotalPrice()
-  const deliveryFee = deliveryInfo.calculated ? deliveryInfo.fee : 0
+  const deliveryFee = formData.deliveryType === 'pickup' ? 0 : (deliveryInfo.calculated ? deliveryInfo.fee : 0)
   const total = subtotal + deliveryFee
 
   return (
@@ -290,12 +312,67 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Adresse de livraison */}
+                {/* Type de livraison */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center mb-6">
-                    <MapPinIcon className="h-6 w-6 mr-2" style={{ color: PRIMARY_COLOR }} />
+                    <TruckIcon className="h-6 w-6 mr-2" style={{ color: PRIMARY_COLOR }} />
                     <h2 className="text-xl font-medium text-gray-900">
-                      Adresse de livraison
+                      Mode de récupération
+                    </h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Option Livraison */}
+                    <div 
+                      className={`p-6 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                        formData.deliveryType === 'delivery' 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setFormData(prev => ({ ...prev, deliveryType: 'delivery' }))}
+                    >
+                      <div className="flex items-center mb-3">
+                        <TruckIcon className="h-6 w-6 mr-3" style={{ color: PRIMARY_COLOR }} />
+                        <h3 className="text-lg font-medium text-gray-900">Livraison à domicile</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Nous livrons directement à votre adresse
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Frais de livraison calculés selon la distance
+                      </p>
+                    </div>
+
+                    {/* Option Click & Collect */}
+                    <div 
+                      className={`p-6 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                        formData.deliveryType === 'pickup' 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setFormData(prev => ({ ...prev, deliveryType: 'pickup' }))}
+                    >
+                      <div className="flex items-center mb-3">
+                        <MapPinIcon className="h-6 w-6 mr-3" style={{ color: PRIMARY_COLOR }} />
+                        <h3 className="text-lg font-medium text-gray-900">Click & Collect</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Récupération à l'atelier
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Gratuit • Centre commercial des Meillottes, 1 rue de la forêt de Sénart, 91450 Soisy-sur-Seine
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Adresse de livraison */}
+                {formData.deliveryType === 'delivery' && (
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center mb-6">
+                      <MapPinIcon className="h-6 w-6 mr-2" style={{ color: PRIMARY_COLOR }} />
+                      <h2 className="text-xl font-medium text-gray-900">
+                        Adresse de livraison
                     </h2>
                   </div>
                   
@@ -403,28 +480,41 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 </div>
+                )}
 
-                {/* Date de livraison */}
+                {/* Date de livraison/récupération */}
                 <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
                   <div className="flex items-center mb-6">
                     <CalendarIcon className="h-6 w-6 mr-2" style={{ color: PRIMARY_COLOR }} />
                     <h2 className="text-xl font-medium text-gray-900">
-                      Date de livraison
+                      {formData.deliveryType === 'delivery' ? 'Date de livraison' : 'Date de récupération'}
                     </h2>
                   </div>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-light text-gray-700 mb-2">
-                        Choisissez votre date de livraison *
+                        {formData.deliveryType === 'delivery' 
+                          ? 'Choisissez votre date de livraison *' 
+                          : 'Choisissez votre date de récupération *'
+                        }
                       </label>
                       
                       {/* Calendrier DaisyUI personnalisé */}
                       <div className="w-full">
                         <CalendarPicker
-                          value={formData.deliveryDate}
-                          onChange={(date) => setFormData(prev => ({ ...prev, deliveryDate: date }))}
-                          placeholder="Choisir une date de livraison"
+                          value={formData.deliveryType === 'delivery' ? formData.deliveryDate : formData.pickupDate}
+                          onChange={(date) => {
+                            if (formData.deliveryType === 'delivery') {
+                              setFormData(prev => ({ ...prev, deliveryDate: date }))
+                            } else {
+                              setFormData(prev => ({ ...prev, pickupDate: date }))
+                            }
+                          }}
+                          placeholder={formData.deliveryType === 'delivery' 
+                            ? "Choisir une date de livraison" 
+                            : "Choisir une date de récupération"
+                          }
                           minDate={minDeliveryDate}
                         />
                       </div>
@@ -439,12 +529,18 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="block text-sm font-light text-gray-700 mb-2">
-                        Instructions spéciales pour la livraison
+                        {formData.deliveryType === 'delivery' 
+                          ? 'Instructions spéciales pour la livraison' 
+                          : 'Instructions spéciales pour la récupération'
+                        }
                       </label>
                       <textarea
                         name="specialInstructions"
                         rows="3"
-                        placeholder="Instructions particulières, accès, personne à contacter..."
+                        placeholder={formData.deliveryType === 'delivery' 
+                          ? "Instructions particulières, accès, personne à contacter..." 
+                          : "Instructions particulières, personne qui récupère..."
+                        }
                         value={formData.specialInstructions}
                         onChange={handleInputChange}
                         className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 resize-none transition-all duration-300"
@@ -461,19 +557,6 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Bouton de validation */}
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={!deliveryInfo.calculated || deliveryInfo.error || !dateValidation.valid}
-                    className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    style={{backgroundColor: PRIMARY_COLOR}}
-                  >
-                    <TruckIcon className="h-5 w-5 mr-2" />
-                    PROCÉDER AU PAIEMENT
-                  </button>
                 </div>
               </form>
             </div>
@@ -511,12 +594,25 @@ export default function CheckoutPage() {
                         <p className="text-xs text-gray-500">
                           {SIZES[item.size]} {item.color && `• ${item.color.name}`}
                         </p>
+                        {/* Affichage des options */}
+                        {item.options?.ribbon?.enabled && (
+                          <div className="space-y-1 mt-1">
+                            <p className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>
+                              + Ruban avec message (+5€)
+                            </p>
+                            {item.options.ribbon.message && (
+                              <p className="text-xs font-light text-gray-600 italic">
+                                "{item.options.ribbon.message}"
+                              </p>
+                            )}
+                          </div>
+                        )}
                         <p className="text-xs text-gray-500">
                           Quantité: {item.quantity}
                         </p>
                       </div>
                       <div className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
-                        {(item.price * item.quantity).toFixed(2)}€
+                        {((item.totalPrice || item.price) * item.quantity).toFixed(2)}€
                       </div>
                     </div>
                   ))}
@@ -529,11 +625,15 @@ export default function CheckoutPage() {
                     <span className="font-medium text-gray-900">{subtotal.toFixed(2)}€</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Livraison</span>
+                    <span className="text-gray-600">
+                      {formData.deliveryType === 'delivery' ? 'Livraison' : 'Récupération'}
+                    </span>
                     <span className="font-medium text-gray-900">
-                      {deliveryInfo.calculated ? 
-                        (deliveryFee === 0 ? 'Gratuite' : `${deliveryFee.toFixed(2)}€`) : 
-                        'À calculer'
+                      {formData.deliveryType === 'pickup' ? 'Gratuite' : 
+                        (deliveryInfo.calculated ? 
+                          (deliveryFee === 0 ? 'Gratuite' : `${deliveryFee.toFixed(2)}€`) : 
+                          'À calculer'
+                        )
                       }
                     </span>
                   </div>

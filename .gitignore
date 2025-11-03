@@ -45,3 +45,5 @@ next-env.d.ts
 /scripts
 
 /src/app/test-delivery
+
+/clear-cart.js

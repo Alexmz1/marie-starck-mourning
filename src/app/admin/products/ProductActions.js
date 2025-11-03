@@ -53,32 +53,32 @@ export default function ProductActions({ product }) {
   }
 
   return (
-    <div className="mt-6 flex justify-end space-x-3">
+    <div className="flex justify-between gap-1">
       <button
         onClick={handleViewClick}
         disabled={navigating === 'view'}
-        className={`py-2 px-4 text-sm font-light bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors ${
+        className={`flex-1 py-1.5 px-2 text-xs font-light bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 hover:border-gray-400 transition-colors ${
           navigating === 'view' ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >
-        {navigating === 'view' ? 'Chargement...' : 'Voir'}
+        {navigating === 'view' ? '...' : 'Voir'}
       </button>
       <button
         onClick={handleEditClick}
         disabled={navigating === 'edit'}
-        className={`py-2 px-4 text-sm font-light text-white rounded-lg transition-colors ${
+        className={`flex-1 py-1.5 px-2 text-xs font-light text-white rounded transition-colors ${
           navigating === 'edit' ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         style={{ backgroundColor: navigating === 'edit' ? '#6b7280' : PRIMARY_COLOR }}
       >
-        {navigating === 'edit' ? 'Chargement...' : 'Modifier'}
+        {navigating === 'edit' ? '...' : 'Modifier'}
       </button>
       <button
         onClick={handleDelete}
         disabled={deleting}
-        className="py-2 px-4 text-sm font-light bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+        className="flex-1 py-1.5 px-2 text-xs font-light bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
       >
-        {deleting ? 'Suppression...' : 'Supprimer'}
+        {deleting ? '...' : 'Supprimer'}
       </button>
     </div>
   )
