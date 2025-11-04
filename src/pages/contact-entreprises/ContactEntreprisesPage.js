@@ -13,7 +13,7 @@ const ContactEntreprisesPage = () => {
     email: '',
     services: [],
     message: '',
-    recontact: ''
+    recontact: []
   });
 
   const handleInputChange = (e) => {
@@ -30,6 +30,15 @@ const ContactEntreprisesPage = () => {
       services: prev.services.includes(service) 
         ? prev.services.filter(s => s !== service)
         : [...prev.services, service]
+    }));
+  };
+
+  const handleRecontactChange = (mode) => {
+    setFormData(prev => ({
+      ...prev,
+      recontact: prev.recontact.includes(mode) 
+        ? prev.recontact.filter(r => r !== mode)
+        : [...prev.recontact, mode]
     }));
   };
 
@@ -138,17 +147,29 @@ const ContactEntreprisesPage = () => {
                     'Arbre de Noël',
                     'Autre (préciser dans le message)'
                   ].map((service) => (
-                    <label key={service} className="flex items-center py-2 font-light text-black cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.services.includes(service)}
-                        onChange={() => handleServiceChange(service)}
-                        className="mr-3 w-5 h-5 border border-gray-300 rounded focus:outline-none"
-                        style={{
-                          accentColor: '#276f88'
-                        }}
-                      />
-                      <span className="text-sm">{service}</span>
+                    <label key={service} className="flex items-center cursor-pointer group">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={formData.services.includes(service)}
+                          onChange={() => handleServiceChange(service)}
+                          className="sr-only"
+                        />
+                        <div 
+                          className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all ${
+                            formData.services.includes(service)
+                              ? 'border-gray-800 bg-gray-800' 
+                              : 'border-gray-300 group-hover:border-gray-400'
+                          }`}
+                        >
+                          {formData.services.includes(service) && (
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                      <span className="ml-3 text-sm font-light text-black">{service}</span>
                     </label>
                   ))}
                 </div>
@@ -167,26 +188,36 @@ const ContactEntreprisesPage = () => {
 
               {/* Mode de recontact */}
               <div>
-                <p className="text-gray-600 font-light mb-4">Souhaitez-vous être recontacté(e) :</p>
+                <p className="text-gray-600 font-light mb-4">Souhaitez-vous être recontacté(e) par :</p>
                 <div className="space-y-3">
                   {[
                     'Par téléphone',
                     'Par email',
                     'Pour convenir d\'un rendez-vous sur place'
                   ].map((mode) => (
-                    <label key={mode} className="flex items-center font-light text-black cursor-pointer">
-                      <input
-                        type="radio"
-                        name="recontact"
-                        value={mode}
-                        checked={formData.recontact === mode}
-                        onChange={handleInputChange}
-                        className="mr-3 w-5 h-5 border border-gray-300 focus:outline-none"
-                        style={{
-                          accentColor: '#276f88'
-                        }}
-                      />
-                      <span className="text-sm">{mode}</span>
+                    <label key={mode} className="flex items-center cursor-pointer group">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={formData.recontact.includes(mode)}
+                          onChange={() => handleRecontactChange(mode)}
+                          className="sr-only"
+                        />
+                        <div 
+                          className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all ${
+                            formData.recontact.includes(mode)
+                              ? 'border-gray-800 bg-gray-800' 
+                              : 'border-gray-300 group-hover:border-gray-400'
+                          }`}
+                        >
+                          {formData.recontact.includes(mode) && (
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                      <span className="ml-3 text-sm font-light text-black">{mode}</span>
                     </label>
                   ))}
                 </div>
