@@ -3,7 +3,86 @@
 import { useState, useCallback } from 'react'
 import { useUploadThing } from '../../lib/uploadthing'
 import { TrashIcon, PhotoIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
+import NextImage from 'next/image'
+
+// Configuration de compression
+const MAX_WIDTH = 1200
+const MAX_HEIGHT = 1200
+const QUALITY = 0.8
+const MAX_SIZE_MB = 2 // Taille cible après compression
+
+// Fonction pour compresser une image
+const compressImage = (file, maxWidth = MAX_WIDTH, maxHeight = MAX_HEIGHT, quality = QUALITY) => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    // Utilisation explicite de l'Image du DOM, pas de Next.js
+    const img = document.createElement('img')
+    
+    img.onload = () => {
+      // Calculer les nouvelles dimensions en gardant le ratio
+      let { width, height } = img
+      
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width
+          width = maxWidth
+        }
+      } else {
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height
+          height = maxHeight
+        }
+      }
+      
+      // Redimensionner le canvas
+      canvas.width = width
+      canvas.height = height
+      
+      // Dessiner l'image redimensionnée
+      ctx.drawImage(img, 0, 0, width, height)
+      
+      // Convertir en blob avec compression
+      canvas.toBlob(
+        (blob) => {
+          // Créer un nouveau fichier avec le nom original
+          const compressedFile = new File([blob], file.name, {
+            type: 'image/jpeg', // Forcer en JPEG pour une meilleure compression
+            lastModified: Date.now()
+          })
+          
+          console.log(`🗜️ Compression: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`)
+          resolve(compressedFile)
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+    
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+// Fonction pour traiter et compresser plusieurs fichiers
+const processFiles = async (files) => {
+  const processedFiles = []
+  
+  for (const file of files) {
+    // Vérifier si le fichier a besoin de compression
+    const fileSizeMB = file.size / 1024 / 1024
+    
+    if (fileSizeMB > MAX_SIZE_MB || file.type !== 'image/jpeg') {
+      console.log(`📦 Compression nécessaire pour: ${file.name} (${fileSizeMB.toFixed(2)}MB)`)
+      const compressedFile = await compressImage(file)
+      processedFiles.push(compressedFile)
+    } else {
+      console.log(`✅ ${file.name} déjà optimisé (${fileSizeMB.toFixed(2)}MB)`)
+      processedFiles.push(file)
+    }
+  }
+  
+  return processedFiles
+}
 
 export default function ImageUploader({ 
   images = [], 
@@ -93,44 +172,74 @@ export default function ImageUploader({
       alert(`❌ Types de fichier non supportés détectés: ${invalidFiles.map(f => f.name).join(', ')}\n\nTypes acceptés: JPG, PNG, WebP`)
       return
     }
+
+    // Afficher un message de traitement si compression nécessaire
+    const needsCompression = files.some(file => 
+      file.size > (MAX_SIZE_MB * 1024 * 1024) || file.type !== 'image/jpeg'
+    )
     
-    // Vérifier la taille des fichiers (4MB max)
-    const maxSize = 4 * 1024 * 1024 // 4MB
-    const oversizedFiles = files.filter(file => file.size > maxSize)
-    
-    if (oversizedFiles.length > 0) {
-      alert(`❌ Fichiers trop volumineux détectés: ${oversizedFiles.map(f => f.name).join(', ')}\n\nTaille maximum: 4MB`)
-      return
+    if (needsCompression) {
+      console.log("🗜️ Compression automatique en cours...")
+      setIsUploading(true)
+      setUploadProgress(10) // Progression pour la compression
     }
 
-    // Si maxFiles = 1 et qu'il y a déjà une image, remplacer l'image existante
-    if (maxFiles === 1 && images.length > 0) {
-      // Supprimer l'image existante avant d'ajouter la nouvelle
-      const existingImage = images[0]
-      if (existingImage.key) {
-        try {
-          await fetch('/api/uploadthing/delete', {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ fileKey: existingImage.key }),
-          })
-        } catch (error) {
-          console.error('Erreur lors de la suppression de l\'image existante:', error)
-        }
+    try {
+      // Compresser automatiquement les fichiers si nécessaire
+      const processedFiles = await processFiles(files)
+      
+      if (needsCompression) {
+        setUploadProgress(30) // Compression terminée
       }
-      // Vider la liste d'images
-      onImagesChange([])
-    }
-    // Vérifier le nombre maximum de fichiers (sauf si maxFiles = 1, déjà géré ci-dessus)
-    else if (maxFiles > 1 && images.length + files.length > maxFiles) {
-      alert(`Vous ne pouvez pas ajouter plus de ${maxFiles} image${maxFiles > 1 ? 's' : ''}`)
-      return
-    }
 
-    // Démarrer l'upload
-    startUpload(files)
+      // Vérifier la taille des fichiers après compression (sécurité supplémentaire)
+      const maxSize = 4 * 1024 * 1024 // 4MB
+      const stillOversizedFiles = processedFiles.filter(file => file.size > maxSize)
+      
+      if (stillOversizedFiles.length > 0) {
+        alert(`❌ Fichiers toujours trop volumineux après compression: ${stillOversizedFiles.map(f => f.name).join(', ')}\n\nVeuillez utiliser des images plus petites.`)
+        setIsUploading(false)
+        setUploadProgress(0)
+        return
+      }
+
+      // Si maxFiles = 1 et qu'il y a déjà une image, remplacer l'image existante
+      if (maxFiles === 1 && images.length > 0) {
+        // Supprimer l'image existante avant d'ajouter la nouvelle
+        const existingImage = images[0]
+        if (existingImage.key) {
+          try {
+            await fetch('/api/uploadthing/delete', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ fileKey: existingImage.key }),
+            })
+          } catch (error) {
+            console.error('Erreur lors de la suppression de l\'image existante:', error)
+          }
+        }
+        // Vider la liste d'images
+        onImagesChange([])
+      }
+      // Vérifier le nombre maximum de fichiers (sauf si maxFiles = 1, déjà géré ci-dessus)
+      else if (maxFiles > 1 && images.length + processedFiles.length > maxFiles) {
+        alert(`Vous ne pouvez pas ajouter plus de ${maxFiles} image${maxFiles > 1 ? 's' : ''}`)
+        setIsUploading(false)
+        setUploadProgress(0)
+        return
+      }
+
+      // Démarrer l'upload avec les fichiers traités
+      startUpload(processedFiles)
+      
+    } catch (error) {
+      console.error('❌ Erreur lors du traitement des fichiers:', error)
+      alert('Erreur lors du traitement des images. Veuillez réessayer.')
+      setIsUploading(false)
+      setUploadProgress(0)
+    }
   }, [images, maxFiles, startUpload, onImagesChange])
 
   const handleRemoveImage = async (index) => {
@@ -189,13 +298,20 @@ export default function ImageUploader({
               <div className="mt-4">
                 <p className="text-sm text-gray-600">
                   {isUploading || isUploadThingUploading 
-                    ? `Upload en cours... ${uploadProgress}%`
+                    ? uploadProgress <= 30 
+                      ? `🗜️ Compression des images... ${uploadProgress}%`
+                      : `⬆️ Upload en cours... ${uploadProgress}%`
                     : 'Cliquez pour sélectionner des images ou glissez-déposez'
                   }
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  PNG, JPG, GIF jusqu'à 4MB par image
+                  PNG, JPG, GIF jusqu'à 4MB • Compression automatique si nécessaire
                 </p>
+                {!isUploading && !isUploadThingUploading && (
+                  <p className="text-xs text-blue-600 mt-1">
+                    💡 Les images seront automatiquement optimisées pour le web
+                  </p>
+                )}
               </div>
             </div>
             
@@ -223,7 +339,7 @@ export default function ImageUploader({
               <div key={index} className="relative group">
                 <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">
                   {image.url ? (
-                    <Image
+                    <NextImage
                       src={image.url}
                       alt={image.name || `Image ${index + 1}`}
                       width={200}
