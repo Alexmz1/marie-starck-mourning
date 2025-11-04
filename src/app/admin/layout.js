@@ -40,7 +40,7 @@ const menuItems = [
   },
   {
     title: 'Statistiques',
-    href: '/admin/stats',
+    href: '/admin/statistics',
     icon: ChartPieIcon
   }
 ]

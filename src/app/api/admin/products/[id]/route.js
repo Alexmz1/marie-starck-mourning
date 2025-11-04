@@ -44,6 +44,37 @@ export async function PUT(request, { params }) {
       )
     }
 
+    // Récupérer le produit actuel pour gérer les images
+    const currentProduct = await prisma.product.findUnique({
+      where: { id: awaitedParams.id }
+    })
+
+    if (!currentProduct) {
+      return NextResponse.json(
+        { message: 'Produit non trouvé' },
+        { status: 404 }
+      )
+    }
+
+    // Gérer la suppression des anciennes images si de nouvelles sont fournies
+    if (data.imageKeys && data.imageKeys.length > 0) {
+      // Si on a de nouvelles images, supprimer les anciennes de UploadThing
+      if (currentProduct.imageKeys && currentProduct.imageKeys.length > 0) {
+        try {
+          // Importer UTApi pour supprimer les fichiers
+          const { UTApi } = await import("uploadthing/server");
+          const utapi = new UTApi();
+          
+          console.log('🗑️ Suppression des anciennes images:', currentProduct.imageKeys);
+          await utapi.deleteFiles(currentProduct.imageKeys);
+          console.log('✅ Anciennes images supprimées de UploadThing');
+        } catch (error) {
+          console.error('❌ Erreur lors de la suppression des anciennes images:', error);
+          // On continue malgré l'erreur pour ne pas bloquer la mise à jour
+        }
+      }
+    }
+
     // Supprimer les anciennes variantes et couleurs
     await prisma.productVariant.deleteMany({
       where: { productId: awaitedParams.id }
@@ -63,7 +94,8 @@ export async function PUT(request, { params }) {
         subCategory: data.subCategory,
         inStock: data.isActive ?? true,
         featured: data.featured ?? false,
-        images: data.images || [],
+        images: data.images || currentProduct.images || [],
+        imageKeys: data.imageKeys || currentProduct.imageKeys || [],
         productVariants: {
           create: data.variants
             ?.filter(variant => variant.size && variant.price)
@@ -99,6 +131,34 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const awaitedParams = await params
+    
+    // Récupérer le produit pour obtenir les clés des images
+    const product = await prisma.product.findUnique({
+      where: { id: awaitedParams.id }
+    })
+
+    if (!product) {
+      return NextResponse.json(
+        { message: 'Produit non trouvé' },
+        { status: 404 }
+      )
+    }
+
+    // Supprimer les images de UploadThing si elles existent
+    if (product.imageKeys && product.imageKeys.length > 0) {
+      try {
+        const { UTApi } = await import("uploadthing/server");
+        const utapi = new UTApi();
+        
+        console.log('🗑️ Suppression des images du produit:', product.imageKeys);
+        await utapi.deleteFiles(product.imageKeys);
+        console.log('✅ Images supprimées de UploadThing');
+      } catch (error) {
+        console.error('❌ Erreur lors de la suppression des images:', error);
+        // On continue malgré l'erreur pour ne pas bloquer la suppression du produit
+      }
+    }
+
     // Supprimer les variantes et couleurs en premier (contraintes de clé étrangère)
     await prisma.productVariant.deleteMany({
       where: { productId: awaitedParams.id }

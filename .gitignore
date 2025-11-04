@@ -47,3 +47,5 @@ next-env.d.ts
 /src/app/test-delivery
 
 /clear-cart.js
+
+/backup/data/

@@ -1,6 +1,3 @@
-// Prisma schema for Marie Starck Floral Atelier
-// Business: Flower arrangements, bouquets, funeral compositions, weddings, corporate
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,280 +7,210 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Product categories
-enum Category {
-  DEUIL      // Deuil - crosses, hearts, crowns, cushions, casket sprays
-  MARIAGE    // Mariage - bridal bouquets, decorations, centerpieces
-  BOUTIQUE   // Boutique - gifts, fresh bouquets, plants
-}
-
-// Sous-catégories basées sur le header du site
-enum SubCategory {
-  // Deuil
-  CROIX              // Croix
-  COEUR              // Cœur
-  COURONNE           // Couronne
-  COUSSIN            // Coussin
-  DESSUS_CERCUEIL    // Dessus de cercueil
-  DEVANT_TOMBE       // Devant de tombe
-  BOUQUET_GERBE      // Bouquet gerbe
-  FORMES_SPECIALES   // Formes spéciales
-  
-  // Mariage
-  BOUQUET_MARIEE     // Bouquet de mariée
-  BOUTONNIERE        // Boutonnière
-  CORSAGE            // Corsage
-  CENTRE_TABLE       // Centre de table
-  DECORATION_EGLISE  // Décoration d'église
-  
-  // Boutique
-  PRODUIT_SAISON     // Produit de saison
-  COMPOSITION_OFFRIR // Composition à offrir
-  BOUQUET_FRAIS      // Bouquet frais
-  PLANTE_INTERIEUR   // Plante d'intérieur
-  PLANTE_EXTERIEUR   // Plante d'extérieur
-}
-
-enum Size {
-  PETIT     // Petit
-  MOYEN     // Moyen
-  GRAND     // Grand
-  TRES_GRAND // Très grand
-}
-
-enum Color {
-  MULTICOLORE   // Multicolore
-  BLANC         // Blanc
-  ROSE_PALE     // Rose pâle
-  ROSE_FUSHIA   // Rose fushia
-  ROUGE         // Rouge
-  BLEU_VIOLET   // Bleu violet
-  JAUNE         // Jaune
-  ORANGE        // Orange
-}
-
-enum OrderStatus {
-  PENDING     // En attente
-  CONFIRMED   // Confirmée
-  IN_PROGRESS // En cours de préparation
-  READY       // Prête
-  DELIVERED   // Livrée
-  CANCELLED   // Annulée
-}
-
-enum CustomerType {
-  INDIVIDUAL  // Particulier
-  BUSINESS    // Entreprise
-}
-
-// Core models
 model Product {
-  id          String      @id @default(cuid())
-  name        String      // Nom du produit
-  description String?     // Description du produit
-  category    Category    // Catégorie principale (Deuil, Mariage, Boutique)
-  subCategory SubCategory // Sous-catégorie (celles du header)
-  images      String[]    // Array of image URLs
-  inStock     Boolean     @default(true)
-  featured    Boolean     @default(false)
-  
-  // SEO
-  slug        String      @unique
-  metaTitle   String?
+  id              String           @id @default(cuid())
+  name            String
+  description     String?
+  category        Category
+  subCategory     SubCategory
+  images          String[]
+  imageKeys       String[]
+  inStock         Boolean          @default(true)
+  featured        Boolean          @default(false)
+  slug            String           @unique
+  metaTitle       String?
   metaDescription String?
-  
-  // Timestamps
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  
-  // Relations - Prix variables selon taille
-  productVariants ProductVariant[]
-  // Couleurs disponibles pour ce produit
-  productColors   ProductColor[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   orderItems      OrderItem[]
-  
+  productColors   ProductColor[]
+  productVariants ProductVariant[]
+
   @@map("products")
 }
 
-// Table pour gérer les prix selon les tailles
 model ProductVariant {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
-  size      Size   // Taille du produit
-  price     Float  // Prix pour cette taille
-  
-  // Dimensions (en cm)
-  height    Float? // Hauteur en cm
-  width     Float? // Largeur en cm
-  depth     Float? // Profondeur en cm
-  diameter  Float? // Diamètre en cm (pour les formes circulaires)
-  
-  // Relations
+  size      Size
+  price     Float
+  height    Float?
+  width     Float?
+  depth     Float?
+  diameter  Float?
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  @@unique([productId, size]) // Un produit ne peut avoir qu'un seul prix par taille
+
+  @@unique([productId, size])
   @@map("product_variants")
 }
 
-// Table pour gérer les couleurs disponibles par produit
 model ProductColor {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
-  color     Color  // Couleur disponible
-  
-  // Relations
+  color     Color
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  @@unique([productId, color]) // Une couleur ne peut être ajoutée qu'une fois par produit
+
+  @@unique([productId, color])
   @@map("product_colors")
 }
 
 model Customer {
-  id           String       @id @default(cuid())
-  firstName    String
-  lastName     String
-  email        String       @unique
-  phone        String
-  type         CustomerType @default(INDIVIDUAL)
-  
-  // Business customers
-  companyName  String?
-  siret        String?
-  
-  // Address
-  address      String?
-  city         String?
-  postalCode   String?
-  
-  // Timestamps
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  
-  // Relations
-  orders       Order[]
+  id            String         @id @default(cuid())
+  firstName     String
+  lastName      String
+  email         String         @unique
+  phone         String
+  type          CustomerType   @default(INDIVIDUAL)
+  companyName   String?
+  siret         String?
+  address       String?
+  city          String?
+  postalCode    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orders        Order[]
   subscriptions Subscription[]
-  
+
   @@map("customers")
 }
 
 model Order {
-  id           String      @id @default(cuid())
-  orderNumber  String      @unique
-  status       OrderStatus @default(PENDING)
-  
-  // Customer info
-  customerId   String
-  customer     Customer    @relation(fields: [customerId], references: [id])
-  
-  // Delivery info
-  deliveryDate DateTime?
-  deliveryAddress String?
-  deliveryCity    String?
-  deliveryPostalCode String?
+  id                   String      @id @default(cuid())
+  orderNumber          String      @unique
+  status               OrderStatus @default(PENDING)
+  customerId           String
+  deliveryDate         DateTime?
+  deliveryAddress      String?
+  deliveryCity         String?
+  deliveryPostalCode   String?
   deliveryInstructions String?
-  
-  // Funeral specific
-  deceasedName String?     // Nom du défunt
-  ceremonyDate DateTime?   // Date de cérémonie
-  
-  // Wedding specific
-  weddingDate  DateTime?
-  venue        String?     // Lieu de réception
-  
-  // Pricing
-  subtotal     Float
-  deliveryFee  Float       @default(0)
-  total        Float
-  
-  // Payment
-  paymentMethod String?
-  paymentStatus String?    @default("pending")
-  
-  // Notes
-  notes        String?
-  
-  // Timestamps
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  
-  // Relations
-  items        OrderItem[]
-  
+  deceasedName         String?
+  ceremonyDate         DateTime?
+  weddingDate          DateTime?
+  venue                String?
+  subtotal             Float
+  deliveryFee          Float       @default(0)
+  total                Float
+  paymentMethod        String?
+  paymentStatus        String?     @default("pending")
+  notes                String?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  items                OrderItem[]
+  customer             Customer    @relation(fields: [customerId], references: [id])
+
   @@map("orders")
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-  
-  quantity  Int     @default(1)
-  unitPrice Float   // Prix unitaire selon la taille choisie
-  total     Float
-  
-  // Choix du client
-  selectedSize  Size?  // Taille choisie par le client
-  selectedColor Color? // Couleur choisie par le client
-  
-  // Custom requirements
-  customMessage String? // Message personnalisé pour les cartes
-  
+  id            String  @id @default(cuid())
+  orderId       String
+  productId     String
+  quantity      Int     @default(1)
+  unitPrice     Float
+  total         Float
+  selectedSize  Size?
+  selectedColor Color?
+  customMessage String?
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id])
+
   @@map("order_items")
 }
 
-// Corporate subscriptions
 model Subscription {
-  id           String   @id @default(cuid())
-  customerId   String
-  customer     Customer @relation(fields: [customerId], references: [id])
-  
-  name         String   // Ex: "Abonnement bureau mensuel"
-  frequency    String   // "weekly", "monthly", "quarterly"
-  startDate    DateTime
-  endDate      DateTime?
-  isActive     Boolean  @default(true)
-  
-  // Pricing
-  monthlyPrice Float
-  
-  // Delivery info
-  deliveryAddress String
+  id                   String    @id @default(cuid())
+  customerId           String
+  name                 String
+  frequency            String
+  startDate            DateTime
+  endDate              DateTime?
+  isActive             Boolean   @default(true)
+  monthlyPrice         Float
+  deliveryAddress      String
   deliveryInstructions String?
-  
-  // Timestamps
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  customer             Customer  @relation(fields: [customerId], references: [id])
+
   @@map("subscriptions")
 }
 
-// Contact forms and inquiries
 model Inquiry {
-  id          String       @id @default(cuid())
-  type        CustomerType @default(INDIVIDUAL)
-  
-  // Contact info
-  firstName   String
-  lastName    String?
-  email       String
-  phone       String
-  companyName String?      // For business inquiries
-  
-  // Inquiry details
-  subject     String
-  message     String
-  category    Category?
-  services    String[]     // Interested services for business
-  contactPreference String? // "phone", "email", "meeting"
-  
-  // Status
-  status      String       @default("new") // "new", "contacted", "quoted", "closed"
-  
-  // Timestamps
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  
+  id                String       @id @default(cuid())
+  type              CustomerType @default(INDIVIDUAL)
+  firstName         String
+  lastName          String?
+  email             String
+  phone             String
+  companyName       String?
+  subject           String
+  message           String
+  category          Category?
+  services          String[]
+  contactPreference String?
+  status            String       @default("new")
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
   @@map("inquiries")
+}
+
+enum Category {
+  DEUIL
+  MARIAGE
+  BOUTIQUE
+}
+
+enum SubCategory {
+  CROIX
+  COEUR
+  COURONNE
+  COUSSIN
+  DESSUS_CERCUEIL
+  DEVANT_TOMBE
+  BOUQUET_GERBE
+  FORMES_SPECIALES
+  BOUQUET_MARIEE
+  BOUTONNIERE
+  CORSAGE
+  CENTRE_TABLE
+  DECORATION_EGLISE
+  PRODUIT_SAISON
+  COMPOSITION_OFFRIR
+  BOUQUET_FRAIS
+  PLANTE_INTERIEUR
+  PLANTE_EXTERIEUR
+}
+
+enum Size {
+  PETIT
+  MOYEN
+  GRAND
+  TRES_GRAND
+}
+
+enum Color {
+  MULTICOLORE
+  BLANC
+  ROSE_PALE
+  ROSE_FUSHIA
+  ROUGE
+  BLEU_VIOLET
+  JAUNE
+  ORANGE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  BUSINESS
 }

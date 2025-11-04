@@ -14,13 +14,17 @@
     "db:clean": "node scripts/clean-database.js"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.18.0",
+    "@uploadthing/react": "^7.3.3",
     "daisyui": "^5.0.50",
     "dotenv": "^17.2.3",
     "next": "15.3.5",
     "prisma": "^6.18.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "uploadthing": "^7.7.4",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -28,6 +32,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.18"
   }
 }

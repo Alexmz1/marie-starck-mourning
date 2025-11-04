@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { EyeIcon, EyeSlashIcon, LockClosedIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -40,74 +41,89 @@ export default function AdminLogin({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#faf8f3'}}>
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <LockClosedIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h2 className="mt-6 text-3xl font-light text-gray-900">
-            Accès Administration
-          </h2>
-          <div className="w-24 h-0.5 mx-auto my-6" style={{backgroundColor: '#858585'}}></div>
-          <p className="text-lg text-gray-600 font-light leading-relaxed">
-            Veuillez saisir le mot de passe pour accéder à l'interface d'administration
-          </p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        {/* Bouton retour vers le site */}
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center text-sm font-light text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeftIcon className="h-4 w-4 mr-2" />
+            Retour au site
+          </Link>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Mot de passe
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300 pr-12"
-                placeholder="Mot de passe administrateur"
-                disabled={isLoading}
-              />
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <LockClosedIcon className="mx-auto h-12 w-12 text-gray-400" />
+            <h2 className="mt-6 text-3xl font-light text-gray-900">
+              Accès Administration
+            </h2>
+            <p className="mt-2 text-sm font-light text-gray-600">
+              Veuillez saisir le mot de passe pour accéder à l'interface d'administration
+            </p>
+          </div>
+
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="password" className="block text-sm font-light text-gray-700 mb-2">
+                Mot de passe administrateur *
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
+                  placeholder="Saisissez le mot de passe"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-6 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg border border-red-200">
+                {error}
+              </div>
+            )}
+
+            <div className="pt-4">
               <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                style={{ backgroundColor: PRIMARY_COLOR }}
               >
-                {showPassword ? (
-                  <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Vérification...
+                  </div>
                 ) : (
-                  <EyeIcon className="h-5 w-5 text-gray-400" />
+                  <>
+                    <LockClosedIcon className="h-5 w-5 mr-2" />
+                    SE CONNECTER
+                  </>
                 )}
               </button>
             </div>
-          </div>
-
-          {error && (
-            <div className="text-red-600 text-sm text-center font-light">
-              {error}
-            </div>
-          )}
-
-          <div className="text-center">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: PRIMARY_COLOR }}
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Vérification...
-                </div>
-              ) : (
-                'SE CONNECTER'
-              )}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   )

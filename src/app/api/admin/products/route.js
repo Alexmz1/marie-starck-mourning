@@ -64,6 +64,7 @@ export async function POST(request) {
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
         images: data.images || [],
+        imageKeys: data.imageKeys || [], // Stocker les clés UploadThing
         
         // Créer les variants de prix
         productVariants: {
