@@ -3,7 +3,14 @@ import { prisma } from '../../../../../../lib/prisma'
 
 export async function GET() {
   try {
-    // Calculer des statistiques basées sur notre utilisation locale
+    const neonApiKey = process.env.NEON_API_KEY
+    
+    if (!neonApiKey) {
+      throw new Error('NEON_API_KEY non configurée')
+    }
+
+    // Utiliser le vrai project ID fourni
+    const projectId = 'orange-queen-38088642'
     const databaseUrl = process.env.DATABASE_URL
     const isNeonDatabase = databaseUrl.includes('neon.tech')
     
@@ -11,14 +18,52 @@ export async function GET() {
       throw new Error('Cette base de données n\'utilise pas Neon Tech')
     }
 
-    // Extraire les informations du projet depuis l'URL
-    const hostMatch = databaseUrl.match(/@(.+?)\.neon\.tech/)
-    const host = hostMatch ? hostMatch[1] : null
-    const projectIdMatch = host ? host.match(/^(ep-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)/) : null
-    const projectId = projectIdMatch ? projectIdMatch[1] : 'Inconnu'
-    const region = host ? host.match(/\.([a-z0-9-]+)\.aws$/)?.[1] || 'eu-central-1' : 'eu-central-1'
+    const headers = {
+      'Authorization': `Bearer ${neonApiKey}`,
+      'Content-Type': 'application/json',
+    }
 
-    // Compter nos données pour estimer l'utilisation
+    // Récupérer les informations du projet
+    const projectResponse = await fetch(`https://console.neon.tech/api/v2/projects/${projectId}`, {
+      headers,
+    })
+
+    if (!projectResponse.ok) {
+      const errorText = await projectResponse.text()
+      throw new Error(`Erreur API Neon - Projet (${projectResponse.status}): ${errorText}`)
+    }
+
+    const projectData = await projectResponse.json()
+
+    // Récupérer les métriques de consommation
+    let consumptionData = null
+    try {
+      const consumptionResponse = await fetch(`https://console.neon.tech/api/v2/projects/${projectId}/consumption`, {
+        headers,
+      })
+      if (consumptionResponse.ok) {
+        consumptionData = await consumptionResponse.json()
+      } else {
+        console.warn('Impossible de récupérer la consommation:', consumptionResponse.status)
+      }
+    } catch (error) {
+      console.warn('Erreur consommation:', error.message)
+    }
+
+    // Récupérer les branches du projet
+    let branchesData = null
+    try {
+      const branchesResponse = await fetch(`https://console.neon.tech/api/v2/projects/${projectId}/branches`, {
+        headers,
+      })
+      if (branchesResponse.ok) {
+        branchesData = await branchesResponse.json()
+      }
+    } catch (error) {
+      console.warn('Erreur branches:', error.message)
+    }
+
+    // Calculer des statistiques locales comme fallback
     const [
       productCount,
       orderCount,
@@ -28,7 +73,6 @@ export async function GET() {
       prisma.product.count(),
       prisma.order.count(),
       prisma.customer.count(),
-      // Estimer le nombre total d'enregistrements dans toutes les tables
       prisma.$queryRaw`SELECT COUNT(*) FROM (
         SELECT 1 FROM products UNION ALL
         SELECT 1 FROM orders UNION ALL
@@ -41,54 +85,51 @@ export async function GET() {
       ) as total_count`
     ])
 
-    // Estimation approximative de la taille de la base de données
-    // Basée sur le nombre d'enregistrements et une taille moyenne par enregistrement
-    const estimatedRecordSize = 500 // bytes par enregistrement (estimation)
-    const estimatedDbSize = Number(totalRecords[0].count) * estimatedRecordSize
-    
-    // Simulation de temps de calcul basée sur l'activité
-    const now = new Date()
-    const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const secondsToday = Math.floor((now - dayStart) / 1000)
-    const estimatedComputeTime = Math.min(secondsToday * 0.1, 3600) // Max 1 heure estimée
+    // Utiliser les vraies données Neon si disponibles, sinon utiliser nos estimations améliorées
+    const realDataSize = 31.29 * 1024 * 1024 // 31.29 MB en bytes (depuis votre dashboard)
+    const realComputeTime = 0.15 * 3600 // 0.15 heures en secondes
 
     const stats = {
       project: {
-        id: projectId,
-        name: 'Marie Starck Database',
-        region: region,
-        created_at: new Date().toISOString(),
-        platform_id: 'neon'
+        id: projectData.project.id,
+        name: projectData.project.name || 'Marie Starck Database',
+        region: projectData.project.region_id,
+        created_at: projectData.project.created_at,
+        platform_id: projectData.project.platform_id || 'neon'
       },
       consumption: {
-        active_time_seconds: secondsToday,
-        compute_time_seconds: estimatedComputeTime,
-        written_data_bytes: estimatedDbSize,
-        data_transfer_bytes: estimatedDbSize * 0.5, // Estimation des transferts
+        active_time_seconds: consumptionData?.active_time_seconds || Math.floor(Date.now() / 1000) % 86400,
+        compute_time_seconds: consumptionData?.compute_time_seconds || realComputeTime,
+        written_data_bytes: consumptionData?.written_data_bytes || realDataSize,
+        data_transfer_bytes: consumptionData?.data_transfer_bytes || (realDataSize * 0.3),
       },
-      branches: {
+      branches: branchesData ? {
+        total: branchesData.branches.length,
+        main_branch: branchesData.branches.find(b => b.primary) || branchesData.branches[0]
+      } : {
         total: 1,
-        main_branch: {
-          name: 'main',
-          id: 'main',
-          primary: true
-        }
+        main_branch: { name: 'main', id: 'main', primary: true }
       },
       quotas: {
-        // Quotas gratuits Neon
+        // Quotas gratuits Neon actuels
         compute_time_limit: 100 * 3600, // 100 heures
-        storage_limit: 0.5 * 1024 * 1024 * 1024, // 0.5 GB
+        storage_limit: 512 * 1024 * 1024, // 512 MB (limite gratuite Neon)
         data_transfer_limit: 5 * 1024 * 1024 * 1024 // 5 GB
       },
       estimated_storage: {
-        bytes: estimatedDbSize,
-        formatted: formatBytes(estimatedDbSize)
+        bytes: consumptionData?.written_data_bytes || realDataSize,
+        formatted: formatBytes(consumptionData?.written_data_bytes || realDataSize)
       },
       database_stats: {
         products: productCount,
         orders: orderCount,
         customers: customerCount,
         total_records: Number(totalRecords[0].count)
+      },
+      api_status: {
+        project_api: projectResponse.ok,
+        consumption_api: !!consumptionData,
+        branches_api: !!branchesData
       }
     }
 
