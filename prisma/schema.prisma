@@ -84,6 +84,7 @@ model Product {
   category    Category    // Catégorie principale (Deuil, Mariage, Boutique)
   subCategory SubCategory // Sous-catégorie (celles du header)
   images      String[]    // Array of image URLs
+  imageKeys   String[]    // Array of UploadThing file keys for deletion
   inStock     Boolean     @default(true)
   featured    Boolean     @default(false)
   

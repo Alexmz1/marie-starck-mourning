@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
+import ImageUploader from '../../../../../components/admin/ImageUploader'
 
 const PRIMARY_COLOR = '#276f88'
 
@@ -79,7 +80,6 @@ export default function EditProductPage() {
   
   const [selectedColors, setSelectedColors] = useState([])
   const [images, setImages] = useState([])
-  const [dragActive, setDragActive] = useState(false)
 
   // État pour les dropdowns
   const [categoryOpen, setCategoryOpen] = useState(false)
@@ -120,12 +120,15 @@ export default function EditProductPage() {
           }
           
           if (product.images?.length > 0) {
-            setImages(product.images.map((img, index) => ({
-              id: Date.now() + index,
-              preview: img,
+            // Conversion des images existantes au format UploadThing
+            const existingImages = product.images.map((img, index) => ({
+              id: `existing-${index}`,
+              url: img,
+              key: product.imageKeys?.[index] || `legacy-${index}`, // Utilise imageKeys si disponible, sinon fallback
               name: `Image ${index + 1}`,
               isExisting: true
-            })))
+            }))
+            setImages(existingImages)
           }
         } else {
           console.error('Erreur response:', response.status, response.statusText)
@@ -210,60 +213,9 @@ export default function EditProductPage() {
     )
   }
 
-  // Gestion des images
-  const handleDragEnter = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      setDragActive(true)
-    }
-  }
-
-  const handleDragLeave = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-  }
-
-  const handleDragOver = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    
-    const files = Array.from(e.dataTransfer.files)
-    handleFiles(files)
-  }
-
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files)
-    handleFiles(files)
-  }
-
-  const handleFiles = (files) => {
-    const imageFiles = files.filter(file => file.type.startsWith('image/'))
-    
-    imageFiles.forEach(file => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImages(prev => [...prev, {
-          id: Date.now() + Math.random(),
-          file: file,
-          preview: e.target.result,
-          name: file.name,
-          isExisting: false
-        }])
-      }
-      reader.readAsDataURL(file)
-    })
-  }
-
-  const removeImage = (imageId) => {
-    setImages(prev => prev.filter(img => img.id !== imageId))
+  // Gestion des images avec UploadThing
+  const handleImagesChange = (newImages) => {
+    setImages(newImages)
   }
 
   const handleSubmit = async (e) => {
@@ -298,8 +250,9 @@ export default function EditProductPage() {
     }
 
     try {
-      // Préparer les données avec les images
-      const imageUrls = images.map(img => img.preview)
+      // Préparer les données avec les images UploadThing
+      const imageUrls = images.map(img => img.url)
+      const imageKeys = images.map(img => img.key)
       
       const productData = {
         ...formData,
@@ -307,7 +260,8 @@ export default function EditProductPage() {
         featured: formData.featured,
         variants: validVariants,
         colors: selectedColors,
-        images: imageUrls
+        images: imageUrls,
+        imageKeys: imageKeys
       }
 
       const response = await fetch(`/api/admin/products/${productId}`, {
@@ -496,77 +450,16 @@ export default function EditProductPage() {
           </div>
         </div>
 
-        {/* Images */}
+        {/* Images du produit */}
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-8">
           <h2 className="text-xl font-light text-gray-900 mb-6" style={{ color: PRIMARY_COLOR }}>
-            Images du produit
+            Images du produit *
           </h2>
-          
-          <div className="space-y-4">
-            {/* Zone de téléchargement */}
-            <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                dragActive 
-                  ? 'border-blue-400 bg-blue-50' 
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-            >
-              <Image 
-                className="mx-auto h-12 w-12 text-gray-400 mb-4" 
-                width={48} 
-                height={48} 
-                src="data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cg%3e%3ctitle%3eLayer 1%3c/title%3e%3crect stroke='%23999' fill='none' stroke-width='2' x='10' y='10' width='80' height='80' /%3e%3cline stroke='%23999' stroke-width='2' x1='30' y1='70' x2='70' y2='30'/%3e%3ccircle fill='%23999' cx='25' cy='35' r='5'/%3e%3c/g%3e%3c/svg%3e" 
-                alt="Upload" 
-              />
-              <div className="font-light text-gray-600">
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <span className="text-blue-600 hover:text-blue-500">Cliquez pour télécharger</span>
-                  <span> ou glissez-déposez vos images</span>
-                </label>
-                <input
-                  id="file-upload"
-                  name="file-upload"
-                  type="file"
-                  className="sr-only"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2">PNG, JPG, GIF jusqu'à 10MB</p>
-            </div>
-
-            {/* Aperçu des images */}
-            {images.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                {images.map((image) => (
-                  <div key={image.id} className="relative group">
-                    <div className="aspect-square rounded-lg border border-gray-200 overflow-hidden">
-                      <Image
-                        src={image.preview}
-                        alt={image.name}
-                        width={200}
-                        height={200}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeImage(image.id)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
-                    >
-                      ×
-                    </button>
-                    <p className="text-xs text-gray-500 mt-1 truncate">{image.name}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ImageUploader
+            images={images}
+            onImagesChange={handleImagesChange}
+            maxFiles={1}
+          />
         </div>
 
         {/* Variantes et prix */}
