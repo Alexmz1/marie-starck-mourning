@@ -6,19 +6,44 @@ import {
   CloudIcon,
   PhotoIcon,
   ServerIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  CircleStackIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
 
 export default function StatisticsPage() {
   const [uploadThingStats, setUploadThingStats] = useState(null)
+  const [neonStats, setNeonStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [neonLoading, setNeonLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [neonError, setNeonError] = useState(null)
 
   useEffect(() => {
     fetchUploadThingStats()
+    fetchNeonStats()
   }, [])
+
+  const fetchNeonStats = async () => {
+    try {
+      setNeonLoading(true)
+      const response = await fetch('/api/admin/statistics/neon')
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors du chargement des statistiques Neon')
+      }
+      
+      setNeonStats(data)
+    } catch (error) {
+      console.error('Erreur lors du chargement des statistiques Neon:', error)
+      setNeonError(error.message)
+    } finally {
+      setNeonLoading(false)
+    }
+  }
 
   const fetchUploadThingStats = async () => {
     try {
@@ -52,7 +77,13 @@ export default function StatisticsPage() {
     return ((used / total) * 100).toFixed(1)
   }
 
-  if (loading) {
+  const formatTime = (seconds) => {
+    if (seconds < 60) return `${seconds}s`
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`
+    return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`
+  }
+
+  if (loading || neonLoading) {
     return (
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center h-64">
@@ -99,10 +130,13 @@ export default function StatisticsPage() {
               Stockage UploadThing
             </h2>
             <button
-              onClick={fetchUploadThingStats}
+              onClick={() => {
+                fetchUploadThingStats()
+                fetchNeonStats()
+              }}
               className="ml-auto px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
             >
-              Actualiser
+              Actualiser tout
             </button>
           </div>
 
@@ -178,6 +212,167 @@ export default function StatisticsPage() {
                 </div>
                 <div className="text-xs text-gray-500">
                   {formatPercentage(uploadThingStats.totalSize, uploadThingStats.quotaUsed)}% utilisé
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section Neon Tech */}
+      {neonError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+          <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mr-3" />
+          <div>
+            <h3 className="text-sm font-medium text-red-800">Erreur Neon</h3>
+            <p className="text-sm text-red-700 mt-1">{neonError}</p>
+          </div>
+          <button
+            onClick={fetchNeonStats}
+            className="ml-auto px-3 py-1 bg-red-100 text-red-800 rounded text-sm hover:bg-red-200"
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
+
+      {neonStats && (
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <CircleStackIcon className="h-6 w-6 mr-3" style={{ color: PRIMARY_COLOR }} />
+            <h2 className="text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+              Base de données Neon Tech
+            </h2>
+            <button
+              onClick={fetchNeonStats}
+              className="ml-auto px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
+            >
+              Actualiser
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Projet */}
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center">
+                <ServerIcon className="h-8 w-8 text-blue-500" />
+                <div className="ml-4">
+                  <div className="text-lg font-light text-gray-900">
+                    {neonStats.project.name || 'Projet Neon'}
+                  </div>
+                  <div className="text-sm font-light text-gray-600">
+                    Région: {neonStats.project.region}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stockage estimé */}
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center">
+                <CircleStackIcon className="h-8 w-8 text-green-500" />
+                <div className="ml-4">
+                  <div className="text-2xl font-light text-gray-900">
+                    {neonStats.estimated_storage.formatted}
+                  </div>
+                  <div className="text-sm font-light text-gray-600">
+                    Données écrites
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Temps de calcul */}
+            {neonStats.consumption && (
+              <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center">
+                  <ClockIcon className="h-8 w-8 text-purple-500" />
+                  <div className="ml-4">
+                    <div className="text-2xl font-light text-gray-900">
+                      {formatTime(neonStats.consumption.compute_time_seconds)}
+                    </div>
+                    <div className="text-sm font-light text-gray-600">
+                      Temps de calcul
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Transfert de données */}
+            {neonStats.consumption && (
+              <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center">
+                  <CloudIcon className="h-8 w-8 text-orange-500" />
+                  <div className="ml-4">
+                    <div className="text-2xl font-light text-gray-900">
+                      {formatFileSize(neonStats.consumption.data_transfer_bytes)}
+                    </div>
+                    <div className="text-sm font-light text-gray-600">
+                      Données transférées
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Barres de progression des quotas */}
+          {neonStats.consumption && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Quota temps de calcul */}
+              <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Temps de calcul</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Utilisé: {formatTime(neonStats.consumption.compute_time_seconds)}</span>
+                    <span>Limite: {formatTime(neonStats.quotas.compute_time_limit)}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className={`h-3 rounded-full transition-all duration-300 ${
+                        formatPercentage(neonStats.consumption.compute_time_seconds, neonStats.quotas.compute_time_limit) > 80 
+                          ? 'bg-red-500' 
+                          : formatPercentage(neonStats.consumption.compute_time_seconds, neonStats.quotas.compute_time_limit) > 60
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
+                      }`}
+                      style={{ 
+                        width: `${Math.min(formatPercentage(neonStats.consumption.compute_time_seconds, neonStats.quotas.compute_time_limit), 100)}%` 
+                      }}
+                    ></div>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {formatPercentage(neonStats.consumption.compute_time_seconds, neonStats.quotas.compute_time_limit)}% utilisé
+                  </div>
+                </div>
+              </div>
+
+              {/* Quota stockage */}
+              <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Stockage</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Utilisé: {neonStats.estimated_storage.formatted}</span>
+                    <span>Limite: {formatFileSize(neonStats.quotas.storage_limit)}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className={`h-3 rounded-full transition-all duration-300 ${
+                        formatPercentage(neonStats.estimated_storage.bytes, neonStats.quotas.storage_limit) > 80 
+                          ? 'bg-red-500' 
+                          : formatPercentage(neonStats.estimated_storage.bytes, neonStats.quotas.storage_limit) > 60
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
+                      }`}
+                      style={{ 
+                        width: `${Math.min(formatPercentage(neonStats.estimated_storage.bytes, neonStats.quotas.storage_limit), 100)}%` 
+                      }}
+                    ></div>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {formatPercentage(neonStats.estimated_storage.bytes, neonStats.quotas.storage_limit)}% utilisé
+                  </div>
                 </div>
               </div>
             </div>
