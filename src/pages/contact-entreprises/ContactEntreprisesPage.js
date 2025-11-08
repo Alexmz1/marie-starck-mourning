@@ -42,10 +42,63 @@ const ContactEntreprisesPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Données du formulaire entreprise:', formData);
-    alert('Votre demande a été envoyée ! Nous vous recontacterons rapidement.');
+    setIsSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      // Import dynamique d'EmailJS
+      const emailjs = await import('@emailjs/browser');
+      
+      const templateParams = {
+        company_name: formData.entreprise,
+        contact_name: formData.contact,
+        from_email: formData.email,
+        from_phone: formData.telephone,
+        services_list: formData.services.join(', '),
+        recontact_methods: formData.recontact.join(', '),
+        message: formData.message,
+        to_name: 'Marie Starck',
+        reply_to: formData.email
+      };
+
+      const response = await emailjs.send(
+        'service_2dbbgpo',
+        'template_gyas6ef',
+        templateParams,
+        'ma56SSZW45mrqSLHr'
+      );
+
+      console.log('Email entreprise envoyé avec succès:', response);
+      setSubmitStatus({
+        type: 'success',
+        message: 'Votre demande a été envoyée avec succès ! Nous vous recontacterons rapidement selon vos préférences.'
+      });
+
+      // Reset du formulaire
+      setFormData({
+        entreprise: '',
+        contact: '',
+        telephone: '',
+        email: '',
+        services: [],
+        message: '',
+        recontact: []
+      });
+
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer ou nous contacter directement.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -226,11 +279,23 @@ const ContactEntreprisesPage = () => {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg"
+                  disabled={isSubmitting}
+                  className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{backgroundColor: '#276f88'}}
                 >
-                  ENVOYER LA DEMANDE
+                  {isSubmitting ? 'ENVOI EN COURS...' : 'ENVOYER LA DEMANDE'}
                 </button>
+                
+                {/* Messages de statut sous le bouton */}
+                {submitStatus.message && (
+                  <div className={`mt-6 p-4 rounded-lg ${
+                    submitStatus.type === 'success' 
+                      ? 'bg-green-50 text-green-800 border border-green-200' 
+                      : 'bg-red-50 text-red-800 border border-red-200'
+                  }`}>
+                    {submitStatus.message}
+                  </div>
+                )}
               </div>
             </form>
           </div>

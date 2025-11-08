@@ -9,6 +9,15 @@ import Footer from '../../components/Footer';
 const ContactPage = () => {
   const [selectedPrestation, setSelectedPrestation] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
 
   const prestationOptions = [
     { value: '', label: 'Type de prestation' },
@@ -20,6 +29,67 @@ const ContactPage = () => {
   const handleSelectOption = (value, label) => {
     setSelectedPrestation(value);
     setIsDropdownOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      // Import dynamique d'EmailJS
+      const emailjs = await import('@emailjs/browser');
+      
+      const templateParams = {
+        from_name: `${formData.firstName} ${formData.lastName}`,
+        from_email: formData.email,
+        from_phone: formData.phone,
+        prestation_type: prestationOptions.find(opt => opt.value === selectedPrestation)?.label || 'Non spécifié',
+        message: formData.message,
+        to_name: 'Marie Starck',
+        reply_to: formData.email
+      };
+
+      const response = await emailjs.send(
+        'service_2dbbgpo',
+        'template_lgsgrdj',
+        templateParams,
+        'ma56SSZW45mrqSLHr'
+      );
+
+      console.log('Email envoyé avec succès:', response);
+      setSubmitStatus({
+        type: 'success',
+        message: 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.'
+      });
+
+      // Reset du formulaire
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
+      setSelectedPrestation('');
+
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer ou nous contacter directement.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Fermer le dropdown quand on clique ailleurs
@@ -175,19 +245,27 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <form className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <input
                     type="text"
+                    name="firstName"
                     placeholder="Votre prénom"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
                     className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
                   />
                 </div>
                 <div>
                   <input
                     type="text"
+                    name="lastName"
                     placeholder="Votre nom"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
                     className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
                   />
                 </div>
@@ -197,14 +275,21 @@ const ContactPage = () => {
                 <div>
                   <input
                     type="email"
+                    name="email"
                     placeholder="Votre email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
                     className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
                   />
                 </div>
                 <div>
                   <input
                     type="tel"
+                    name="phone"
                     placeholder="Votre téléphone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
                     className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
                   />
                 </div>
@@ -261,8 +346,12 @@ const ContactPage = () => {
 
               <div>
                 <textarea
+                  name="message"
                   rows="6"
                   placeholder="Décrivez-nous votre projet, vos souhaits, l'occasion..."
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
                   className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 resize-none transition-all duration-300"
                 ></textarea>
               </div>
@@ -270,11 +359,23 @@ const ContactPage = () => {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg"
+                  disabled={isSubmitting}
+                  className="py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{backgroundColor: '#276f88'}}
                 >
-                  ENVOYER LE MESSAGE
+                  {isSubmitting ? 'ENVOI EN COURS...' : 'ENVOYER LE MESSAGE'}
                 </button>
+                
+                {/* Messages de statut sous le bouton */}
+                {submitStatus.message && (
+                  <div className={`mt-6 p-4 rounded-lg ${
+                    submitStatus.type === 'success' 
+                      ? 'bg-green-50 text-green-800 border border-green-200' 
+                      : 'bg-red-50 text-red-800 border border-red-200'
+                  }`}>
+                    {submitStatus.message}
+                  </div>
+                )}
               </div>
             </form>
           </div>
