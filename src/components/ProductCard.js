@@ -39,6 +39,9 @@ export default function ProductCard({ product }) {
     ? `/produit/${product.slug}`
     : '#' // Pour les anciens produits sans slug
 
+  // Déterminer si utiliser Image ou img selon la source
+  const isExternalImage = imageUrl.includes('pexels.com')
+
   return (
     <Link 
       href={productUrl}
@@ -46,14 +49,23 @@ export default function ProductCard({ product }) {
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden flex-shrink-0">
-        <Image 
-          src={imageUrl}
-          alt={product.name}
-          width={400}
-          height={533}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-        />
+        {isExternalImage ? (
+          <img 
+            src={imageUrl}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+        ) : (
+          <Image 
+            src={imageUrl}
+            alt={product.name}
+            width={400}
+            height={533}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+        )}
         
         {/* Badge de prix */}
         <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 text-sm font-light">
