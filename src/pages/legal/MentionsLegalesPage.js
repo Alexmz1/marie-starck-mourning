@@ -2,6 +2,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -22,7 +23,7 @@ const MentionsLegalesPage = () => {
                 Mentions Légales
               </h1>
               <p className="text-xl text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
-                Informations légales concernant notre atelier floral et l'utilisation 
+                Informations légales concernant notre atelier floral et l&apos;utilisation 
                 de ce site internet.
               </p>
             </div>
@@ -73,7 +74,7 @@ const MentionsLegalesPage = () => {
                   <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Propriété intellectuelle</h2>
                   <div className="space-y-4">
                     <p className="text-gray-700 font-light leading-relaxed">
-                      L'ensemble des contenus présents sur ce site (textes, images, photographies) 
+                      L&apos;ensemble des contenus présents sur ce site (textes, images, photographies) 
                       sont la propriété exclusive de Marie Starck, sauf mention contraire.
                     </p>
                     <p className="text-gray-700 font-light leading-relaxed">
@@ -92,7 +93,7 @@ const MentionsLegalesPage = () => {
                   <div className="space-y-4">
                     <p className="text-gray-700 font-light leading-relaxed">
                       Conformément au Règlement Général sur la Protection des Données (RGPD), 
-                      vous disposez d'un droit d'accès, de rectification et de suppression 
+                      vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression 
                       des données vous concernant.
                     </p>
                     <p className="text-gray-700 font-light leading-relaxed">
@@ -112,7 +113,7 @@ const MentionsLegalesPage = () => {
                       et peuvent être modifiées sans préavis.
                     </p>
                     <p className="text-gray-700 font-light leading-relaxed">
-                      Marie Starck ne saurait être tenue responsable de l'utilisation 
+                      Marie Starck ne saurait être tenue responsable de l&apos;utilisation 
                       qui pourrait être faite de ces informations.
                     </p>
                   </div>
@@ -144,22 +145,22 @@ const MentionsLegalesPage = () => {
               Une Question Juridique ?
             </h2>
             <p className="text-xl text-gray-600 font-light mb-12 leading-relaxed">
-              Pour toute question concernant ces mentions légales ou l'utilisation de ce site, 
-              n'hésitez pas à nous contacter.
+              Pour toute question concernant ces mentions légales ou l&apos;utilisation de ce site, 
+              n&apos;hésitez pas à nous contacter.
             </p>
             <div className="space-y-4 sm:space-y-0 sm:space-x-6 sm:flex sm:justify-center">
-              <a
+              <Link
                 href="/contact"
                 className="btn-primary-gray inline-block py-4 px-10 font-light tracking-wide"
               >
                 NOUS CONTACTER
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/"
                 className="btn-secondary-gray inline-block py-4 px-10 font-light tracking-wide"
               >
-                RETOUR À L'ACCUEIL
-              </a>
+                RETOUR À L&apos;ACCUEIL
+              </Link>
             </div>
           </div>
         </div>

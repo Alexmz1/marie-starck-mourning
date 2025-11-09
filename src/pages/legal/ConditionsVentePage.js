@@ -2,6 +2,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -207,24 +208,24 @@ const ConditionsVentePage = () => {
               Une Question ?
             </h2>
             <p className="text-xl text-gray-600 font-light mb-12 leading-relaxed">
-              N'hésitez pas à nous contacter pour toute information complémentaire 
+              N&apos;hésitez pas à nous contacter pour toute information complémentaire 
               concernant nos conditions de vente ou nos prestations.
             </p>
             <div className="space-y-4 sm:space-y-0 sm:space-x-6 sm:flex sm:justify-center">
-              <a
+              <Link
                 href="/contact"
                 className="inline-block py-4 px-10 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg"
                 style={{backgroundColor: '#276f88'}}
               >
                 NOUS CONTACTER
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/"
                 className="inline-block py-4 px-10 font-light text-black border transition-all duration-300 tracking-wide hover:shadow-lg"
                 style={{borderColor: '#276f88'}}
               >
-                RETOUR À L'ACCUEIL
-              </a>
+                RETOUR À L&apos;ACCUEIL
+              </Link>
             </div>
           </div>
         </div>
