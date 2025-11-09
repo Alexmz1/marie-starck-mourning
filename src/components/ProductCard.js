@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function ProductCard({ product }) {
   // Images de démonstration basées sur la catégorie pour les anciens produits
@@ -45,9 +46,11 @@ export default function ProductCard({ product }) {
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden flex-shrink-0">
-        <img 
+        <Image 
           src={imageUrl}
           alt={product.name}
+          width={400}
+          height={533}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />

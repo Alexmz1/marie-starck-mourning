@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ServicesSection() {
   const services = [
@@ -50,9 +51,11 @@ export default function ServicesSection() {
               className="group bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
             >
               <div className="aspect-w-16 aspect-h-10 overflow-hidden">
-                <img 
+                <Image 
                   src={service.image} 
                   alt={service.title}
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               </div>

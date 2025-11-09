@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HeroSection() {
   return (
@@ -14,10 +15,13 @@ export default function HeroSection() {
           <div className="max-w-3xl mx-auto space-y-6">
             {/* Logo de Marie Starck */}
             <div className="flex justify-center py-8">
-              <img 
+              <Image 
                 src="/images/logo/marie-starck-logo.png" 
                 alt="Logo Marie Starck - Compositions florales de deuil"
+                width={224}
+                height={224}
                 className="h-44 md:h-56 object-contain"
+                priority
               />
             </div>
           </div>

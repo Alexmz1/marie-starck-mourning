@@ -1,11 +1,15 @@
 'use client'
 
+import Image from 'next/image'
+
 export default function ProductImage({ src, alt, index }) {
   return (
     <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={400}
+        height={400}
         className="w-full h-full object-cover rounded-lg"
         onError={(e) => {
           e.target.style.display = 'none'
