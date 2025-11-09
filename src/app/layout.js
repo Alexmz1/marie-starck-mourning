@@ -2,9 +2,9 @@ import "./globals.css";
 import "./custom-buttons.css";
 
 export const metadata = {
-  title: "L'Atelier Fleurs de Deuil – Marie Starck",
-  description: "Créations florales pour rendre hommage à vos proches. Compositions personnalisées et livraison assurée.",
-  keywords: "fleurs de deuil, compositions florales, hommage, funéraire, couronnes, coussins, gerbes",
+  title: "L'atelier floral de Marie Starck",
+  description: "Artisan fleuriste passionnée : compositions florales personnalisées pour tous vos événements. Mariages, deuil, entreprises et créations sur mesure. Livraison assurée.",
+  keywords: "fleuriste, compositions florales, mariage, deuil, entreprise, bouquets, couronnes, décoration florale, livraison fleurs, artisan fleuriste, événementiel, Marie Starck",
 };
 
 export default function RootLayout({ children }) {
