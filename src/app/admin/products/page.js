@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import ProductActions from './ProductActions'
 import { 
   PlusIcon, 
@@ -127,9 +128,11 @@ const ProductCard = ({ product }) => {
       {/* Image du produit */}
       <div className="h-40 bg-gray-100 relative overflow-hidden">
         {product.images && product.images.length > 0 ? (
-          <img 
+          <Image 
             src={product.images[0]} 
             alt={product.name}
+            width={320}
+            height={160}
             className="w-full h-full object-cover"
             onError={(e) => {
               // Si l'image ne charge pas, afficher un placeholder avec icône
