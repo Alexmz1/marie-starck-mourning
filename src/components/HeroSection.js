@@ -18,9 +18,9 @@ export default function HeroSection() {
               <Image 
                 src="/images/logo/marie-starck-logo.png" 
                 alt="Logo Marie Starck - Compositions florales de deuil"
-                width={224}
-                height={224}
-                className="h-44 md:h-56 object-contain"
+                width={400}
+                height={300}
+                className="h-44 md:h-56 w-auto object-contain"
                 priority
               />
             </div>
