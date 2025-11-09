@@ -208,7 +208,7 @@ export default function ProduitPage() {
                       </button>
                       {activeTab === 'livraison' && (
                         <div className="px-4 pb-4 text-sm text-gray-600 space-y-3">
-                          <p className="font-light">Pour garantir la qualité des fleurs, merci de passer commande au moins 24h à l'avance (jours ouvrés).</p>
+                          <p className="font-light">Pour garantir la qualité des fleurs, merci de passer commande au moins 24h à l&apos;avance (jours ouvrés).</p>
                           <div className="space-y-3">
                             <div>
                               <div className="flex justify-between mb-1">
