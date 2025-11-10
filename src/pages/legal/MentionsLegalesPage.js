@@ -46,7 +46,7 @@ const MentionsLegalesPage = () => {
                     France
                   </p>
                   <p className="text-gray-700 font-light leading-relaxed">
-                    <strong>Email :</strong> contact@marie-starck.fr<br/>
+                    <strong>Email :</strong> starck.marie@gmail.com<br/>
                     <strong>Téléphone :</strong> 01 23 45 67 89
                   </p>
                 </div>
