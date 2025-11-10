@@ -355,10 +355,10 @@ const ContactEntreprisesPage = () => {
                   06 03 05 91 95
                 </a>
                 <a
-                  href="mailto:contact@marie-starck.fr"
+                  href="mailto:starck.marie@gmail.com"
                   className="py-3 px-6 font-light text-black border border-gray-300 hover:border-gray-400 transition-all duration-300 tracking-wide inline-flex items-center justify-center"
                 >
-                  contact@marie-starck.fr
+                  starck.marie@gmail.com
                 </a>
               </div>
             </div>

@@ -154,8 +154,8 @@ const ContactPage = () => {
                 </div>
                 <h3 className="text-xl font-light text-black mb-4 tracking-wide">Email</h3>
                 <p className="text-gray-600 font-light mb-2">Écrivez-nous</p>
-                <a href="mailto:contact@marie-starck.fr" className="text-black font-light hover:underline">
-                  contact@marie-starck.fr
+                <a href="mailto:starck.marie@gmail.com" className="text-black font-light hover:underline">
+                  starck.marie@gmail.com
                 </a>
               </div>
 

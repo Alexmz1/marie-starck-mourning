@@ -101,7 +101,7 @@ export default function Page() {
                     <li>Droit d'opposition au traitement</li>
                   </ul>
                   <p>
-                    Pour exercer ces droits, contactez-nous à l'adresse : contact@marie-starck.fr
+                    Pour exercer ces droits, contactez-nous à l'adresse : starck.marie@gmail.com
                   </p>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export default function Page() {
                   </p>
                   <div className="bg-white p-6 rounded-lg">
                     <p><strong>Atelier Floral de Marie Starck</strong></p>
-                    <p>Email : contact@marie-starck.fr</p>
+                    <p>Email : starck.marie@gmail.com</p>
                     <p>Téléphone : 06 03 05 91 95</p>
                     <p>Adresse : Soisy-sur-Seine, Essonne (91)</p>
                   </div>

@@ -37,8 +37,8 @@ export default function Footer() {
                   </div>
                   <div>
                     <p className="text-sm text-white font-light">Email</p>
-                    <a href="mailto:contact@marie-starck.fr" className="text-lg font-light hover:text-gray-200 transition-colors duration-300">
-                      contact@marie-starck.fr
+                    <a href="mailto:starck.marie@gmail.com" className="text-lg font-light hover:text-gray-200 transition-colors duration-300">
+                      starck.marie@gmail.com
                     </a>
                   </div>
                 </div>
