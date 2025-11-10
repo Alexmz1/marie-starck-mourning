@@ -53,7 +53,7 @@ const ConditionsVentePage = () => {
                   </div>
                 </div>
 
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
 
                 <div>
                   <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Article 2 - Commandes</h2>
@@ -74,7 +74,7 @@ const ConditionsVentePage = () => {
                   </div>
                 </div>
 
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
 
                 <div>
                   <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Article 3 - Prix et modalités de paiement</h2>
@@ -162,7 +162,7 @@ const ConditionsVentePage = () => {
                   </div>
                 </div>
 
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
 
                 <div>
                   <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Article 5 - Responsabilité</h2>
@@ -179,7 +179,7 @@ const ConditionsVentePage = () => {
                   </div>
                 </div>
 
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
 
                 <div>
                   <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Article 6 - Réclamations</h2>

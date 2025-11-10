@@ -33,106 +33,98 @@ const MentionsLegalesPage = () => {
         {/* Content Sections - Two Columns */}
         <div className="py-24" style={{backgroundColor: '#f8f6f0'}}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-              
-              {/* Left Column */}
-              <div className="space-y-16">
-                
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Éditeur du site</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      <strong>Marie Starck</strong><br/>
-                      Atelier floral<br/>
-                      Soisy-sur-Seine, Essonne (91)<br/>
-                      France
-                    </p>
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      <strong>Email :</strong> contact@marie-starck.fr<br/>
-                      <strong>Téléphone :</strong> 01 23 45 67 89
-                    </p>
-                  </div>
+            
+            {/* First Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-16">
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Éditeur du site</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    <strong>Marie Starck</strong><br/>
+                    Atelier floral<br/>
+                    Soisy-sur-Seine, Essonne (91)<br/>
+                    France
+                  </p>
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    <strong>Email :</strong> contact@marie-starck.fr<br/>
+                    <strong>Téléphone :</strong> 01 23 45 67 89
+                  </p>
                 </div>
-
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
-
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Hébergement</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Ce site est hébergé par Vercel Inc.<br/>
-                      340 S Lemon Ave #4133<br/>
-                      Walnut, CA 91789<br/>
-                      États-Unis
-                    </p>
-                  </div>
-                </div>
-
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
-
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Propriété intellectuelle</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      L&apos;ensemble des contenus présents sur ce site (textes, images, photographies) 
-                      sont la propriété exclusive de Marie Starck, sauf mention contraire.
-                    </p>
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Toute reproduction, même partielle, est interdite sans autorisation préalable écrite.
-                    </p>
-                  </div>
-                </div>
-
               </div>
-
-              {/* Right Column */}
-              <div className="space-y-16">
-                
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Données personnelles</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Conformément au Règlement Général sur la Protection des Données (RGPD), 
-                      vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression 
-                      des données vous concernant.
-                    </p>
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Les informations recueillies via le formulaire de contact sont utilisées 
-                      uniquement pour répondre à vos demandes et ne sont jamais transmises à des tiers.
-                    </p>
-                  </div>
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Données personnelles</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Conformément au Règlement Général sur la Protection des Données (RGPD), 
+                    vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression 
+                    des données vous concernant.
+                  </p>
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Les informations recueillies via le formulaire de contact sont utilisées 
+                    uniquement pour répondre à vos demandes et ne sont jamais transmises à des tiers.
+                  </p>
                 </div>
+              </div>
+            </div>
 
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+            {/* Separator */}
+            <div className="border-t border-gray-300 my-16"></div>
 
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Responsabilité</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Les informations présentes sur ce site sont données à titre indicatif 
-                      et peuvent être modifiées sans préavis.
-                    </p>
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Marie Starck ne saurait être tenue responsable de l&apos;utilisation 
-                      qui pourrait être faite de ces informations.
-                    </p>
-                  </div>
+            {/* Second Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-16">
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Hébergement</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Ce site est hébergé par Vercel Inc.<br/>
+                    340 S Lemon Ave #4133<br/>
+                    Walnut, CA 91789<br/>
+                    États-Unis
+                  </p>
                 </div>
-
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
-
-                <div>
-                  <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Droit applicable</h2>
-                  <div className="space-y-4">
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      Les présentes mentions légales sont soumises au droit français.
-                    </p>
-                    <p className="text-gray-700 font-light leading-relaxed">
-                      En cas de litige, les tribunaux français seront seuls compétents.
-                    </p>
-                  </div>
+              </div>
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Responsabilité</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Les informations présentes sur ce site sont données à titre indicatif 
+                    et peuvent être modifiées sans préavis.
+                  </p>
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Marie Starck ne saurait être tenue responsable de l&apos;utilisation 
+                    qui pourrait être faite de ces informations.
+                  </p>
                 </div>
+              </div>
+            </div>
 
+            {/* Separator */}
+            <div className="border-t border-gray-300 my-16"></div>
+
+            {/* Third Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Propriété intellectuelle</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    L&apos;ensemble des contenus présents sur ce site (textes, images, photographies) 
+                    sont la propriété exclusive de Marie Starck, sauf mention contraire.
+                  </p>
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Toute reproduction, même partielle, est interdite sans autorisation préalable écrite.
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-2xl font-light text-black mb-6 tracking-wide">Droit applicable</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    Les présentes mentions légales sont soumises au droit français.
+                  </p>
+                  <p className="text-gray-700 font-light leading-relaxed">
+                    En cas de litige, les tribunaux français seront seuls compétents.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

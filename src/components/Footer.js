@@ -136,9 +136,9 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cgv" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
+                  <Link href="/conditions-vente" className="text-white hover:text-gray-200 font-light transition-colors duration-300 flex items-center group text-sm">
                     <span className="w-1.5 h-1.5 bg-white rounded-full mr-3 group-hover:bg-gray-200 transition-colors duration-300"></span>
-                    CGV
+                    Conditions de Vente
                   </Link>
                 </li>
                 <li>
