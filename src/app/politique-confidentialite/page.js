@@ -47,7 +47,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
               </div>
 
               <div>
@@ -67,7 +67,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
               </div>
 
               <div>
@@ -85,7 +85,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
               </div>
 
               <div>
@@ -107,7 +107,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
               </div>
 
               <div>
@@ -120,7 +120,7 @@ export default function Page() {
               </div>
 
               <div>
-                <div className="w-full h-0.5" style={{backgroundColor: '#276f88', opacity: 0.3}}></div>
+                <div className="border-t border-gray-300 my-8"></div>
               </div>
 
               <div>

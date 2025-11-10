@@ -180,9 +180,9 @@ const ContactPage = () => {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
               
-              <div className="text-center">
+              <div className="text-center flex flex-col">
                 <h3 className="text-2xl font-light text-black mb-6 tracking-wide">Horaires d'Ouverture</h3>
-                <div className="space-y-3">
+                <div className="space-y-3 flex-grow">
                   <div className="flex justify-between">
                     <span className="text-gray-600 font-light">Lundi - Vendredi</span>
                     <span className="text-black font-light">9h00 - 18h00</span>
@@ -195,26 +195,26 @@ const ContactPage = () => {
                     <span className="text-gray-600 font-light">Dimanche</span>
                     <span className="text-black font-light">Sur rendez-vous</span>
                   </div>
-                  <div className="mt-6 pt-6 border-t border-gray-300">
-                    <p className="text-sm text-gray-600 font-light italic">
-                      Service d'urgence disponible 7j/7 pour les cérémonies
-                    </p>
-                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-gray-300">
+                  <p className="text-sm text-gray-600 font-light italic">
+                    Service d'urgence disponible 7j/7 pour les cérémonies
+                  </p>
                 </div>
               </div>
 
-              <div className="text-center">
+              <div className="text-center flex flex-col">
                 <h3 className="text-2xl font-light text-black mb-6 tracking-wide">Zone de Livraison</h3>
-                <div className="space-y-3">
+                <div className="space-y-3 flex-grow">
                   <p className="text-gray-600 font-light">• Soisy-sur-Seine et communes limitrophes</p>
                   <p className="text-gray-600 font-light">• Essonne (91)</p>
                   <p className="text-gray-600 font-light">• Paris et petite couronne</p>
                   <p className="text-gray-600 font-light">• Seine-et-Marne (selon secteur)</p>
-                  <div className="mt-6 pt-6 border-t border-gray-300">
-                    <p className="text-sm text-gray-600 font-light italic">
-                      Autres destinations possibles sur demande
-                    </p>
-                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-gray-300">
+                  <p className="text-sm text-gray-600 font-light italic">
+                    Autres destinations possibles sur demande
+                  </p>
                 </div>
               </div>
             </div>
