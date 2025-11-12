@@ -215,13 +215,7 @@ export function isValidDeliveryDate(dateString) {
     }
   }
   
-  // Vérifier que ce n'est pas un dimanche (jour de repos)
-  if (selectedDate.getDay() === 0) {
-    return { 
-      valid: false, 
-      message: 'Pas de livraison le dimanche.' 
-    }
-  }
+  // Dimanche maintenant disponible pour les livraisons
   
   // Vérifier que ce n'est pas trop loin (max 4 semaines)
   const maxDate = new Date(now.getTime() + 28 * 24 * 60 * 60 * 1000)
@@ -245,18 +239,16 @@ export function getAvailableDeliveryDates(weeksAhead = 4) {
     const currentDate = new Date(startDate)
     currentDate.setDate(startDate.getDate() + i)
     
-    // Exclure les dimanches
-    if (currentDate.getDay() !== 0) {
-      dates.push({
-        date: currentDate.toISOString().split('T')[0],
-        display: currentDate.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
+    // Tous les jours sont maintenant disponibles (y compris dimanche)
+    dates.push({
+      date: currentDate.toISOString().split('T')[0],
+      display: currentDate.toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       })
-    }
+    })
   }
   
   return dates
