@@ -8,7 +8,7 @@ const MONTHS = [
   'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
 ]
 
-const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+const DAYS = ['L', 'Ma', 'Me', 'J', 'V', 'S', 'D']
 
 export default function CalendarPicker({ 
   value, 
@@ -19,7 +19,13 @@ export default function CalendarPicker({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(null)
-  const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : null)
+  const [selectedDate, setSelectedDate] = useState(() => {
+    if (value) {
+      const [year, month, day] = value.split('-').map(Number)
+      return new Date(year, month - 1, day)
+    }
+    return null
+  })
   const [isClient, setIsClient] = useState(false)
   const calendarRef = useRef(null)
 
@@ -44,7 +50,9 @@ export default function CalendarPicker({
   // Mettre à jour la date sélectionnée si la prop change
   useEffect(() => {
     if (value) {
-      setSelectedDate(new Date(value))
+      // Créer la date en local pour éviter les problèmes UTC
+      const [year, month, day] = value.split('-').map(Number)
+      setSelectedDate(new Date(year, month - 1, day))
     }
   }, [value])
 
@@ -111,7 +119,11 @@ export default function CalendarPicker({
     }
     
     setSelectedDate(date)
-    onChange(date.toISOString().split('T')[0])
+    // Formatage de date en local pour éviter les problèmes de fuseau horaire
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    onChange(`${year}-${month}-${day}`)
     setIsOpen(false)
   }
 
