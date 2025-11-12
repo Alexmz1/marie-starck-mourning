@@ -38,9 +38,9 @@ const AtelierPage = () => {
               </h2>
               <div className="w-24 h-0.5 mx-auto mb-8" style={{backgroundColor: '#858585'}}></div>
               <p className="text-xl text-gray-700 font-light leading-relaxed italic">
-                "Je mets tout mon savoir-faire et toute mon attention dans la réalisation de chaque composition florale. 
-                Parce qu'un dernier au revoir mérite douceur, respect et sincérité, je crée chaque pièce avec le cœur, 
-                comme un hommage unique à la personne disparue."
+                "Les fleurs sont le langage universel des émotions. Qu'il s'agisse de célébrer un mariage, 
+                d'illuminer votre quotidien ou d'accompagner un moment de recueillement, chaque création raconte 
+                une histoire unique. Je mets tout mon savoir-faire au service de vos moments précieux."
               </p>
               <p className="text-lg text-black font-light mt-8">— Marie Starck</p>
             </div>
