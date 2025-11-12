@@ -184,16 +184,24 @@ const ContactPage = () => {
                 <h3 className="text-2xl font-light text-black mb-6 tracking-wide">Horaires d'Ouverture</h3>
                 <div className="space-y-3 flex-grow">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 font-light">Lundi - Vendredi</span>
-                    <span className="text-black font-light">9h00 - 18h00</span>
+                    <span className="text-gray-600 font-light">Lundi - Mardi - Mercredi</span>
+                    <span className="text-black font-light">Fermé</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 font-light">Jeudi</span>
+                    <span className="text-black font-light">9h00-11h30, 15h30-19h00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 font-light">Vendredi</span>
+                    <span className="text-black font-light">9h00-11h30, 15h30-19h30</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 font-light">Samedi</span>
-                    <span className="text-black font-light">9h00 - 17h00</span>
+                    <span className="text-black font-light">9h30-13h00, 15h30-19h30</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 font-light">Dimanche</span>
-                    <span className="text-black font-light">Sur rendez-vous</span>
+                    <span className="text-black font-light">10h00-13h00</span>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-300">
@@ -206,14 +214,14 @@ const ContactPage = () => {
               <div className="text-center flex flex-col">
                 <h3 className="text-2xl font-light text-black mb-6 tracking-wide">Zone de Livraison</h3>
                 <div className="space-y-3 flex-grow">
-                  <p className="text-gray-600 font-light">• Soisy-sur-Seine et communes limitrophes</p>
-                  <p className="text-gray-600 font-light">• Essonne (91)</p>
-                  <p className="text-gray-600 font-light">• Paris et petite couronne</p>
-                  <p className="text-gray-600 font-light">• Seine-et-Marne (selon secteur)</p>
+                  <p className="text-gray-600 font-light">• 0-10 km : 5€ (livraison incluse dans le prix)</p>
+                  <p className="text-gray-600 font-light">• 10-15 km : +10€</p>
+                  <p className="text-gray-600 font-light">• 15-20 km : +15€</p>
+                  <p className="text-gray-600 font-light">• 20-25 km : +20€</p>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-300">
                   <p className="text-sm text-gray-600 font-light italic">
-                    Autres destinations possibles sur demande
+                    Tarifs calculés selon la distance
                   </p>
                 </div>
               </div>
@@ -398,7 +406,7 @@ const ContactPage = () => {
                 <div className="space-y-8">
                   <div>
                     <h3 className="text-xl font-light text-black mb-3 tracking-wide">Zone 1 – 0 à 10 km</h3>
-                    <p className="text-lg font-light mb-2" style={{color: '#858585'}}>5€ - Livraison incluse</p>
+                    <p className="text-lg font-light mb-2" style={{color: '#858585'}}>5€ - Livraison incluse dans le prix du produit</p>
                     <p className="text-gray-600 font-light leading-relaxed">
                       Soisy-sur-Seine, Évry-Courcouronnes, Corbeil-Essonnes, Draveil, Ris-Orangis, 
                       Saint-Germain-lès-Corbeil, Tigery, Morsang-sur-Seine, Villabé
