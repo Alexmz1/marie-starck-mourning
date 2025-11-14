@@ -82,8 +82,20 @@ export async function POST(request) {
 
     // Déterminer l'URL de base dynamiquement
     const host = request.headers.get('host');
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const baseUrl = process.env.BASE_URL || `${protocol}://${host}`;
+    
+    // Détection intelligente du protocole et de l'URL
+    let baseUrl;
+    if (process.env.BASE_URL && !process.env.BASE_URL.includes('localhost')) {
+      // Utiliser l'URL configurée si elle n'est pas localhost
+      baseUrl = process.env.BASE_URL;
+    } else {
+      // Détection automatique basée sur les headers
+      const protocol = request.headers.get('x-forwarded-proto') || 
+                      (process.env.NODE_ENV === 'production' ? 'https' : 'http');
+      baseUrl = `${protocol}://${host}`;
+    }
+    
+    console.log('🔗 Base URL utilisée:', baseUrl);
 
     // Créer la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
