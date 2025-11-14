@@ -42,7 +42,16 @@ async function getAdminStats() {
             }
           }
         }
-      })
+      }).then(orders => orders.map(order => ({
+        ...order,
+        customerInfo: order.customer ? {
+          firstName: order.customer.firstName || '',
+          lastName: order.customer.lastName || ''
+        } : {
+          firstName: order.customerFirstName || 'Client Stripe',
+          lastName: order.customerLastName || ''
+        }
+      })))
     ])
 
     return {
@@ -185,7 +194,7 @@ export default async function AdminDashboard() {
                   <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {order.customer.firstName} {order.customer.lastName}
+                        {order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.items.length} article(s) - {order.total}€

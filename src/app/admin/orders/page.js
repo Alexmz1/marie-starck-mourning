@@ -197,7 +197,7 @@ export default function OrdersPage() {
                         <div className="flex items-center space-x-4 mt-1">
                           <div className="flex items-center text-sm text-gray-600">
                             <UserIcon className="h-4 w-4 mr-1" />
-                            {order.customer.firstName} {order.customer.lastName}
+                            {order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -230,18 +230,18 @@ export default function OrdersPage() {
                         <div className="bg-white p-4 rounded-lg space-y-3">
                           <div className="flex items-center text-sm">
                             <UserIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <span className="font-medium">{order.customer.firstName} {order.customer.lastName}</span>
+                            <span className="font-medium">{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
                           </div>
                           <div className="flex items-center text-sm">
                             <EnvelopeIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <a href={`mailto:${order.customer.email}`} className="text-blue-600 hover:underline">
-                              {order.customer.email}
+                            <a href={`mailto:${order.customerInfo?.email || ''}`} className="text-blue-600 hover:underline">
+                              {order.customerInfo?.email || 'N/A'}
                             </a>
                           </div>
                           <div className="flex items-center text-sm">
                             <PhoneIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <a href={`tel:${order.customer.phone}`} className="text-blue-600 hover:underline">
-                              {order.customer.phone}
+                            <a href={`tel:${order.customerInfo?.phone || ''}`} className="text-blue-600 hover:underline">
+                              {order.customerInfo?.phone || 'N/A'}
                             </a>
                           </div>
                         </div>
@@ -283,10 +283,11 @@ export default function OrdersPage() {
                           {order.items.map((item, index) => (
                             <div key={index} className="p-4 flex items-center space-x-4">
                               <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
-                                {item.product.images?.[0] ? (
+                                {/* Utiliser l'image du produit lié ou l'image sauvegardée */}
+                                {(item.product?.images?.[0] || item.productImage) ? (
                                   <Image
-                                    src={item.product.images[0]}
-                                    alt={item.product.name}
+                                    src={item.product?.images?.[0] || item.productImage}
+                                    alt={item.product?.name || item.productName}
                                     width={48}
                                     height={48}
                                     className="w-full h-full object-cover"
@@ -298,7 +299,7 @@ export default function OrdersPage() {
                                 )}
                               </div>
                               <div className="flex-1">
-                                <h6 className="font-medium text-gray-900">{item.product.name}</h6>
+                                <h6 className="font-medium text-gray-900">{item.product?.name || item.productName}</h6>
                                 <div className="text-sm text-gray-600">
                                   {item.selectedSize && <span>Taille: {item.selectedSize} • </span>}
                                   {item.selectedColor && <span>Couleur: {item.selectedColor} • </span>}
@@ -312,7 +313,7 @@ export default function OrdersPage() {
                               </div>
                               <div className="text-right">
                                 <div className="font-medium text-gray-900">
-                                  {formatCurrency(item.total)}
+                                  {formatCurrency(item.totalPrice)}
                                 </div>
                                 <div className="text-sm text-gray-500">
                                   {formatCurrency(item.unitPrice)} × {item.quantity}
