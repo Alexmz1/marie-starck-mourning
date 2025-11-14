@@ -19,7 +19,7 @@ import {
 
 const PRIMARY_COLOR = '#276f88';
 
-const StatusBadge = ({ status }) => {
+const StatusSelector = ({ status, orderId, onStatusChange, isOpen, onToggle }) => {
   const statusConfig = {
     PENDING: { 
       label: 'En attente', 
@@ -28,18 +28,14 @@ const StatusBadge = ({ status }) => {
     },
     CONFIRMED: { 
       label: 'Confirmée', 
-      color: 'bg-blue-100 text-blue-800',
+      color: 'text-white',
+      bgColor: '#276f88',
       icon: CheckCircleIcon 
     },
     IN_PROGRESS: { 
       label: 'En cours', 
       color: 'bg-purple-100 text-purple-800',
       icon: ClockIcon 
-    },
-    READY: { 
-      label: 'Prête', 
-      color: 'bg-green-100 text-green-800',
-      icon: CheckCircleIcon 
     },
     DELIVERED: { 
       label: 'Livrée', 
@@ -53,14 +49,73 @@ const StatusBadge = ({ status }) => {
     }
   };
 
+  const statusOptions = [
+    { value: 'PENDING', label: 'En attente' },
+    { value: 'CONFIRMED', label: 'Confirmée' },
+    { value: 'IN_PROGRESS', label: 'En cours' },
+    { value: 'DELIVERED', label: 'Livrée' },
+    { value: 'CANCELLED', label: 'Annulée' }
+  ];
+
   const config = statusConfig[status] || statusConfig.PENDING;
   const IconComponent = config.icon;
 
+  const handleStatusSelect = (newStatus) => {
+    onStatusChange(orderId, newStatus);
+    onToggle(); // Fermer le dropdown
+  };
+
+  const handleToggle = (e) => {
+    e.stopPropagation();
+    onToggle();
+  };
+
   return (
-    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
-      <IconComponent className="h-3 w-3 mr-1" />
-      {config.label}
-    </span>
+    <div className="flex items-center space-x-2 status-selector">
+      <span 
+        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color || 'bg-gray-100 text-gray-800'}`}
+        style={config.bgColor ? { backgroundColor: config.bgColor } : {}}
+      >
+        <IconComponent className="h-3 w-3 mr-1" />
+        {config.label}
+      </span>
+      
+      <div className="relative">
+        <button
+          type="button"
+          onClick={handleToggle}
+          className="py-1 px-3 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-left transition-all duration-300 flex items-center justify-between text-xs rounded"
+        >
+          <span className="text-black">Modifier</span>
+          <svg 
+            className={`w-3 h-3 text-gray-400 transition-transform duration-200 ml-2 ${isOpen ? 'rotate-180' : ''}`} 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        {isOpen && (
+          <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-sm shadow-lg z-[60] min-w-32">
+            {statusOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusSelect(option.value);
+                }}
+                className="w-full py-2 px-3 text-left font-light text-black hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 text-xs block"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -69,10 +124,49 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedOrders, setExpandedOrders] = useState(new Set());
+  const [openStatusDropdowns, setOpenStatusDropdowns] = useState(new Set());
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Vérifier si le clic est à l'extérieur d'un dropdown de statut
+      if (!event.target.closest('.status-selector')) {
+        setOpenStatusDropdowns(new Set());
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        // Recharger les commandes
+        fetchOrders();
+      } else {
+        console.error('Erreur lors de la mise à jour du statut');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchOrders = async () => {
     try {
@@ -102,15 +196,33 @@ export default function OrdersPage() {
     setExpandedOrders(newExpanded);
   };
 
-  const formatDate = (dateString) => {
+  const toggleStatusDropdown = (orderId) => {
+    setOpenStatusDropdowns(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(orderId)) {
+        newSet.delete(orderId);
+      } else {
+        newSet.add(orderId);
+      }
+      return newSet;
+    });
+  };
+
+  const formatDate = (dateString, includeTime = true) => {
     if (!dateString) return 'Non spécifiée';
-    return new Date(dateString).toLocaleDateString('fr-FR', {
+    
+    const options = {
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+      year: 'numeric'
+    };
+    
+    if (includeTime) {
+      options.hour = '2-digit';
+      options.minute = '2-digit';
+    }
+    
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
   const formatCurrency = (amount) => {
@@ -180,12 +292,12 @@ export default function OrdersPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-hidden">
+              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible">
                 {/* En-tête de la commande */}
                 <div 
-                  className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
                   onClick={() => toggleOrderExpansion(order.id)}
                 >
                   <div className="flex items-center justify-between">
@@ -195,9 +307,9 @@ export default function OrdersPage() {
                           Commande #{order.orderNumber}
                         </h3>
                         <div className="flex items-center space-x-4 mt-1">
-                          <div className="flex items-center text-sm text-gray-600">
-                            <UserIcon className="h-4 w-4 mr-1" />
-                            {order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}
+                          <div className="flex items-center text-sm">
+                            <UserIcon className="h-4 w-4 mr-1" style={{color: PRIMARY_COLOR}} />
+                            <span style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -211,7 +323,13 @@ export default function OrdersPage() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
-                      <StatusBadge status={order.status} />
+                      <StatusSelector 
+                        status={order.status} 
+                        orderId={order.id}
+                        onStatusChange={updateOrderStatus}
+                        isOpen={openStatusDropdowns.has(order.id)}
+                        onToggle={() => toggleStatusDropdown(order.id)}
+                      />
                       <span className="text-sm text-gray-400">
                         {expandedOrders.has(order.id) ? '▼' : '▶'}
                       </span>
@@ -229,74 +347,125 @@ export default function OrdersPage() {
                         <h4 className="font-medium text-gray-900 mb-3">Informations client</h4>
                         <div className="bg-white p-4 rounded-lg space-y-3">
                           <div className="flex items-center text-sm">
-                            <UserIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <span className="font-medium">{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
+                            <UserIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                            <span className="font-medium" style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
                           </div>
                           <div className="flex items-center text-sm">
-                            <EnvelopeIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <a href={`mailto:${order.customerInfo?.email || ''}`} className="text-blue-600 hover:underline">
+                            <EnvelopeIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                            <a href={`mailto:${order.customerInfo?.email || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
                               {order.customerInfo?.email || 'N/A'}
                             </a>
                           </div>
                           <div className="flex items-center text-sm">
-                            <PhoneIcon className="h-4 w-4 mr-2 text-gray-400" />
-                            <a href={`tel:${order.customerInfo?.phone || ''}`} className="text-blue-600 hover:underline">
+                            <PhoneIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                            <a href={`tel:${order.customerInfo?.phone || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
                               {order.customerInfo?.phone || 'N/A'}
                             </a>
                           </div>
                         </div>
 
-                        {/* Informations de livraison */}
-                        {order.deliveryAddress && (
-                          <div>
-                            <h5 className="font-medium text-gray-900 mb-2">Livraison</h5>
-                            <div className="bg-white p-4 rounded-lg">
-                              <div className="flex items-start text-sm">
-                                <MapPinIcon className="h-4 w-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" />
-                                <div>
-                                  <div>{order.deliveryAddress}</div>
-                                  <div>{order.deliveryPostalCode} {order.deliveryCity}</div>
-                                </div>
-                              </div>
-                              {order.deliveryDate && (
-                                <div className="flex items-center text-sm mt-2">
-                                  <CalendarIcon className="h-4 w-4 mr-2 text-gray-400" />
-                                  <span>Date prévue: {formatDate(order.deliveryDate)}</span>
-                                </div>
-                              )}
-                              {order.deliveryInstructions && (
-                                <div className="mt-2 p-2 bg-yellow-50 rounded text-sm">
-                                  <strong>Instructions:</strong> {order.deliveryInstructions}
-                                </div>
+                        {/* Informations de livraison/récupération */}
+                        <div>
+                          <h5 className="font-medium text-gray-900 mb-2">
+                            {order.deliveryType === 'PICKUP' ? 'Récupération en boutique' : 'Livraison'}
+                          </h5>
+                          <div className="bg-white p-4 rounded-lg space-y-3">
+                            {/* Type de livraison */}
+                            <div className="flex items-center text-sm">
+                              {order.deliveryType === 'PICKUP' ? (
+                                <>
+                                  <MapPinIcon className="h-4 w-4 mr-2 text-green-500" />
+                                  <span className="font-medium text-green-700">Click & Collect</span>
+                                </>
+                              ) : (
+                                <>
+                                  <TruckIcon className="h-4 w-4 mr-2 text-blue-500" />
+                                  <span className="font-medium text-blue-700">Livraison à domicile</span>
+                                </>
                               )}
                             </div>
+
+                            {/* Adresse */}
+                            <div className="flex items-start text-sm">
+                              <MapPinIcon className="h-4 w-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" />
+                              <div>
+                                {order.deliveryType === 'PICKUP' ? (
+                                  <div>
+                                    <div className="font-medium" style={{color: PRIMARY_COLOR}}>Atelier Floral Marie Starck</div>
+                                    <div className="text-gray-600">Centre commercial des Meillottes</div>
+                                    <div className="text-gray-600">1 rue de la forêt de Sénart</div>
+                                    <div className="text-gray-600">91450 Soisy-sur-Seine</div>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <div>{order.deliveryAddress || 'Adresse non renseignée'}</div>
+                                    <div>{order.deliveryPostalCode} {order.deliveryCity}</div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Date prévue */}
+                            {order.deliveryDate && (
+                              <div className="flex items-center text-sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                <span style={{color: PRIMARY_COLOR}}>Date prévue: {formatDate(order.deliveryDate, false)}</span>
+                              </div>
+                            )}
+
+                            {/* Instructions de livraison */}
+                            {order.deliveryInstructions && (
+                              <div className="mt-2 p-2 bg-yellow-50 rounded text-sm">
+                                <strong>Instructions:</strong> {order.deliveryInstructions}
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
 
                       {/* Articles commandés */}
                       <div className="space-y-4">
                         <h4 className="font-medium text-gray-900 mb-3">
-                          Articles ({order._count.items} article{order._count.items > 1 ? 's' : ''})
+                          Articles ({order.items.filter(item => !item.productName?.includes('Détails de récupération')).length} article{order.items.filter(item => !item.productName?.includes('Détails de récupération')).length > 1 ? 's' : ''})
                         </h4>
                         <div className="bg-white rounded-lg divide-y divide-gray-200">
-                          {order.items.map((item, index) => (
+                          {order.items
+                            .filter(item => !item.productName?.includes('Détails de récupération'))
+                            .map((item, index) => (
                             <div key={index} className="p-4 flex items-center space-x-4">
                               <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
-                                {/* Utiliser l'image du produit lié ou l'image sauvegardée */}
-                                {(item.product?.images?.[0] || item.productImage) ? (
-                                  <Image
-                                    src={item.product?.images?.[0] || item.productImage}
-                                    alt={item.product?.name || item.productName}
-                                    width={48}
-                                    height={48}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                    <span className="text-gray-400 text-xs">Photo</span>
-                                  </div>
-                                )}
+                                {/* Debug: afficher les informations disponibles */}
+                                {(() => {
+                                  const productImage = item.product?.images?.[0];
+                                  const savedImage = item.productImage;
+                                  const finalImage = productImage || savedImage;
+                                  
+                                  // Console pour debug (à supprimer plus tard)
+                                  console.log('Item:', item.productName, {
+                                    productImage,
+                                    savedImage,
+                                    finalImage,
+                                    hasProduct: !!item.product
+                                  });
+                                  
+                                  return finalImage ? (
+                                    <Image
+                                      src={finalImage}
+                                      alt={item.product?.name || item.productName}
+                                      width={48}
+                                      height={48}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        console.error('Erreur chargement image:', finalImage);
+                                        e.target.style.display = 'none';
+                                      }}
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                      <span className="text-gray-400 text-xs">Photo</span>
+                                    </div>
+                                  );
+                                })()}
                               </div>
                               <div className="flex-1">
                                 <h6 className="font-medium text-gray-900">{item.product?.name || item.productName}</h6>

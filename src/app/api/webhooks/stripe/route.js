@@ -169,9 +169,40 @@ async function buildOrderItems(lineItems) {
     const colorMatch = description.match(/Couleur:\s*([^-]+)/i);
     const ribbonMatch = description.includes('ruban personnalisé');
     
+    // Essayer de trouver le produit dans la base de données pour récupérer l'image
+    let productImage = item.price.product.images?.[0] || null;
+    let productId = null;
+    
+    if (!productImage) {
+      try {
+        // Chercher le produit par nom
+        const productName = item.description?.split(' - ')[0] || item.price.product.name;
+        const product = await prisma.product.findFirst({
+          where: {
+            name: {
+              contains: productName,
+              mode: 'insensitive'
+            }
+          },
+          select: {
+            id: true,
+            images: true
+          }
+        });
+        
+        if (product) {
+          productId = product.id;
+          productImage = product.images?.[0] || null;
+        }
+      } catch (error) {
+        console.error('Erreur lors de la recherche du produit:', error);
+      }
+    }
+    
     const orderItem = {
+      productId: productId,
       productName: item.description?.split(' - ')[0] || item.price.product.name,
-      productImage: item.price.product.images?.[0] || null,
+      productImage: productImage,
       quantity: item.quantity,
       unitPrice: item.price.unit_amount / 100,
       totalPrice: (item.amount_total || item.amount_subtotal) / 100,
