@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '../../components/Header';
@@ -10,7 +10,8 @@ import useCartStore from '../../store/cartStore';
 
 const PRIMARY_COLOR = '#276f88';
 
-export default function SuccessPage() {
+// Composant séparé pour utiliser useSearchParams
+function SuccessContent() {
   const [sessionData, setSessionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -157,5 +158,25 @@ export default function SuccessPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+// Composant principal avec Suspense
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Header />
+        <main className="min-h-screen py-16" style={{backgroundColor: '#faf8f3'}}>
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{borderColor: PRIMARY_COLOR}}></div>
+            <p className="text-lg text-gray-600">Chargement...</p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
