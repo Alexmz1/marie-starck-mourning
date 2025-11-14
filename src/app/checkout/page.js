@@ -37,8 +37,10 @@ const SIZES = {
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, getTotalItems, getTotalPrice } = useCartStore()
+  const [isClient, setIsClient] = useState(false)
 
   // États du formulaire
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [formData, setFormData] = useState({
     // Informations client
     firstName: '',
@@ -76,7 +78,14 @@ export default function CheckoutPage() {
   const [isCalculatingFee, setIsCalculatingFee] = useState(false)
   const [minDeliveryDate, setMinDeliveryDate] = useState('')
 
+  // Effet pour initialiser le côté client
   useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+    
     // Définir la date minimum côté client pour éviter les problèmes d'hydratation
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -90,7 +99,7 @@ export default function CheckoutPage() {
 
     // Charger les dates disponibles
     setAvailableDates(getAvailableDeliveryDates(4))
-  }, [items, router])
+  }, [items, router, isClient])
 
   // Calcul automatique des frais de livraison quand l'adresse change (seulement pour la livraison)
   useEffect(() => {
@@ -186,13 +195,19 @@ export default function CheckoutPage() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     // Validation finale pour la livraison
     if (formData.deliveryType === 'delivery') {
       if (!deliveryInfo.calculated || deliveryInfo.error) {
         alert('Veuillez vérifier l\'adresse de livraison.')
+        return
+      }
+      
+      // Validation de la distance (sécurité côté client)
+      if (deliveryInfo.distance > 25) {
+        alert('La livraison est disponible uniquement dans un rayon de 25 km de la boutique.')
         return
       }
     }
@@ -203,25 +218,89 @@ export default function CheckoutPage() {
       return
     }
 
-    // Ici, redirection vers le paiement avec toutes les données
-    console.log('Données de commande:', {
-      cart: items,
-      customer: formData,
-      delivery: deliveryInfo,
-      totals: {
-        subtotal: getTotalPrice(),
-        deliveryFee: formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee,
-        total: getTotalPrice() + (formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee)
-      }
-    })
+    // Validation des champs obligatoires
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+      alert('Veuillez remplir tous les champs obligatoires.')
+      return
+    }
 
-    // TODO: Rediriger vers Stripe/PayPal
-    alert('Redirection vers le paiement... (À implémenter)')
+    setIsProcessingPayment(true)
+
+    try {
+      // Préparer les données pour Stripe
+      const orderData = {
+        items: items,
+        customer: formData,
+        delivery: {
+          deliveryType: formData.deliveryType,
+          fee: formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee,
+          zone: deliveryInfo.zone,
+          distance: deliveryInfo.distance,
+          calculated: deliveryInfo.calculated,
+          error: deliveryInfo.error
+        },
+        totals: {
+          subtotal: getTotalPrice(),
+          deliveryFee: formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee,
+          total: getTotalPrice() + (formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee)
+        }
+      }
+
+      // Appeler l'API pour créer la session Stripe
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      })
+
+      const data = await response.json()
+
+      if (data.url) {
+        // Redirection vers Stripe Checkout
+        window.location.href = data.url
+      } else {
+        throw new Error(data.error || 'Erreur lors de la création de la session de paiement')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      
+      // Message d'erreur spécifique selon le type d'erreur
+      if (error.message.includes('rayon de 25 km')) {
+        alert('❌ Zone de livraison non couverte\n\nVotre adresse se trouve en dehors de notre zone de livraison (25 km maximum).\n\nVous pouvez opter pour le "Click & Collect" à notre atelier.')
+      } else if (error.message.includes('adresse de livraison')) {
+        alert('❌ Adresse de livraison invalide\n\nVeuillez vérifier votre adresse de livraison.')
+      } else {
+        alert('❌ Une erreur est survenue lors de la redirection vers le paiement.\n\nVeuillez réessayer ou nous contacter si le problème persiste.')
+      }
+      
+      setIsProcessingPayment(false)
+    }
   }
 
   const subtotal = getTotalPrice()
   const deliveryFee = formData.deliveryType === 'pickup' ? 0 : (deliveryInfo.calculated ? deliveryInfo.fee : 0)
   const total = subtotal + deliveryFee
+
+  // Afficher un loader pendant l'hydratation côté client
+  if (!isClient) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen py-8" style={{backgroundColor: '#faf8f3'}}>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                <p className="text-gray-600">Chargement...</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </>
+    )
+  }
 
   return (
     <>
@@ -651,12 +730,21 @@ export default function CheckoutPage() {
                 <button
                   form="checkout-form"
                   type="submit"
-                  disabled={!deliveryInfo.calculated || deliveryInfo.error || !dateValidation.valid}
+                  disabled={!deliveryInfo.calculated || deliveryInfo.error || !dateValidation.valid || isProcessingPayment}
                   className="w-full py-4 px-12 font-light text-white transition-all duration-300 tracking-wide hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   style={{backgroundColor: PRIMARY_COLOR}}
                 >
-                  <TruckIcon className="h-5 w-5 mr-2" />
-                  PROCÉDER AU PAIEMENT
+                  {isProcessingPayment ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      REDIRECTION VERS LE PAIEMENT...
+                    </>
+                  ) : (
+                    <>
+                      <TruckIcon className="h-5 w-5 mr-2" />
+                      PROCÉDER AU PAIEMENT
+                    </>
+                  )}
                 </button>
               </div>
             </div>

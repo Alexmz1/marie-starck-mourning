@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import useCartStore from '../store/cartStore';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
@@ -9,7 +9,16 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { getTotalItems } = useCartStore();
+
+  // Effet pour initialiser le côté client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Obtenir le nombre d'articles du panier de façon sécurisée
+  const cartItemsCount = isClient ? getTotalItems() : 0;
 
   // Fonction pour gérer le scroll vers les sections
   const handleSectionClick = (href, e) => {
@@ -109,9 +118,9 @@ export default function Header() {
                   aria-label="Panier"
                 >
                   <ShoppingBagIcon className="h-5 w-5" />
-                  {getTotalItems() > 0 && (
+                  {cartItemsCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium">
-                      {getTotalItems()}
+                      {cartItemsCount}
                     </span>
                   )}
                 </button>
@@ -428,9 +437,9 @@ export default function Header() {
               aria-label="Panier"
             >
               <ShoppingBagIcon className="h-6 w-6" />
-              {getTotalItems() > 0 && (
+              {cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                  {getTotalItems()}
+                  {cartItemsCount}
                 </span>
               )}
             </button>
