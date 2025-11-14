@@ -83,7 +83,7 @@ export async function POST(request) {
     // Déterminer l'URL de base dynamiquement
     const host = request.headers.get('host');
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
+    const baseUrl = process.env.BASE_URL || `${protocol}://${host}`;
 
     // Créer la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
