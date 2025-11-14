@@ -223,7 +223,7 @@ export default async function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-                  <div className="text-center pt-4">
+                <div className="text-center pt-4">
                   <a
                     href="/admin/orders"
                     className="text-sm font-light hover:underline transition-colors"

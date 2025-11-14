@@ -499,12 +499,12 @@ export default function OrdersPage() {
                               <span className="text-gray-600">Sous-total:</span>
                               <span className="text-gray-900">{formatCurrency(order.subtotal)}</span>
                             </div>
-                            {order.deliveryFee > 0 && (
-                              <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Frais de livraison:</span>
-                                <span className="text-gray-900">{formatCurrency(order.deliveryFee)}</span>
-                              </div>
-                            )}
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Frais de livraison:</span>
+                              <span className="text-gray-900">
+                                {order.deliveryType === 'PICKUP' ? 'Gratuit (récupération)' : formatCurrency(order.deliveryFee || 0)}
+                              </span>
+                            </div>
                             <div className="flex justify-between font-medium text-lg pt-2 border-t">
                               <span className="text-gray-900">Total:</span>
                               <span style={{color: PRIMARY_COLOR}}>{formatCurrency(order.total)}</span>
