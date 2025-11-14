@@ -78,26 +78,47 @@ model Order {
   id                   String      @id @default(cuid())
   orderNumber          String      @unique
   status               OrderStatus @default(PENDING)
-  customerId           String
+  customerId           String?
+  
+  // Données Stripe
+  stripeSessionId      String?     @unique
+  stripePaymentIntentId String?    @unique
+  
+  // Informations client (si pas de Customer créé)
+  customerEmail        String?
+  customerFirstName    String?
+  customerLastName     String?
+  customerPhone        String?
+  
+  // Livraison
+  deliveryType         DeliveryType @default(DELIVERY)
   deliveryDate         DateTime?
   deliveryAddress      String?
   deliveryCity         String?
   deliveryPostalCode   String?
   deliveryInstructions String?
+  
+  // Événements spéciaux
   deceasedName         String?
   ceremonyDate         DateTime?
   weddingDate          DateTime?
   venue                String?
+  
+  // Montants
   subtotal             Float
   deliveryFee          Float       @default(0)
   total                Float
-  paymentMethod        String?
+  
+  // Paiement
+  paymentMethod        String?     @default("stripe")
   paymentStatus        String?     @default("pending")
+  currency             String      @default("eur")
+  
   notes                String?
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
   items                OrderItem[]
-  customer             Customer    @relation(fields: [customerId], references: [id])
+  customer             Customer?   @relation(fields: [customerId], references: [id])
 
   @@map("orders")
 }
@@ -105,15 +126,27 @@ model Order {
 model OrderItem {
   id            String  @id @default(cuid())
   orderId       String
-  productId     String
+  productId     String?
+  
+  // Données du produit (au moment de la commande)
+  productName   String
+  productImage  String?
+  
   quantity      Int     @default(1)
   unitPrice     Float
-  total         Float
+  totalPrice    Float
+  
+  // Variantes sélectionnées
   selectedSize  Size?
   selectedColor Color?
+  
+  // Options personnalisées
   customMessage String?
+  ribbonText    String?
+  hasRibbon     Boolean @default(false)
+  
   order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product       Product @relation(fields: [productId], references: [id])
+  product       Product? @relation(fields: [productId], references: [id])
 
   @@map("order_items")
 }
@@ -213,4 +246,9 @@ enum OrderStatus {
 enum CustomerType {
   INDIVIDUAL
   BUSINESS
+}
+
+enum DeliveryType {
+  DELIVERY
+  PICKUP
 }
