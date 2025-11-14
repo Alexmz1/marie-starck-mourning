@@ -1,4 +1,6 @@
-import { prisma } from '../../../lib/prisma'
+'use client';
+
+import { useState, useEffect } from 'react';
 import { 
   SparklesIcon, 
   UsersIcon, 
@@ -21,65 +23,7 @@ function getStatusLabel(status) {
   return statusLabels[status] || status
 }
 
-async function getAdminStats() {
-  try {
-    const [
-      productsCount,
-      customersCount,
-      ordersCount,
-      recentOrders
-    ] = await Promise.all([
-      prisma.product.count(),
-      prisma.customer.count(),
-      prisma.order.count(),
-      prisma.order.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          customer: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
-          },
-          items: {
-            include: {
-              product: {
-                select: {
-                  name: true
-                }
-              }
-            }
-          }
-        }
-      }).then(orders => orders.map(order => ({
-        ...order,
-        customerInfo: order.customer ? {
-          firstName: order.customer.firstName || '',
-          lastName: order.customer.lastName || ''
-        } : {
-          firstName: order.customerFirstName || 'Client Stripe',
-          lastName: order.customerLastName || ''
-        }
-      })))
-    ])
-
-    return {
-      productsCount,
-      customersCount,
-      ordersCount,
-      recentOrders
-    }
-  } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error)
-    return {
-      productsCount: 0,
-      customersCount: 0,
-      ordersCount: 0,
-      recentOrders: []
-    }
-  }
-}
+// Cette fonction sera remplacée par des appels API côté client
 
 const StatCard = ({ title, value, icon: IconComponent }) => (
   <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
@@ -118,8 +62,47 @@ const QuickAction = ({ title, description, href, icon: IconComponent }) => (
   </a>
 )
 
-export default async function AdminDashboard() {
-  const stats = await getAdminStats()
+export default function AdminDashboard() {
+  const [stats, setStats] = useState({
+    productsCount: 0,
+    customersCount: 0,
+    ordersCount: 0,
+    recentOrders: []
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAdminStats();
+  }, []);
+
+  const fetchAdminStats = async () => {
+    try {
+      setLoading(true);
+      
+      // Récupérer les statistiques et les commandes en parallèle
+      const [statsResponse, ordersResponse] = await Promise.all([
+        fetch('/api/admin/stats'),
+        fetch('/api/admin/orders')
+      ]);
+      
+      const stats = await statsResponse.json();
+      const orders = await ordersResponse.json();
+      
+      // Prendre les 5 commandes les plus récentes
+      const recentOrders = orders.slice(0, 5);
+      
+      setStats({
+        productsCount: stats.productsCount,
+        customersCount: stats.customersCount,
+        ordersCount: stats.ordersCount,
+        recentOrders
+      });
+    } catch (error) {
+      console.error('Erreur lors de la récupération des statistiques:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
@@ -133,8 +116,17 @@ export default async function AdminDashboard() {
         </p>
       </div>
 
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {loading && (
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: PRIMARY_COLOR }}></div>
+          <p className="mt-2 text-sm text-gray-600">Chargement...</p>
+        </div>
+      )}
+
+      {!loading && (
+        <>
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Produits"
           value={stats.productsCount}
@@ -269,6 +261,8 @@ export default async function AdminDashboard() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   )
 }
