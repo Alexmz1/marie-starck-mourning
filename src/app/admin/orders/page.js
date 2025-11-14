@@ -387,7 +387,7 @@ export default function OrdersPage() {
 
                             {/* Adresse */}
                             <div className="flex items-start text-sm">
-                              <MapPinIcon className="h-4 w-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" />
+                              <MapPinIcon className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
                               <div>
                                 {order.deliveryType === 'PICKUP' ? (
                                   <div>
@@ -398,8 +398,8 @@ export default function OrdersPage() {
                                   </div>
                                 ) : (
                                   <div>
-                                    <div>{order.deliveryAddress || 'Adresse non renseignée'}</div>
-                                    <div>{order.deliveryPostalCode} {order.deliveryCity}</div>
+                                    <div className="font-medium" style={{color: PRIMARY_COLOR}}>{order.deliveryAddress || 'Adresse non renseignée'}</div>
+                                    <div style={{color: PRIMARY_COLOR}}>{order.deliveryPostalCode} {order.deliveryCity}</div>
                                   </div>
                                 )}
                               </div>
