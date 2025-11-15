@@ -156,17 +156,24 @@ export async function POST(request) {
 
         // Panier complet encodé en JSON pour le webhook
             cart_json: JSON.stringify([
-              ...items.map(item => ({
-                productId: item.productId,
-                productName: item.productName,
-                productImage: item.productImage,
-                quantity: item.quantity,
-                unitPrice: item.price,
-                totalPrice: item.totalPrice,
-                customMessage: item.customMessage || '',
-                selectedColor: item.color?.name || '',
-                selectedSize: item.size || ''
-              })),
+              ...items.map(item => {
+                // Si le produit a un ruban, on retire le prix du ruban du total
+                const ribbonEnabled = item.options?.ribbon?.enabled && item.options?.ribbon?.text;
+                const ribbonPrice = ribbonEnabled ? 5.00 : 0; // À adapter si le prix du ruban est variable
+                const baseUnitPrice = (item.price || 0) - (ribbonEnabled ? ribbonPrice : 0);
+                const baseTotalPrice = (item.totalPrice || 0) - (ribbonEnabled ? ribbonPrice * item.quantity : 0);
+                return {
+                  productId: item.productId,
+                  productName: item.productName,
+                  productImage: item.productImage,
+                  quantity: item.quantity,
+                  unitPrice: baseUnitPrice,
+                  totalPrice: baseTotalPrice,
+                  customMessage: item.customMessage || '',
+                  selectedColor: item.color?.name || '',
+                  selectedSize: item.size || ''
+                };
+              }),
               // Ajout du ruban comme item séparé si présent sur un des produits
               ...items.filter(item => item.options?.ribbon?.enabled && item.options?.ribbon?.text).map(item => ({
                 isRibbon: true,

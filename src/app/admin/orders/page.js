@@ -432,64 +432,60 @@ export default function OrdersPage() {
                           {order.items
                             .filter(item => !item.productName?.includes('Détails de récupération'))
                             .map((item, index) => (
-                            <div key={index} className="p-4 flex items-center space-x-4">
-                              <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
-                                {/* Debug: afficher les informations disponibles */}
-                                {(() => {
-                                  const productImage = item.product?.images?.[0];
-                                  const savedImage = item.productImage;
-                                  const finalImage = productImage || savedImage;
-                                  
-                                  // Console pour debug (à supprimer plus tard)
-                                  console.log('Item:', item.productName, {
-                                    productImage,
-                                    savedImage,
-                                    finalImage,
-                                    hasProduct: !!item.product
-                                  });
-                                  
-                                  return finalImage ? (
-                                    <Image
-                                      src={finalImage}
-                                      alt={item.product?.name || item.productName}
-                                      width={48}
-                                      height={48}
-                                      className="w-full h-full object-cover"
-                                      onError={(e) => {
-                                        console.error('Erreur chargement image:', finalImage);
-                                        e.target.style.display = 'none';
-                                      }}
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                      <span className="text-gray-400 text-xs">Photo</span>
-                                    </div>
-                                  );
-                                })()}
-                              </div>
-                              <div className="flex-1">
-                                <h6 className="font-medium text-gray-900">{item.product?.name || item.productName}</h6>
-                                <div className="text-sm text-gray-600">
-                                  {item.selectedSize && <span>Taille: {item.selectedSize} • </span>}
-                                  {item.selectedColor && <span>Couleur: {item.selectedColor} • </span>}
-                                  Quantité: {item.quantity}
+                              <div key={index} className="p-4 flex items-center space-x-4">
+                                <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
+                                  {(() => {
+                                    const productImage = item.product?.images?.[0];
+                                    const savedImage = item.productImage;
+                                    const finalImage = productImage || savedImage;
+                                    return finalImage ? (
+                                      <Image
+                                        src={finalImage}
+                                        alt={item.product?.name || item.productName}
+                                        width={48}
+                                        height={48}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                        }}
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                        <span className="text-gray-400 text-xs">Photo</span>
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
-                                {item.customMessage && (
-                                  <div className="text-sm text-blue-600 mt-1">
-                                    Message: "{item.customMessage}"
+                                <div className="flex-1">
+                                  <h6 className={`font-medium ${item.hasRibbon ? 'text-pink-700' : 'text-gray-900'}`}>{item.product?.name || item.productName}</h6>
+                                  <div className="text-sm text-gray-600">
+                                    {item.selectedSize && <span>Taille: {item.selectedSize} • </span>}
+                                    {item.selectedColor && <span>Couleur: {item.selectedColor} • </span>}
+                                    Quantité: {item.quantity}
                                   </div>
-                                )}
-                              </div>
-                              <div className="text-right">
-                                <div className="font-medium text-gray-900">
-                                  {formatCurrency(item.totalPrice)}
+                                  {/* Affichage spécifique pour le ruban */}
+                                  {item.hasRibbon && (
+                                    <div className="text-sm text-pink-600 mt-1">
+                                      Ruban personnalisé : "{item.ribbonText}"
+                                    </div>
+                                  )}
+                                  {/* Message classique */}
+                                  {item.customMessage && !item.hasRibbon && (
+                                    <div className="text-sm text-blue-600 mt-1">
+                                      Message: "{item.customMessage}"
+                                    </div>
+                                  )}
                                 </div>
-                                <div className="text-sm text-gray-500">
-                                  {formatCurrency(item.unitPrice)} × {item.quantity}
+                                <div className="text-right">
+                                  <div className="font-medium text-gray-900">
+                                    {formatCurrency(item.totalPrice)}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {formatCurrency(item.unitPrice)} × {item.quantity}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
                         </div>
 
                         {/* Récapitulatif financier */}

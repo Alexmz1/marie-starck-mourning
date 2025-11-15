@@ -141,10 +141,42 @@ async function saveOrderToDatabase(session) {
     if (metadata.cart_json) {
       try {
         const cart = JSON.parse(metadata.cart_json);
-        orderItems = cart.map(item => {
-          if (item.isRibbon) {
-            // Ruban comme item séparé
-            return {
+        orderItems = [];
+        cart.forEach(item => {
+          // Produit classique
+          if (!item.isRibbon) {
+            orderItems.push({
+              productId: item.productId || null,
+              productName: item.productName,
+              productImage: item.productImage,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              totalPrice: item.totalPrice,
+              customMessage: item.customMessage,
+              selectedColor: item.selectedColor,
+              selectedSize: item.selectedSize,
+              hasRibbon: false,
+              ribbonText: ''
+            });
+            // Si le produit a un ruban, on ajoute un item séparé pour le ruban
+            if (item.hasRibbon && item.ribbonText) {
+              orderItems.push({
+                productId: null,
+                productName: 'Ruban personnalisé',
+                productImage: 'https://via.placeholder.com/300x300?text=Ruban',
+                quantity: 1,
+                unitPrice: 5.00,
+                totalPrice: 5.00,
+                ribbonText: item.ribbonText,
+                hasRibbon: true,
+                customMessage: item.ribbonText,
+                selectedColor: '',
+                selectedSize: ''
+              });
+            }
+          } else {
+            // Si jamais un item isRibbon isolé (sécurité)
+            orderItems.push({
               productId: null,
               productName: 'Ruban personnalisé',
               productImage: 'https://via.placeholder.com/300x300?text=Ruban',
@@ -156,22 +188,8 @@ async function saveOrderToDatabase(session) {
               customMessage: item.customMessage || item.ribbonText || '',
               selectedColor: '',
               selectedSize: ''
-            };
+            });
           }
-          // Produit classique avec productId
-          return {
-            productId: item.productId || null,
-            productName: item.productName,
-            productImage: item.productImage,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.totalPrice,
-            customMessage: item.customMessage,
-            selectedColor: item.selectedColor,
-            selectedSize: item.selectedSize,
-            hasRibbon: false,
-            ribbonText: ''
-          };
         });
       } catch (e) {
         console.error('Erreur parsing cart_json:', e);
