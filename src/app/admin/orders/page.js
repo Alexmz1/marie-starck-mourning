@@ -415,8 +415,8 @@ export default function OrdersPage() {
 
                             {/* Instructions de livraison */}
                             {order.deliveryInstructions && (
-                              <div className="mt-2 p-2 bg-yellow-50 rounded text-sm">
-                                <strong>Instructions:</strong> {order.deliveryInstructions}
+                              <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-800">
+                                <span className="font-medium">Instructions de livraison :</span> {order.deliveryInstructions}
                               </div>
                             )}
                           </div>
@@ -497,7 +497,12 @@ export default function OrdersPage() {
                           <div className="space-y-2">
                             <div className="flex justify-between text-sm">
                               <span className="text-gray-600">Sous-total:</span>
-                              <span className="text-gray-900">{formatCurrency(order.subtotal)}</span>
+                              <span className="text-gray-900">
+                                {formatCurrency(order.items
+                                  .filter(item => !(item.productName && item.productName.trim().toLowerCase() === 'frais de livraison'))
+                                  .reduce((sum, item) => sum + (item.totalPrice || 0), 0)
+                                )}
+                              </span>
                             </div>
                             <div className="flex justify-between text-sm">
                               <span className="text-gray-600">Frais de livraison:</span>

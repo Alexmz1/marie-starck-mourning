@@ -140,18 +140,33 @@ async function saveOrderToDatabase(session) {
     let orderItems = [];
     if (metadata.cart_json) {
       try {
-        orderItems = JSON.parse(metadata.cart_json).map(item => ({
-          productName: item.productName,
-          productImage: item.productImage,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          totalPrice: item.totalPrice,
-          customMessage: item.customMessage,
-          ribbonText: item.ribbonText,
-          hasRibbon: item.hasRibbon,
-          selectedColor: item.selectedColor,
-          selectedSize: item.selectedSize
-        }));
+        const cart = JSON.parse(metadata.cart_json);
+        orderItems = cart.map(item => {
+          // Si c'est un ruban, on le traite comme un produit à part entière
+          if (item.isRibbon) {
+            return {
+              productName: 'Ruban personnalisé',
+              productImage: 'https://via.placeholder.com/300x300?text=Ruban',
+              quantity: 1,
+              unitPrice: 5.00, // ou item.price si dynamique
+              totalPrice: 5.00, // idem
+              ribbonText: item.ribbonText || item.customMessage || '',
+              hasRibbon: true,
+              customMessage: item.customMessage || ''
+            };
+          }
+          // Sinon, produit classique
+          return {
+            productName: item.productName,
+            productImage: item.productImage,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            totalPrice: item.totalPrice,
+            customMessage: item.customMessage,
+            selectedColor: item.selectedColor,
+            selectedSize: item.selectedSize
+          };
+        });
       } catch (e) {
         console.error('Erreur parsing cart_json:', e);
       }
