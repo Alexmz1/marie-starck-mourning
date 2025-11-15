@@ -155,18 +155,34 @@ export async function POST(request) {
         items_count: items.reduce((sum, item) => sum + item.quantity, 0).toString(),
 
         // Panier complet encodé en JSON pour le webhook
-        cart_json: JSON.stringify(items.map(item => ({
-          productName: item.productName,
-          productImage: item.productImage,
-          quantity: item.quantity,
-          unitPrice: item.price,
-          totalPrice: item.totalPrice,
-          customMessage: item.customMessage || '',
-          ribbonText: item.options?.ribbon?.text || '',
-          hasRibbon: item.options?.ribbon?.enabled ? true : false,
-          selectedColor: item.color?.name || '',
-          selectedSize: item.size || ''
-        })))
+            cart_json: JSON.stringify([
+              ...items.map(item => ({
+                productId: item.productId,
+                productName: item.productName,
+                productImage: item.productImage,
+                quantity: item.quantity,
+                unitPrice: item.price,
+                totalPrice: item.totalPrice,
+                customMessage: item.customMessage || '',
+                selectedColor: item.color?.name || '',
+                selectedSize: item.size || ''
+              })),
+              // Ajout du ruban comme item séparé si présent sur un des produits
+              ...items.filter(item => item.options?.ribbon?.enabled && item.options?.ribbon?.text).map(item => ({
+                isRibbon: true,
+                productId: null,
+                productName: 'Ruban personnalisé',
+                productImage: 'https://via.placeholder.com/300x300?text=Ruban',
+                quantity: 1,
+                unitPrice: 5.00, // à adapter si le prix du ruban est variable
+                totalPrice: 5.00,
+                ribbonText: item.options.ribbon.text,
+                hasRibbon: true,
+                customMessage: item.options.ribbon.text,
+                selectedColor: '',
+                selectedSize: ''
+              }))
+            ])
       },
       // Collecter seulement l'adresse de facturation (obligatoire)
       billing_address_collection: 'required',

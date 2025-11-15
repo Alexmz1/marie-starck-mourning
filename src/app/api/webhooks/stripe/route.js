@@ -142,21 +142,25 @@ async function saveOrderToDatabase(session) {
       try {
         const cart = JSON.parse(metadata.cart_json);
         orderItems = cart.map(item => {
-          // Si c'est un ruban, on le traite comme un produit à part entière
           if (item.isRibbon) {
+            // Ruban comme item séparé
             return {
+              productId: null,
               productName: 'Ruban personnalisé',
               productImage: 'https://via.placeholder.com/300x300?text=Ruban',
               quantity: 1,
-              unitPrice: 5.00, // ou item.price si dynamique
-              totalPrice: 5.00, // idem
+              unitPrice: item.unitPrice || 5.00,
+              totalPrice: item.totalPrice || 5.00,
               ribbonText: item.ribbonText || item.customMessage || '',
               hasRibbon: true,
-              customMessage: item.customMessage || ''
+              customMessage: item.customMessage || item.ribbonText || '',
+              selectedColor: '',
+              selectedSize: ''
             };
           }
-          // Sinon, produit classique
+          // Produit classique avec productId
           return {
+            productId: item.productId || null,
             productName: item.productName,
             productImage: item.productImage,
             quantity: item.quantity,
@@ -164,7 +168,9 @@ async function saveOrderToDatabase(session) {
             totalPrice: item.totalPrice,
             customMessage: item.customMessage,
             selectedColor: item.selectedColor,
-            selectedSize: item.selectedSize
+            selectedSize: item.selectedSize,
+            hasRibbon: false,
+            ribbonText: ''
           };
         });
       } catch (e) {
