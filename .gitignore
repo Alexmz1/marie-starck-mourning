@@ -49,3 +49,5 @@ next-env.d.ts
 /clear-cart.js
 
 /backup/data/
+
+/src/app/api/test-webhook

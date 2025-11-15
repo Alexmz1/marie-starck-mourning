@@ -137,8 +137,8 @@ model OrderItem {
   totalPrice    Float
   
   // Variantes sélectionnées
-  selectedSize  Size?
-  selectedColor Color?
+  selectedSize  String?
+  selectedColor String?
   
   // Options personnalisées
   customMessage String?
