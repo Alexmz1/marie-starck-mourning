@@ -153,6 +153,20 @@ export async function POST(request) {
         
         // Nombre d'articles
         items_count: items.reduce((sum, item) => sum + item.quantity, 0).toString(),
+
+        // Panier complet encodé en JSON pour le webhook
+        cart_json: JSON.stringify(items.map(item => ({
+          productName: item.productName,
+          productImage: item.productImage,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          totalPrice: item.totalPrice,
+          customMessage: item.customMessage || '',
+          ribbonText: item.options?.ribbon?.text || '',
+          hasRibbon: item.options?.ribbon?.enabled ? true : false,
+          selectedColor: item.color?.name || '',
+          selectedSize: item.size || ''
+        })))
       },
       // Collecter seulement l'adresse de facturation (obligatoire)
       billing_address_collection: 'required',

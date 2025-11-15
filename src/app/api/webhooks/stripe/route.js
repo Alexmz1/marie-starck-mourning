@@ -136,12 +136,35 @@ async function saveOrderToDatabase(session) {
       status: 'CONFIRMED'
     };
 
-    // Créer la commande avec les articles
+    // Si on a le panier complet en JSON, on l'utilise pour créer les orderItems avec toutes les options personnalisées
+    let orderItems = [];
+    if (metadata.cart_json) {
+      try {
+        orderItems = JSON.parse(metadata.cart_json).map(item => ({
+          productName: item.productName,
+          productImage: item.productImage,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          totalPrice: item.totalPrice,
+          customMessage: item.customMessage,
+          ribbonText: item.ribbonText,
+          hasRibbon: item.hasRibbon,
+          selectedColor: item.selectedColor,
+          selectedSize: item.selectedSize
+        }));
+      } catch (e) {
+        console.error('Erreur parsing cart_json:', e);
+      }
+    } else {
+      // fallback legacy : parser les line_items Stripe
+      orderItems = await buildOrderItems(session.line_items?.data || []);
+    }
+
     const savedOrder = await prisma.order.create({
       data: {
         ...orderData,
         items: {
-          create: await buildOrderItems(session.line_items?.data || [])
+          create: orderItems
         }
       },
       include: {
