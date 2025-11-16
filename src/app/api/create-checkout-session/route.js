@@ -155,41 +155,25 @@ export async function POST(request) {
         items_count: items.reduce((sum, item) => sum + item.quantity, 0).toString(),
 
         // Panier complet encodé en JSON pour le webhook
-        cart_json: JSON.stringify([
-          ...items.map(item => {
-            // Si le produit a un ruban, on retire le prix du ruban du total
-            const ribbonEnabled = item.options?.ribbon?.enabled && item.options?.ribbon?.text;
-            const ribbonPrice = ribbonEnabled ? 5.00 : 0; // À adapter si le prix du ruban est variable
-            const baseUnitPrice = (item.price || 0) - (ribbonEnabled ? ribbonPrice : 0);
-            const baseTotalPrice = (item.totalPrice || 0) - (ribbonEnabled ? ribbonPrice * item.quantity : 0);
+        cart_json: JSON.stringify(
+          items.map(item => {
+            const ribbonEnabled = item.options?.ribbon?.enabled && item.options?.ribbon?.message;
             return {
               productId: item.productId,
               productName: item.productName,
               productImage: item.productImage,
               quantity: item.quantity,
-              unitPrice: baseUnitPrice,
-              totalPrice: baseTotalPrice,
+              unitPrice: item.unitPrice || item.price || 0,
+              totalPrice: item.totalPrice || ((item.unitPrice || item.price || 0) * item.quantity),
               customMessage: item.customMessage || '',
               selectedColor: item.color?.name || '',
-              selectedSize: item.size || ''
+              selectedSize: item.size || '',
+              hasRibbon: ribbonEnabled || false,
+              ribbonText: ribbonEnabled ? item.options.ribbon.message : '',
+              ribbonPrice: ribbonEnabled ? (item.options.ribbon.price || 5.00) : 0
             };
-          }),
-          // Ajout du ruban comme item séparé si présent sur un des produits
-          ...items.filter(item => item.options?.ribbon?.enabled && item.options?.ribbon?.text).map(item => ({
-            isRibbon: true,
-            productId: null,
-            productName: 'Ruban personnalisé',
-            productImage: 'https://via.placeholder.com/300x300?text=Ruban',
-            quantity: 1,
-            unitPrice: 5.00, // à adapter si le prix du ruban est variable
-            totalPrice: 5.00,
-            ribbonText: item.options.ribbon.text,
-            hasRibbon: true,
-            customMessage: item.options.ribbon.text,
-            selectedColor: '',
-            selectedSize: ''
-          }))
-        ])
+          })
+        )
       },
       // Collecter seulement l'adresse de facturation (obligatoire)
       billing_address_collection: 'required',

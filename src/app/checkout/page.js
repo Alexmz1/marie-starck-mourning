@@ -227,26 +227,20 @@ export default function CheckoutPage() {
     setIsProcessingPayment(true)
 
     try {
-      // Générer un tableau d'items enrichi avec le ruban comme item séparé
-      const itemsWithRibbon = [];
-      items.forEach(item => {
-        itemsWithRibbon.push(item);
+      // Générer un tableau d'items où le ruban est une option de l'item principal
+      const itemsWithRibbon = items.map(item => {
         if (item.options?.ribbon?.enabled && item.options?.ribbon?.message) {
-          itemsWithRibbon.push({
-            productId: null,
-            productName: 'Ruban personnalisé',
-            productImage: 'https://via.placeholder.com/300x300?text=Ruban',
-            quantity: 1,
-            unitPrice: item.options.ribbon.price || 5.00,
-            totalPrice: item.options.ribbon.price || 5.00,
-            ribbonText: item.options.ribbon.message,
+          return {
+            ...item,
             hasRibbon: true,
-            isRibbon: true,
-            customMessage: item.options.ribbon.message,
-            selectedColor: '',
-            selectedSize: ''
-          });
+            ribbonText: item.options.ribbon.message,
+            ribbonPrice: item.options.ribbon.price || 5.00,
+            // On ajoute le prix du ruban au totalPrice et unitPrice
+            unitPrice: (item.unitPrice || item.price || 0) + (item.options.ribbon.price || 5.00),
+            totalPrice: ((item.unitPrice || item.price || 0) + (item.options.ribbon.price || 5.00)) * item.quantity
+          };
         }
+        return item;
       });
 
       // Préparer les données pour Stripe
