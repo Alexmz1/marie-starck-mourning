@@ -50,8 +50,7 @@ const StatusSelector = ({ status, orderId, onStatusChange, isOpen, onToggle }) =
   };
 
   const statusOptions = [
-    { value: 'PENDING', label: 'En attente' },
-    { value: 'CONFIRMED', label: 'Confirmée' },
+    { value: 'CONFIRMED', label: 'Payée' },
     { value: 'IN_PROGRESS', label: 'En cours' },
     { value: 'DELIVERED', label: 'Livrée' },
     { value: 'CANCELLED', label: 'Annulée' }

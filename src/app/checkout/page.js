@@ -218,9 +218,15 @@ export default function CheckoutPage() {
       return
     }
 
+
     // Validation des champs obligatoires
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
       alert('Veuillez remplir tous les champs obligatoires.')
+      return
+    }
+    // Date de livraison/récupération obligatoire
+    if ((formData.deliveryType === 'delivery' && !formData.deliveryDate) || (formData.deliveryType === 'pickup' && !formData.pickupDate)) {
+      alert('Veuillez choisir une date de livraison ou de récupération.')
       return
     }
 
