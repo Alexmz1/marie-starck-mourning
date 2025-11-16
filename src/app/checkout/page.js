@@ -227,9 +227,31 @@ export default function CheckoutPage() {
     setIsProcessingPayment(true)
 
     try {
+      // Générer un tableau d'items enrichi avec le ruban comme item séparé
+      const itemsWithRibbon = [];
+      items.forEach(item => {
+        itemsWithRibbon.push(item);
+        if (item.options?.ribbon?.enabled && item.options?.ribbon?.message) {
+          itemsWithRibbon.push({
+            productId: null,
+            productName: 'Ruban personnalisé',
+            productImage: 'https://via.placeholder.com/300x300?text=Ruban',
+            quantity: 1,
+            unitPrice: item.options.ribbon.price || 5.00,
+            totalPrice: item.options.ribbon.price || 5.00,
+            ribbonText: item.options.ribbon.message,
+            hasRibbon: true,
+            isRibbon: true,
+            customMessage: item.options.ribbon.message,
+            selectedColor: '',
+            selectedSize: ''
+          });
+        }
+      });
+
       // Préparer les données pour Stripe
       const orderData = {
-        items: items,
+        items: itemsWithRibbon,
         customer: formData,
         delivery: {
           deliveryType: formData.deliveryType,
