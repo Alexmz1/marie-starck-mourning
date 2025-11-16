@@ -184,7 +184,7 @@ async function saveOrderToDatabase(session) {
             customMessage: item.customMessage,
             selectedColor: item.selectedColor,
             selectedSize: item.selectedSize,
-            hasRibbon: item.hasRibbon || false,
+            hasRibbon: !!item.hasRibbon,
             ribbonText: item.ribbonText || ''
           };
         });

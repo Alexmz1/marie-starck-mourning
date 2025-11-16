@@ -168,7 +168,7 @@ export async function POST(request) {
               customMessage: item.customMessage || '',
               selectedColor: item.color?.name || '',
               selectedSize: item.size || '',
-              hasRibbon: ribbonEnabled || false,
+              hasRibbon: !!ribbonEnabled,
               ribbonText: ribbonEnabled ? item.options.ribbon.message : '',
               ribbonPrice: ribbonEnabled ? (item.options.ribbon.price || 5.00) : 0
             };
