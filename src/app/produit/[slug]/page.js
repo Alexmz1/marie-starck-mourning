@@ -469,7 +469,7 @@ export default function ProductDetailPage() {
                     Options personnalisées
                   </h3>
                   
-                  <div className="flex items-start space-x-4">
+                  <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
                     {/* Checkbox avec même style que la page admin */}
                     <label className="flex items-start cursor-pointer group flex-shrink-0">
                       <div className="relative mt-1">
