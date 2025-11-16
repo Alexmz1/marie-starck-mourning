@@ -104,34 +104,50 @@ async function saveOrderToDatabase(session) {
     const [firstName = '', ...lastNameParts] = customerName.split(' ');
     const lastName = lastNameParts.join(' ');
     
+    // Extraction séparée de l'adresse si livraison
+    let deliveryAddress = null, deliveryPostalCode = null, deliveryCity = null;
+    if (metadata.delivery_type === 'delivery' && metadata.delivery_address) {
+      // On suppose que l'adresse est sous la forme "rue, ville codePostal"
+      // Ex: "12 Rue des Acacias, Brétigny 91220"
+      const addressParts = metadata.delivery_address.split(',');
+      deliveryAddress = addressParts[0]?.trim() || null;
+      if (addressParts[1]) {
+        const cityPostal = addressParts[1].trim().split(' ');
+        deliveryPostalCode = cityPostal.pop();
+        deliveryCity = cityPostal.join(' ');
+      }
+    }
+
     // Données de base de la commande
     const orderData = {
       orderNumber,
       stripeSessionId: session.id,
       stripePaymentIntentId: session.payment_intent?.id || session.payment_intent,
-      
+
       // Informations client
       customerEmail: session.customer_email,
       customerFirstName: firstName,
       customerLastName: lastName,
       customerPhone: metadata.customer_phone || '',
-      
+
       // Type et détails de livraison
       deliveryType: metadata.delivery_type === 'pickup' ? 'PICKUP' : 'DELIVERY',
       deliveryDate: metadata.delivery_date ? new Date(metadata.delivery_date) : null,
-      deliveryAddress: metadata.delivery_type === 'delivery' ? metadata.delivery_address : null,
+      deliveryAddress,
+      deliveryPostalCode,
+      deliveryCity,
       deliveryInstructions: metadata.special_instructions || null,
-      
+
       // Montants (Stripe envoie en centimes)
-      subtotal: (session.amount_subtotal || 0) / 100,
-      deliveryFee: ((session.amount_total - session.amount_subtotal) || 0) / 100,
+      subtotal: (metadata.cart_json ? JSON.parse(metadata.cart_json).filter(i => !i.isRibbon).reduce((sum, i) => sum + (i.totalPrice || 0), 0) : (session.amount_subtotal || 0) / 100),
+      deliveryFee: metadata.delivery_fee ? parseFloat(metadata.delivery_fee) : (((session.amount_total - session.amount_subtotal) || 0) / 100),
       total: session.amount_total / 100,
-      
+
       // Paiement
       paymentMethod: 'stripe',
       paymentStatus: 'paid',
       currency: session.currency || 'eur',
-      
+
       // Statut
       status: 'CONFIRMED'
     };
@@ -142,21 +158,24 @@ async function saveOrderToDatabase(session) {
       try {
         const cart = JSON.parse(metadata.cart_json);
         orderItems = cart.map(item => {
-          // Si c'est un ruban, on le traite comme un produit à part entière
           if (item.isRibbon) {
             return {
+              productId: null,
               productName: 'Ruban personnalisé',
               productImage: 'https://via.placeholder.com/300x300?text=Ruban',
               quantity: 1,
-              unitPrice: 5.00, // ou item.price si dynamique
-              totalPrice: 5.00, // idem
+              unitPrice: item.unitPrice || 5.00,
+              totalPrice: item.totalPrice || 5.00,
               ribbonText: item.ribbonText || item.customMessage || '',
               hasRibbon: true,
-              customMessage: item.customMessage || ''
+              customMessage: item.ribbonText || item.customMessage || '',
+              selectedColor: '',
+              selectedSize: ''
             };
           }
-          // Sinon, produit classique
+          // Produit classique avec productId
           return {
+            productId: item.productId || null,
             productName: item.productName,
             productImage: item.productImage,
             quantity: item.quantity,
@@ -164,7 +183,9 @@ async function saveOrderToDatabase(session) {
             totalPrice: item.totalPrice,
             customMessage: item.customMessage,
             selectedColor: item.selectedColor,
-            selectedSize: item.selectedSize
+            selectedSize: item.selectedSize,
+            hasRibbon: false,
+            ribbonText: ''
           };
         });
       } catch (e) {
