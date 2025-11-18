@@ -38,7 +38,12 @@ export async function POST(request) {
           currency: 'eur',
           product_data: {
             name: item.productName,
-            description: `Taille: ${item.size}${item.color ? ` - Couleur: ${item.color.name}` : ''}${item.options?.ribbon?.enabled ? ' - Avec ruban personnalisé' : ''}`,
+            description: [
+              `Taille: ${item.size}`,
+              item.color ? `Couleur: ${item.color.name}` : null,
+              item.options?.ribbon?.enabled ? `Ruban: "${item.options.ribbon.message}"` : null,
+              item.customMessage ? `Message: "${item.customMessage}"` : null
+            ].filter(Boolean).join(' | '),
             images: item.productImage ? [item.productImage] : [],
           },
           unit_amount: Math.round((item.totalPrice || item.price) * 100), // Prix en centimes
@@ -54,7 +59,13 @@ export async function POST(request) {
           currency: 'eur',
           product_data: {
             name: 'Frais de livraison',
-            description: `${delivery.zone?.name || 'Livraison'} (${delivery.distance?.toFixed(1)}km)`,
+            description: [
+              delivery.zone?.name ? `Zone: ${delivery.zone.name}` : null,
+              delivery.distance ? `Distance: ${delivery.distance.toFixed(1)}km` : null,
+              delivery.fee ? `Montant: ${delivery.fee.toFixed(2)}€` : null,
+              delivery.deliveryType === 'delivery' ? `Adresse: ${customer.address}, ${customer.city} ${customer.postalCode}` : null,
+              delivery.deliveryType === 'delivery' ? `Date: ${customer.deliveryDate}` : null
+            ].filter(Boolean).join(' | '),
           },
           unit_amount: Math.round(delivery.fee * 100), // Prix en centimes
         },
@@ -65,8 +76,18 @@ export async function POST(request) {
     // Ajouter un produit informatif avec les détails de livraison/récupération (gratuit)
     const deliveryDate = delivery.deliveryType === 'delivery' ? customer.deliveryDate : customer.pickupDate;
     const deliveryInfo = delivery.deliveryType === 'delivery' 
-      ? `• LIVRAISON\n→ Adresse: ${customer.address}, ${customer.city} ${customer.postalCode}\n→ Date: ${deliveryDate}\n${customer.specialInstructions ? `→ Instructions: ${customer.specialInstructions}` : ''}`
-      : `• CLICK & COLLECT\n→ À récupérer: Centre commercial des Meillottes, 1 rue de la forêt de Sénart, 91450 Soisy-sur-Seine\n→ Date de récupération: ${deliveryDate}\n${customer.specialInstructions ? `→ Instructions: ${customer.specialInstructions}` : ''}`;
+      ? [
+          'LIVRAISON',
+          `Adresse: ${customer.address}, ${customer.city} ${customer.postalCode}`,
+          `Date: ${deliveryDate}`,
+          customer.specialInstructions ? `Instructions: ${customer.specialInstructions}` : null
+        ].filter(Boolean).join(' | ')
+      : [
+          'CLICK & COLLECT',
+          'À récupérer: Centre commercial des Meillottes, 1 rue de la forêt de Sénart, 91450 Soisy-sur-Seine',
+          `Date de récupération: ${deliveryDate}`,
+          customer.specialInstructions ? `Instructions: ${customer.specialInstructions}` : null
+        ].filter(Boolean).join(' | ');
 
     line_items.push({
       price_data: {
