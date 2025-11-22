@@ -1,19 +1,20 @@
-'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
-import CalendarPicker from '../../components/CalendarPicker'
-import useCartStore from '../../store/cartStore'
+"use client";
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import CalendarPicker from '../../components/CalendarPicker';
+import useCartStore from '../../store/cartStore';
 import { 
   calculateDeliveryFee, 
   isValidDeliveryDate, 
   getAvailableDeliveryDates,
   getAllZones
-} from '../../services/deliveryService'
+} from '../../services/deliveryService';
 import { 
   ArrowLeftIcon,
   CalendarIcon,
@@ -22,9 +23,9 @@ import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   ClockIcon
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/outline';
 
-const PRIMARY_COLOR = '#276f88'
+const PRIMARY_COLOR = '#276f88';
 
 // Traduction des tailles
 const SIZES = {
@@ -32,36 +33,34 @@ const SIZES = {
   'MOYEN': 'Moyen',
   'GRAND': 'Grand',
   'TRES_GRAND': 'Très Grand'
-}
+};
 
 export default function CheckoutPage() {
-  const router = useRouter()
-  const { items, getTotalItems, getTotalPrice } = useCartStore()
-  const [isClient, setIsClient] = useState(false)
+
+  const router = useRouter();
+  const { items, getTotalItems, getTotalPrice } = useCartStore();
+  const [isClient, setIsClient] = useState(false);
 
   // États du formulaire
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [formData, setFormData] = useState({
     // Informations client
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    
     // Type de livraison
     deliveryType: 'delivery', // 'delivery' ou 'pickup'
-    
     // Adresse de livraison (seulement si delivery)
     address: '',
     city: '',
     postalCode: '',
     additionalInfo: '',
-    
     // Livraison/Récupération
     deliveryDate: '',
     pickupDate: '',
     specialInstructions: ''
-  })
+  });
 
   // États pour la livraison
   const [deliveryInfo, setDeliveryInfo] = useState({
@@ -71,12 +70,55 @@ export default function CheckoutPage() {
     zone: null,
     distance: null,
     error: null
-  })
+  });
 
-  const [dateValidation, setDateValidation] = useState({ valid: true, message: '' })
-  const [availableDates, setAvailableDates] = useState([])
-  const [isCalculatingFee, setIsCalculatingFee] = useState(false)
-  const [minDeliveryDate, setMinDeliveryDate] = useState('')
+  const [dateValidation, setDateValidation] = useState({ valid: true, message: '' });
+  const [availableDates, setAvailableDates] = useState([]);
+  const [isCalculatingFee, setIsCalculatingFee] = useState(false);
+  const [minDeliveryDate, setMinDeliveryDate] = useState('');
+
+  // États pour l'autocomplétion d'adresse (La Poste)
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Fonction pour gérer l'entrée d'adresse et l'autocomplétion La Poste
+  const handleAddressInput = async (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, address: value }));
+
+    if (value.length < 4) {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(value)}&limit=5`);
+      const data = await response.json();
+      if (data && data.features) {
+        setAddressSuggestions(data.features);
+        setShowSuggestions(true);
+      } else {
+        setAddressSuggestions([]);
+        setShowSuggestions(false);
+      }
+    } catch (error) {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  // Fonction pour sélectionner une suggestion
+  const handleSuggestionClick = (feature) => {
+    setFormData(prev => ({
+      ...prev,
+      address: feature.properties.name || feature.properties.label || '',
+      city: feature.properties.city || '',
+      postalCode: feature.properties.postcode || ''
+    }));
+    setShowSuggestions(false);
+    setAddressSuggestions([]);
+  };
 
   // Effet pour initialiser le côté client
   useEffect(() => {
@@ -482,15 +524,33 @@ export default function CheckoutPage() {
                       <label className="block text-sm font-light text-gray-700 mb-2">
                         Adresse *
                       </label>
-                      <input
-                        type="text"
-                        name="address"
-                        required
-                        placeholder="Numéro et nom de rue"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
-                      />
+                      <div style={{position: 'relative'}}>
+                        <input
+                          type="text"
+                          name="address"
+                          required
+                          autoComplete="off"
+                          placeholder="Numéro et nom de rue"
+                          value={formData.address}
+                          onChange={handleAddressInput}
+                          className="w-full py-4 px-6 bg-white border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-black placeholder-gray-500 transition-all duration-300"
+                          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                          onFocus={() => addressSuggestions.length > 0 && setShowSuggestions(true)}
+                        />
+                        {showSuggestions && addressSuggestions.length > 0 && (
+                          <ul className="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow mt-1 max-h-60 overflow-auto">
+                            {addressSuggestions.map((feature) => (
+                              <li
+                                key={feature.properties.id}
+                                className="px-4 py-2 cursor-pointer hover:bg-blue-50 text-sm text-black"
+                                onMouseDown={() => handleSuggestionClick(feature)}
+                              >
+                                {feature.properties.label}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
