@@ -1,5 +1,6 @@
 import "./globals.css";
 import "./custom-buttons.css";
+import CookieBanner from "../components/CookieBanner";
 
 export const metadata = {
   title: "L'atelier floral de Marie Starck",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
     <html lang="fr">
       <body>
         {children}
+        <CookieBanner />
       </body>
     </html>
   );
