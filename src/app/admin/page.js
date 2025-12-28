@@ -65,7 +65,6 @@ const QuickAction = ({ title, description, href, icon: IconComponent }) => (
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     productsCount: 0,
-    customersCount: 0,
     ordersCount: 0,
     recentOrders: []
   });
@@ -93,7 +92,6 @@ export default function AdminDashboard() {
       
       setStats({
         productsCount: stats.productsCount,
-        customersCount: stats.customersCount,
         ordersCount: stats.ordersCount,
         recentOrders
       });
@@ -126,16 +124,11 @@ export default function AdminDashboard() {
       {!loading && (
         <>
           {/* Statistiques */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <StatCard
           title="Produits"
           value={stats.productsCount}
           icon={SparklesIcon}
-        />
-        <StatCard
-          title="Clients"
-          value={stats.customersCount}
-          icon={UsersIcon}
         />
         <StatCard
           title="Commandes"

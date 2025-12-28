@@ -34,11 +34,6 @@ const menuItems = [
     icon: ArchiveBoxIcon
   },
   {
-    title: 'Clients',
-    href: '/admin/customers',
-    icon: UsersIcon
-  },
-  {
     title: 'Statistiques',
     href: '/admin/statistics',
     icon: ChartPieIcon
