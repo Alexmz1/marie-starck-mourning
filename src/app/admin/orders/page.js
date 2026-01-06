@@ -489,7 +489,6 @@ export default function OrdersPage() {
                                             <div className="flex items-center text-xs text-green-700">
                                               <span className="font-semibold mr-1">Message sur carte :</span>
                                               <span className="italic">{item.cardText}</span>
-                                              <span className="ml-2 text-green-500 font-medium">(+5,00 €)</span>
                                             </div>
                                           </div>
                                         )}

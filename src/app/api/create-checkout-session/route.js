@@ -8,8 +8,6 @@ export async function POST(request) {
     const body = await request.json();
     const { items, customer, delivery, totals } = body;
 
-    console.log('🔍 DEBUG API - Items reçus:', JSON.stringify(items, null, 2));
-
     // Validation de la distance pour la livraison (sécurité côté serveur)
     if (delivery.deliveryType === 'delivery') {
       // Vérification de la distance
@@ -183,13 +181,6 @@ export async function POST(request) {
           items.map(item => {
             const ribbonEnabled = !!item.options?.ribbon?.enabled;
             const cardEnabled = !!item.options?.card?.enabled;
-            console.log('🔍 DEBUG - Processing item for cart_json:', {
-              productName: item.productName,
-              cardEnabled,
-              cardMessage: item.options?.card?.message,
-              ribbonEnabled,
-              ribbonMessage: item.options?.ribbon?.message
-            });
             return {
               productId: item.productId,
               productName: item.productName,

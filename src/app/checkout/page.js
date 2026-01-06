@@ -322,8 +322,6 @@ export default function CheckoutPage() {
         }
       }
 
-      console.log('🔍 DEBUG - Items envoyés à Stripe:', JSON.stringify(itemsWithOptions, null, 2));
-
       // Appeler l'API pour créer la session Stripe
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
