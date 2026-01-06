@@ -275,25 +275,37 @@ export default function CheckoutPage() {
     setIsProcessingPayment(true)
 
     try {
-      // Générer un tableau d'items où le ruban est une option de l'item principal
-      const itemsWithRibbon = items.map(item => {
-        if (item.options?.ribbon?.enabled && item.options?.ribbon?.message) {
-          return {
-            ...item,
-            hasRibbon: true,
-            ribbonText: item.options.ribbon.message,
-            ribbonPrice: item.options.ribbon.price || 5.00,
-            // On ajoute le prix du ruban au totalPrice et unitPrice
-            unitPrice: (item.unitPrice || item.price || 0) + (item.options.ribbon.price || 5.00),
-            totalPrice: ((item.unitPrice || item.price || 0) + (item.options.ribbon.price || 5.00)) * item.quantity
-          };
+      // Générer un tableau d'items avec les options (carte et ruban) intégrées dans les prix
+      const itemsWithOptions = items.map(item => {
+        const basePrice = item.unitPrice || item.price || 0;
+        let unitPrice = basePrice;
+        
+        // Ajouter le prix de la carte si présente
+        if (item.options?.card?.enabled) {
+          unitPrice += item.options.card.price || 5.00;
         }
-        return item;
+        
+        // Ajouter le prix du ruban si présent
+        if (item.options?.ribbon?.enabled) {
+          unitPrice += item.options.ribbon.price || 5.00;
+        }
+        
+        return {
+          ...item,
+          hasCard: !!item.options?.card?.enabled,
+          cardText: item.options?.card?.message || '',
+          cardPrice: item.options?.card?.enabled ? (item.options.card.price || 5.00) : 0,
+          hasRibbon: !!item.options?.ribbon?.enabled,
+          ribbonText: item.options?.ribbon?.message || '',
+          ribbonPrice: item.options?.ribbon?.enabled ? (item.options.ribbon.price || 5.00) : 0,
+          unitPrice: unitPrice,
+          totalPrice: unitPrice * item.quantity
+        };
       });
 
       // Préparer les données pour Stripe
       const orderData = {
-        items: itemsWithRibbon,
+        items: itemsWithOptions,
         customer: formData,
         delivery: {
           deliveryType: formData.deliveryType,
@@ -309,6 +321,8 @@ export default function CheckoutPage() {
           total: getTotalPrice() + (formData.deliveryType === 'pickup' ? 0 : deliveryInfo.fee)
         }
       }
+
+      console.log('🔍 DEBUG - Items envoyés à Stripe:', JSON.stringify(itemsWithOptions, null, 2));
 
       // Appeler l'API pour créer la session Stripe
       const response = await fetch('/api/create-checkout-session', {
@@ -766,6 +780,18 @@ export default function CheckoutPage() {
                           {SIZES[item.size]} {item.color && `• ${item.color.name}`}
                         </p>
                         {/* Affichage des options */}
+                        {item.options?.card?.enabled && (
+                          <div className="space-y-1 mt-1">
+                            <p className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>
+                              + Message sur carte (+5€)
+                            </p>
+                            {item.options.card.message && (
+                              <p className="text-xs font-light text-gray-600 italic">
+                                "{item.options.card.message}"
+                              </p>
+                            )}
+                          </div>
+                        )}
                         {item.options?.ribbon?.enabled && (
                           <div className="space-y-1 mt-1">
                             <p className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>

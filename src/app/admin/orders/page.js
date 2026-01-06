@@ -483,6 +483,16 @@ export default function OrdersPage() {
                                             Message: "{item.customMessage}"
                                           </div>
                                         )}
+                                        {/* Affichage de la carte comme ligne séparée visuelle */}
+                                        {item.hasCard && (
+                                          <div className="mt-2 ml-2 pl-4 border-l-2 border-green-200">
+                                            <div className="flex items-center text-xs text-green-700">
+                                              <span className="font-semibold mr-1">Message sur carte :</span>
+                                              <span className="italic">{item.cardText}</span>
+                                              <span className="ml-2 text-green-500 font-medium">(+5,00 €)</span>
+                                            </div>
+                                          </div>
+                                        )}
                                         {/* Affichage du ruban comme ligne séparée visuelle */}
                                         {item.hasRibbon && (
                                           <div className="mt-2 ml-2 pl-4 border-l-2 border-blue-200">
@@ -738,6 +748,11 @@ export default function OrdersPage() {
                                               {item.variantSize && `Taille: ${item.variantSize}`}
                                               {item.variantColor && ` • Couleur: ${item.variantColor}`}
                                             </div>
+                                            {item.options?.card?.enabled && (
+                                              <div className="text-sm text-gray-600 mt-1">
+                                                Carte: "{item.options.card.message}"
+                                              </div>
+                                            )}
                                             {item.options?.ribbon?.enabled && (
                                               <div className="text-sm text-gray-600 mt-1">
                                                 Ruban: "{item.options.ribbon.message}"

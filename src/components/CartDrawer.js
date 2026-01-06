@@ -153,6 +153,18 @@ export default function CartDrawer({ isOpen, onClose }) {
                               </div>
                             )}
                             {/* Affichage des options */}
+                            {item.options?.card?.enabled && (
+                              <div className="space-y-1">
+                                <div className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>
+                                  + Message sur carte (+5€)
+                                </div>
+                                {item.options.card.message && (
+                                  <div className="text-xs font-light text-gray-600 italic truncate">
+                                    "{item.options.card.message}"
+                                  </div>
+                                )}
+                              </div>
+                            )}
                             {item.options?.ribbon?.enabled && (
                               <div className="space-y-1">
                                 <div className="text-xs font-medium" style={{ color: PRIMARY_COLOR }}>

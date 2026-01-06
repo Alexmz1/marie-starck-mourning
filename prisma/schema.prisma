@@ -144,6 +144,8 @@ model OrderItem {
   customMessage String?
   ribbonText    String?
   hasRibbon     Boolean @default(false)
+  cardText      String?
+  hasCard       Boolean @default(false)
   
   order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product       Product? @relation(fields: [productId], references: [id])

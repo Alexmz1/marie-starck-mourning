@@ -152,12 +152,23 @@ async function saveOrderToDatabase(session) {
       status: 'CONFIRMED'
     };
 
+    console.log('🔍 DEBUG WEBHOOK - Metadata:', metadata);
+    console.log('🔍 DEBUG WEBHOOK - cart_json exists?', !!metadata.cart_json);
+
     // Si on a le panier complet en JSON, on l'utilise pour créer les orderItems avec toutes les options personnalisées
     let orderItems = [];
     if (metadata.cart_json) {
       try {
         const cart = JSON.parse(metadata.cart_json);
+        console.log('🔍 DEBUG WEBHOOK - Cart parsed:', JSON.stringify(cart, null, 2));
         orderItems = cart.map(item => {
+          console.log('🔍 DEBUG WEBHOOK - Processing item:', {
+            productName: item.productName,
+            hasCard: item.hasCard,
+            cardText: item.cardText,
+            hasRibbon: item.hasRibbon,
+            ribbonText: item.ribbonText
+          });
           if (item.isRibbon) {
             return {
               productId: null,
@@ -174,7 +185,7 @@ async function saveOrderToDatabase(session) {
             };
           }
           // Produit classique avec productId
-          return {
+          const orderItem = {
             productId: item.productId || null,
             productName: item.productName,
             productImage: item.productImage,
@@ -184,9 +195,13 @@ async function saveOrderToDatabase(session) {
             customMessage: item.customMessage,
             selectedColor: item.selectedColor,
             selectedSize: item.selectedSize,
+            hasCard: !!item.hasCard,
+            cardText: item.cardText || '',
             hasRibbon: !!item.hasRibbon,
             ribbonText: item.ribbonText || ''
           };
+          console.log('🔍 DEBUG WEBHOOK - Order item created:', orderItem);
+          return orderItem;
         });
       } catch (e) {
         console.error('Erreur parsing cart_json:', e);

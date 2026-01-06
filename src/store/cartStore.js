@@ -13,7 +13,9 @@ const useCartStore = create(
         const { items } = get()
         
         // Créer un ID unique pour cet item (produit + taille + couleur + options)
-        const optionsKey = options.ribbon ? `-ribbon-${options.ribbon.message}` : ''
+        const ribbonKey = options.ribbon ? `-ribbon-${options.ribbon.message}` : ''
+        const cardKey = options.card ? `-card-${options.card.message}` : ''
+        const optionsKey = `${ribbonKey}${cardKey}`
         const itemId = `${product.id}-${variant.size}-${selectedColor?.id || 'no-color'}${optionsKey}`
         
         // Vérifier si l'item existe déjà
@@ -29,6 +31,9 @@ const useCartStore = create(
           let totalPrice = variant.price
           if (options.ribbon?.enabled) {
             totalPrice += options.ribbon.price
+          }
+          if (options.card?.enabled) {
+            totalPrice += options.card.price
           }
 
           // Sinon, ajouter un nouvel item

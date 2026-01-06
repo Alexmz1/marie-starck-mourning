@@ -79,6 +79,10 @@ export default function ProductDetailPage() {
   const [ribbonOption, setRibbonOption] = useState(false)
   const [ribbonMessage, setRibbonMessage] = useState('')
 
+  // États pour l'option message carte (tous produits)
+  const [cardOption, setCardOption] = useState(false)
+  const [cardMessage, setCardMessage] = useState('')
+
   useEffect(() => {
     if (params.slug) {
       fetchProduct()
@@ -126,12 +130,25 @@ export default function ProductDetailPage() {
       return
     }
 
+    // Vérifier si le message de la carte est requis quand l'option est cochée
+    if (cardOption && cardMessage.trim() === '') {
+      alert('Veuillez saisir le message pour la carte')
+      return
+    }
+
     // Préparer les options
     const options = {}
     if (ribbonOption) {
       options.ribbon = {
         enabled: true,
         message: ribbonMessage.trim(),
+        price: 5
+      }
+    }
+    if (cardOption) {
+      options.card = {
+        enabled: true,
+        message: cardMessage.trim(),
         price: 5
       }
     }
@@ -462,14 +479,81 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Option ruban message (seulement pour les produits deuil) */}
-              {product.category === 'DEUIL' && (
+              {/* Options personnalisées */}
+              {(product.category === 'DEUIL' || true) && (
                 <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                   <h3 className="text-lg font-light text-gray-900 mb-4" style={{ color: PRIMARY_COLOR }}>
                     Options personnalisées
                   </h3>
                   
-                  <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
+                  <div className="space-y-6">
+                    {/* Option message carte (tous produits) */}
+                    <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
+                      {/* Checkbox avec même style que la page admin */}
+                      <label className="flex items-start cursor-pointer group flex-shrink-0">
+                        <div className="relative mt-1">
+                          <input
+                            type="checkbox"
+                            checked={cardOption}
+                            onChange={(e) => {
+                              setCardOption(e.target.checked)
+                              if (!e.target.checked) {
+                                setCardMessage('')
+                              }
+                            }}
+                            className="sr-only"
+                          />
+                          <div className={`w-5 h-5 rounded border-2 transition-all group-hover:scale-110 ${
+                            cardOption 
+                              ? 'border-gray-800 bg-gray-800' 
+                              : 'border-gray-300 bg-white'
+                          }`}>
+                            {cardOption && (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="ml-3">
+                          <div className="text-sm font-medium text-gray-900">
+                            Message sur carte (+5€)
+                          </div>
+                          <div className="text-xs font-light text-gray-600 mt-1">
+                            Ajoutez un message personnel sur une carte
+                          </div>
+                        </div>
+                      </label>
+                      
+                      {/* Zone de texte à droite */}
+                      <div className="flex-1">
+                        <textarea
+                          value={cardMessage}
+                          onChange={(e) => setCardMessage(e.target.value)}
+                          placeholder={cardOption ? "Votre message personnel..." : "Cochez l'option pour activer"}
+                          maxLength={200}
+                          rows={3}
+                          disabled={!cardOption}
+                          className={`w-full py-3 px-4 border rounded-lg font-light resize-none transition-all ${
+                            cardOption 
+                              ? 'bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500' 
+                              : 'bg-gray-50 border-gray-200 text-gray-400 placeholder-gray-400 cursor-not-allowed'
+                          }`}
+                          style={{ fontSize: '14px', lineHeight: '1.5' }}
+                        />
+                        {cardOption && (
+                          <div className="text-xs font-light text-gray-500 mt-2">
+                            {cardMessage.length}/200 caractères
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Option ruban message (seulement pour les produits deuil) */}
+                    {product.category === 'DEUIL' && (
+                      <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4 pt-6 border-t border-gray-200">
                     {/* Checkbox avec même style que la page admin */}
                     <label className="flex items-start cursor-pointer group flex-shrink-0">
                       <div className="relative mt-1">
@@ -530,6 +614,8 @@ export default function ProductDetailPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+                    )}
                   </div>
                 </div>
               )}

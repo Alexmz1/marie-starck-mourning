@@ -8,6 +8,8 @@ export async function POST(request) {
     const body = await request.json();
     const { items, customer, delivery, totals } = body;
 
+    console.log('🔍 DEBUG API - Items reçus:', JSON.stringify(items, null, 2));
+
     // Validation de la distance pour la livraison (sécurité côté serveur)
     if (delivery.deliveryType === 'delivery') {
       // Vérification de la distance
@@ -41,6 +43,7 @@ export async function POST(request) {
             description: [
               `Taille: ${item.size}`,
               item.color ? `Couleur: ${item.color.name}` : null,
+              item.options?.card?.enabled ? `Carte: "${item.options.card.message}"` : null,
               item.options?.ribbon?.enabled ? `Ruban: "${item.options.ribbon.message}"` : null,
               item.customMessage ? `Message: "${item.customMessage}"` : null
             ].filter(Boolean).join(' | '),
@@ -178,7 +181,15 @@ export async function POST(request) {
         // Panier complet encodé en JSON pour le webhook
         cart_json: JSON.stringify(
           items.map(item => {
-            const ribbonEnabled = item.options?.ribbon?.enabled && item.options?.ribbon?.message;
+            const ribbonEnabled = !!item.options?.ribbon?.enabled;
+            const cardEnabled = !!item.options?.card?.enabled;
+            console.log('🔍 DEBUG - Processing item for cart_json:', {
+              productName: item.productName,
+              cardEnabled,
+              cardMessage: item.options?.card?.message,
+              ribbonEnabled,
+              ribbonMessage: item.options?.ribbon?.message
+            });
             return {
               productId: item.productId,
               productName: item.productName,
@@ -189,8 +200,11 @@ export async function POST(request) {
               customMessage: item.customMessage || '',
               selectedColor: item.color?.name || '',
               selectedSize: item.size || '',
-              hasRibbon: !!ribbonEnabled,
-              ribbonText: ribbonEnabled ? item.options.ribbon.message : '',
+              hasCard: cardEnabled,
+              cardText: item.options?.card?.message || '',
+              cardPrice: cardEnabled ? (item.options.card.price || 5.00) : 0,
+              hasRibbon: ribbonEnabled,
+              ribbonText: item.options?.ribbon?.message || '',
               ribbonPrice: ribbonEnabled ? (item.options.ribbon.price || 5.00) : 0
             };
           })

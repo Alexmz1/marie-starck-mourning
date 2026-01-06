@@ -175,6 +175,18 @@ export default function CartPage() {
                               </div>
                             )}
                             {/* Affichage des options */}
+                            {item.options?.card?.enabled && (
+                              <div className="space-y-1">
+                                <p className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
+                                  + Message sur carte (+5€)
+                                </p>
+                                {item.options.card.message && (
+                                  <p className="text-sm font-light text-gray-600 italic">
+                                    "{item.options.card.message}"
+                                  </p>
+                                )}
+                              </div>
+                            )}
                             {item.options?.ribbon?.enabled && (
                               <div className="space-y-1">
                                 <p className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
