@@ -266,9 +266,6 @@ export default function Header() {
                   )}
                 </div>
 
-                <Link href="/atelier" className="block text-white hover:text-gray-200 text-sm font-light py-2">
-                  Notre Atelier
-                </Link>
                 <Link href="/contact" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Contact
                 </Link>
@@ -414,12 +411,6 @@ export default function Header() {
               </div>
             </div>
             
-            <Link 
-              href="/atelier" 
-              className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 whitespace-nowrap"
-            >
-              Atelier
-            </Link>
             <Link 
               href="/contact" 
               className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 whitespace-nowrap"
