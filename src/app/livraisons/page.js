@@ -172,8 +172,8 @@ export default function Livraisons() {
                   </div>
                 </div>
 
-                {/* Click & Collect */}
-                <div>
+                {/* Click & Collect - DÉSACTIVÉ */}
+                {/* <div>
                   <div className="flex items-center mb-6">
                     <div className="w-16 h-16 rounded-full flex items-center justify-center mr-6" style={{backgroundColor: '#276f88'}}>
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ export default function Livraisons() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
               </div>
             </div>

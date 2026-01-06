@@ -464,30 +464,25 @@ export default function CheckoutPage() {
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {/* Option Livraison */}
                     <div 
-                      className={`p-6 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                        formData.deliveryType === 'delivery' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                      onClick={() => setFormData(prev => ({ ...prev, deliveryType: 'delivery' }))}
+                      className="p-6 border-2 rounded-lg border-blue-500 bg-blue-50"
                     >
                       <div className="flex items-center mb-3">
                         <TruckIcon className="h-6 w-6 mr-3" style={{ color: PRIMARY_COLOR }} />
-                        <h3 className="text-lg font-medium text-gray-900">Livraison à domicile</h3>
+                        <h3 className="text-lg font-medium text-gray-900">Lieu de livraison</h3>
                       </div>
                       <p className="text-sm text-gray-600 mb-2">
-                        Nous livrons directement à votre adresse
+                        Nous livrons directement à l'adresse indiquée
                       </p>
                       <p className="text-xs text-gray-500">
                         Frais de livraison calculés selon la distance
                       </p>
                     </div>
 
-                    {/* Option Click & Collect */}
-                    <div 
+                    {/* Option Click & Collect - DÉSACTIVÉE */}
+                    {/* <div 
                       className={`p-6 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                         formData.deliveryType === 'pickup' 
                           ? 'border-blue-500 bg-blue-50' 
@@ -505,7 +500,7 @@ export default function CheckoutPage() {
                       <p className="text-xs text-gray-500">
                         Gratuit • Centre commercial des Meillottes, 1 rue de la forêt de Sénart, 91450 Soisy-sur-Seine
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -627,12 +622,23 @@ export default function CheckoutPage() {
                         {deliveryInfo.error && (
                           <div className="flex items-start space-x-2">
                             <ExclamationTriangleIcon className="h-5 w-5 text-amber-500 mt-0.5" />
-                            <div>
+                            <div className="flex-1">
                               <p className="text-amber-700 font-medium">
                                 Zone non couverte
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-gray-600 mb-2">
                                 {deliveryInfo.error}
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Contactez-nous au{' '}
+                                <a 
+                                  href="tel:0603059195" 
+                                  className="font-medium underline hover:no-underline"
+                                  style={{ color: PRIMARY_COLOR }}
+                                >
+                                  06 03 05 91 95
+                                </a>
+                                {' '}pour discuter des possibilités de livraison.
                               </p>
                             </div>
                           </div>
@@ -695,6 +701,11 @@ export default function CheckoutPage() {
                           : 'Instructions spéciales pour la récupération'
                         }
                       </label>
+                      {formData.deliveryType === 'delivery' && (
+                        <p className="text-sm text-red-600 mb-2">
+                          Livraison pour un enterrement : précisez le créneau horaire dans les instructions ci-dessous.
+                        </p>
+                      )}
                       <textarea
                         name="specialInstructions"
                         rows="3"
