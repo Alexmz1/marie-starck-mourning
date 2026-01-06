@@ -65,7 +65,6 @@ const LivraisonPage = () => {
                   <h3 className="text-xl font-light text-black mb-2">Zone 1</h3>
                   <p className="text-sm text-gray-600 mb-4">0 à 10 km</p>
                   <div className="text-3xl font-light text-green-600 mb-4">5€</div>
-                  <p className="text-sm text-gray-500 mb-4 font-medium">Livraison incluse</p>
                   <div className="text-xs text-gray-600 leading-relaxed">
                     Soisy-sur-Seine, Évry-Courcouronnes, Corbeil-Essonnes, Draveil, 
                     Ris-Orangis, Saint-Germain-lès-Corbeil, Tigery, Morsang-sur-Seine, Villabé

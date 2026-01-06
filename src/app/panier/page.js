@@ -286,7 +286,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Livraison</span>
-                    <span className="text-sm text-gray-500">Selon zone (0€ à 20€)</span>
+                    <span className="text-sm text-gray-500">Selon zone (5€ à 20€)</span>
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex justify-between">
@@ -313,7 +313,7 @@ export default function CartPage() {
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="font-medium text-gray-900 mb-3">Informations de livraison</h3>
                   <p className="text-sm text-gray-600 font-light mb-4">
-                    Livraison en Île-de-France selon zones : de 5€ (0-10km) à 20€ (20-25km). 
+                    Livraison en Île-de-France selon zones : 5€ (0-10km), 10€ (10-15km), 15€ (15-20km), 20€ (20-25km). 
                     Commande 24h à l'avance minimum (jours ouvrés).
                   </p>
                   <div className="space-y-2 text-sm text-gray-600">

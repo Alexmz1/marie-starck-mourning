@@ -112,7 +112,7 @@ const ConditionsVentePage = () => {
                       <div className="space-y-6">
                         <div>
                           <h4 className="text-base font-light text-black mb-2">Zone 1 – 0 à 10 km</h4>
-                          <p className="text-gray-600 font-light mb-2">5€ - Livraison incluse</p>
+                          <p className="text-gray-600 font-light mb-2">5€</p>
                           <p className="text-gray-700 font-light leading-relaxed">
                             Soisy-sur-Seine, Évry-Courcouronnes, Corbeil-Essonnes, Draveil, Ris-Orangis, 
                             Saint-Germain-lès-Corbeil, Tigery, Morsang-sur-Seine, Villabé

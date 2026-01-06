@@ -14,9 +14,9 @@ export const DELIVERY_ZONES = [
     id: 1,
     name: "Zone 1 (0-10km)",
     maxDistance: 10,
-    price: 0,
+    price: 5,
     color: "#22c55e",
-    description: "Livraison gratuite incluse"
+    description: "Livraison proche"
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ export const DELIVERY_ZONES = [
     maxDistance: 15,
     price: 10,
     color: "#3b82f6",
-    description: "Livraison proche"
+    description: "Livraison étendue"
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ export const DELIVERY_ZONES = [
     maxDistance: 20,
     price: 15,
     color: "#f59e0b", 
-    description: "Livraison étendue"
+    description: "Livraison moyenne distance"
   },
   {
     id: 4,

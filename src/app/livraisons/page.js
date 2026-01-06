@@ -94,7 +94,6 @@ export default function Livraisons() {
                           </div>
                           <div className="text-right">
                             <div className="text-2xl font-light text-green-700">5€</div>
-                            <div className="text-xs text-green-600 font-medium">INCLUS</div>
                           </div>
                         </div>
                         <h4 className="text-lg font-light text-gray-800 mb-1">Zone 1</h4>
@@ -115,7 +114,7 @@ export default function Livraisons() {
                             <span className="text-lg font-bold text-white">2</span>
                           </div>
                           <div className="text-right">
-                            <div className="text-2xl font-light text-blue-700">+10€</div>
+                            <div className="text-2xl font-light text-blue-700">10€</div>
                           </div>
                         </div>
                         <h4 className="text-lg font-light text-gray-800 mb-1">Zone 2</h4>
@@ -136,7 +135,7 @@ export default function Livraisons() {
                             <span className="text-lg font-bold text-white">3</span>
                           </div>
                           <div className="text-right">
-                            <div className="text-2xl font-light text-amber-700">+15€</div>
+                            <div className="text-2xl font-light text-amber-700">15€</div>
                           </div>
                         </div>
                         <h4 className="text-lg font-light text-gray-800 mb-1">Zone 3</h4>
@@ -157,7 +156,7 @@ export default function Livraisons() {
                             <span className="text-lg font-bold text-white">4</span>
                           </div>
                           <div className="text-right">
-                            <div className="text-2xl font-light text-rose-700">+20€</div>
+                            <div className="text-2xl font-light text-rose-700">20€</div>
                           </div>
                         </div>
                         <h4 className="text-lg font-light text-gray-800 mb-1">Zone 4</h4>

@@ -608,12 +608,11 @@ export default function CheckoutPage() {
                             <CheckCircleIcon className="h-5 w-5 text-green-500 mt-0.5" />
                             <div>
                               <p className="text-green-700 font-medium">
-                                Livraison : {deliveryInfo.fee === 0 ? 'Gratuite !' : `${deliveryInfo.fee}€`}
+                                Livraison : {deliveryInfo.fee}€
                               </p>
                               <p className="text-sm text-gray-600">
                                 {deliveryInfo.zone?.name}
                                 {deliveryInfo.distance && ` (${deliveryInfo.distance.toFixed(1)}km)`}
-                                {deliveryInfo.fee === 0 && ' - Incluse dans le prix'}
                               </p>
                             </div>
                           </div>

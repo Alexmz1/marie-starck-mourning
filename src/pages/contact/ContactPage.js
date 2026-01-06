@@ -214,7 +214,7 @@ const ContactPage = () => {
               <div className="text-center flex flex-col">
                 <h3 className="text-2xl font-light text-black mb-6 tracking-wide">Zone de Livraison</h3>
                 <div className="space-y-3 flex-grow">
-                  <p className="text-gray-600 font-light">• 0-10 km : 5€ (livraison incluse dans le prix)</p>
+                  <p className="text-gray-600 font-light">• 0-10 km : 5€</p>
                   <p className="text-gray-600 font-light">• 10-15 km : +10€</p>
                   <p className="text-gray-600 font-light">• 15-20 km : +15€</p>
                   <p className="text-gray-600 font-light">• 20-25 km : +20€</p>
@@ -406,7 +406,7 @@ const ContactPage = () => {
                 <div className="space-y-8">
                   <div>
                     <h3 className="text-xl font-light text-black mb-3 tracking-wide">Zone 1 – 0 à 10 km</h3>
-                    <p className="text-lg font-light mb-2" style={{color: '#858585'}}>5€ - Livraison incluse dans le prix du produit</p>
+                    <p className="text-lg font-light mb-2" style={{color: '#858585'}}>5€</p>
                     <p className="text-gray-600 font-light leading-relaxed">
                       Soisy-sur-Seine, Évry-Courcouronnes, Corbeil-Essonnes, Draveil, Ris-Orangis, 
                       Saint-Germain-lès-Corbeil, Tigery, Morsang-sur-Seine, Villabé
