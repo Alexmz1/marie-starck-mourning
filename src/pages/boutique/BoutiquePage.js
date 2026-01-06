@@ -23,16 +23,6 @@ const BoutiquePage = () => {
         { name: 'Arrangement Estival', description: 'Couleurs vives de l\'été', price: '60€' }
       ]
     },
-    'compositions-offrir': {
-      title: 'Compositions à offrir',
-      description: 'Créations florales élégantes pour toutes les occasions spéciales et moments de partage.',
-      products: [
-        { name: 'Bouquet Élégance', description: 'Composition raffinée aux tons pastel', price: '45€' },
-        { name: 'Arrangement Moderne', description: 'Design contemporain avec fleurs de saison', price: '65€' },
-        { name: 'Création Délicate', description: 'Composition subtile et harmonieuse', price: '55€' },
-        { name: 'Bouquet Sophistiqué', description: 'Arrangement aux couleurs nobles', price: '75€' }
-      ]
-    },
     'bouquets-frais': {
       title: 'Bouquets frais',
       description: 'Bouquets du jour composés avec les plus belles fleurs de saison, pour illuminer votre quotidien.',
@@ -41,6 +31,16 @@ const BoutiquePage = () => {
         { name: 'Bouquet Champêtre', description: 'Style naturel aux couleurs vives', price: '40€' },
         { name: 'Bouquet Romantique', description: 'Tons roses et blancs délicats', price: '50€' },
         { name: 'Bouquet Printanier', description: 'Fraîcheur et couleurs de saison', price: '42€' }
+      ]
+    },
+    'compositions-offrir': {
+      title: 'Compositions à offrir',
+      description: 'Créations florales élégantes pour toutes les occasions spéciales et moments de partage.',
+      products: [
+        { name: 'Bouquet Élégance', description: 'Composition raffinée aux tons pastel', price: '45€' },
+        { name: 'Arrangement Moderne', description: 'Design contemporain avec fleurs de saison', price: '65€' },
+        { name: 'Création Délicate', description: 'Composition subtile et harmonieuse', price: '55€' },
+        { name: 'Bouquet Sophistiqué', description: 'Arrangement aux couleurs nobles', price: '75€' }
       ]
     },
     'plantes-interieur': {
