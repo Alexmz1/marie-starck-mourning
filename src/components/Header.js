@@ -145,36 +145,6 @@ export default function Header() {
                 <Link href="/" className="block text-white hover:text-gray-200 text-sm font-light py-2">
                   Accueil
                 </Link>
-                
-                {/* Menu Deuil mobile avec sous-menu déroulant */}
-                <div className="space-y-1">
-                  <button 
-                    onClick={() => setActiveSubmenu(activeSubmenu === 'deuil' ? null : 'deuil')}
-                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
-                  >
-                    <span>Deuil</span>
-                    <svg 
-                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'deuil' ? 'rotate-180' : ''}`} 
-                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                  </button>
-                  {activeSubmenu === 'deuil' && (
-                    <div className="pl-4 space-y-1">
-                      {deuilMenu.map((item) => (
-                        <Link 
-                          key={item.name} 
-                          href={item.href} 
-                          onClick={(e) => handleSectionClick(item.href, e)}
-                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
 
                 {/* Menu Boutique mobile avec sous-menu déroulant */}
                 <div className="space-y-1">
@@ -193,6 +163,36 @@ export default function Header() {
                   {activeSubmenu === 'boutique' && (
                     <div className="pl-4 space-y-1">
                       {boutiqueMenu.map((item) => (
+                        <Link 
+                          key={item.name} 
+                          href={item.href} 
+                          onClick={(e) => handleSectionClick(item.href, e)}
+                          className="block text-white hover:text-gray-200 text-xs font-light py-1"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Menu Deuil mobile avec sous-menu déroulant */}
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'deuil' ? null : 'deuil')}
+                    className="w-full flex items-center justify-between text-white hover:text-gray-200 text-sm font-light py-2"
+                  >
+                    <span>Deuil</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${activeSubmenu === 'deuil' ? 'rotate-180' : ''}`} 
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
+                  {activeSubmenu === 'deuil' && (
+                    <div className="pl-4 space-y-1">
+                      {deuilMenu.map((item) => (
                         <Link 
                           key={item.name} 
                           href={item.href} 
@@ -294,35 +294,6 @@ export default function Header() {
             >
               Accueil
             </Link>
-            
-            {/* Menu déroulant Deuil */}
-            <div className="relative group">
-              <Link 
-                href="/deuil" 
-                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
-              >
-                Deuil
-                <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </Link>
-              
-              {/* Dropdown menu Deuil */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
-                <div className="py-2">
-                  {deuilMenu.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={item.href}
-                      onClick={(e) => handleSectionClick(item.href, e)}
-                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <div className="font-light text-black">{item.name}</div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
 
             {/* Menu déroulant Boutique */}
             <div className="relative group">
@@ -340,6 +311,35 @@ export default function Header() {
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
                 <div className="py-2">
                   {boutiqueMenu.map((item, index) => (
+                    <Link
+                      key={index}
+                      href={item.href}
+                      onClick={(e) => handleSectionClick(item.href, e)}
+                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <div className="font-light text-black">{item.name}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Menu déroulant Deuil */}
+            <div className="relative group">
+              <Link 
+                href="/deuil" 
+                className="text-white hover:text-gray-200 text-sm font-light transition-colors duration-300 flex items-center whitespace-nowrap"
+              >
+                Deuil
+                <svg className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </Link>
+              
+              {/* Dropdown menu Deuil */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0 z-50">
+                <div className="py-2">
+                  {deuilMenu.map((item, index) => (
                     <Link
                       key={index}
                       href={item.href}
