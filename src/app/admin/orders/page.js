@@ -124,6 +124,7 @@ export default function OrdersPage() {
   const [error, setError] = useState(null);
   const [expandedOrders, setExpandedOrders] = useState(new Set());
   const [openStatusDropdowns, setOpenStatusDropdowns] = useState(new Set());
+  const [showCompletedOrders, setShowCompletedOrders] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -177,7 +178,15 @@ export default function OrdersPage() {
       }
 
       const data = await response.json();
-      setOrders(data);
+      
+      // Trier les commandes par date de livraison (la plus proche en premier)
+      const sortedData = data.sort((a, b) => {
+        const dateA = new Date(a.deliveryDate || a.pickupDate);
+        const dateB = new Date(b.deliveryDate || b.pickupDate);
+        return dateA - dateB;
+      });
+      
+      setOrders(sortedData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -291,8 +300,10 @@ export default function OrdersPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-6 relative">
-            {orders.map((order) => (
+          <div className="space-y-6">
+            {/* Commandes actives */}
+            <div className="space-y-6 relative">
+              {orders.filter(order => order.status !== 'DELIVERED' && order.status !== 'CANCELLED').map((order) => (
               <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible">
                 {/* En-tête de la commande */}
                 <div 
@@ -311,8 +322,8 @@ export default function OrdersPage() {
                             <span style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
-                            <CalendarIcon className="h-4 w-4 mr-1" />
-                            {formatDate(order.createdAt)}
+                            <TruckIcon className="h-4 w-4 mr-1" />
+                            Livraison: {formatDate(order.deliveryDate || order.pickupDate, false)}
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <CurrencyEuroIcon className="h-4 w-4 mr-1" />
@@ -360,6 +371,10 @@ export default function OrdersPage() {
                             <a href={`tel:${order.customerInfo?.phone || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
                               {order.customerInfo?.phone || 'N/A'}
                             </a>
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                            <span style={{color: PRIMARY_COLOR}}>Commande passée le: {formatDate(order.createdAt)}</span>
                           </div>
                         </div>
 
@@ -531,6 +546,240 @@ export default function OrdersPage() {
                 )}
               </div>
             ))}
+            </div>
+
+            {/* Séparateur et toggle pour commandes terminées */}
+            {orders.filter(order => order.status === 'DELIVERED' || order.status === 'CANCELLED').length > 0 && (
+              <div className="mt-8">
+                <div className="border-t border-gray-200 pt-6">
+                  <button
+                    onClick={() => setShowCompletedOrders(!showCompletedOrders)}
+                    className="text-sm font-medium hover:underline flex items-center space-x-2"
+                    style={{color: PRIMARY_COLOR}}
+                  >
+                    <span>
+                      {showCompletedOrders ? '▼' : '▶'} 
+                      {showCompletedOrders ? 'Masquer' : 'Voir'} les commandes livrées ou annulées 
+                      ({orders.filter(order => order.status === 'DELIVERED' || order.status === 'CANCELLED').length})
+                    </span>
+                  </button>
+                </div>
+
+                {/* Commandes terminées */}
+                {showCompletedOrders && (
+                  <div className="space-y-6 relative mt-6">
+                    {orders.filter(order => order.status === 'DELIVERED' || order.status === 'CANCELLED').map((order) => (
+                      <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible opacity-75">
+                        {/* En-tête de la commande */}
+                        <div 
+                          className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
+                          onClick={() => toggleOrderExpansion(order.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div>
+                                <h3 className="text-lg font-medium text-gray-900">
+                                  Commande #{order.orderNumber}
+                                </h3>
+                                <div className="flex items-center space-x-4 mt-1">
+                                  <div className="flex items-center text-sm">
+                                    <UserIcon className="h-4 w-4 mr-1" style={{color: PRIMARY_COLOR}} />
+                                    <span style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <TruckIcon className="h-4 w-4 mr-1" />
+                                    Livraison: {formatDate(order.deliveryDate || order.pickupDate, false)}
+                                  </div>
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <CurrencyEuroIcon className="h-4 w-4 mr-1" />
+                                    {formatCurrency(order.total)}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                              <StatusSelector 
+                                status={order.status} 
+                                orderId={order.id}
+                                onStatusChange={updateOrderStatus}
+                                isOpen={openStatusDropdowns.has(order.id)}
+                                onToggle={() => toggleStatusDropdown(order.id)}
+                              />
+                              <span className="text-sm text-gray-400">
+                                {expandedOrders.has(order.id) ? '▼' : '▶'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Détails de la commande */}
+                        {expandedOrders.has(order.id) && (
+                          <div className="border-t border-gray-200 p-6 bg-gray-50">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                              
+                              {/* Informations client */}
+                              <div className="space-y-4">
+                                <h4 className="font-medium text-gray-900 mb-3">Informations client</h4>
+                                <div className="bg-white p-4 rounded-lg space-y-3">
+                                  <div className="flex items-center text-sm">
+                                    <UserIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                    <span className="font-medium" style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <EnvelopeIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                    <a href={`mailto:${order.customerInfo?.email || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
+                                      {order.customerInfo?.email || 'N/A'}
+                                    </a>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <PhoneIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                    <a href={`tel:${order.customerInfo?.phone || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
+                                      {order.customerInfo?.phone || 'N/A'}
+                                    </a>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                    <span style={{color: PRIMARY_COLOR}}>Commande passée le: {formatDate(order.createdAt)}</span>
+                                  </div>
+                                </div>
+
+                                {/* Informations de livraison/récupération */}
+                                <div>
+                                  <h5 className="font-medium text-gray-900 mb-2">
+                                    {order.deliveryType === 'PICKUP' ? 'Récupération en boutique' : 'Livraison'}
+                                  </h5>
+                                  <div className="bg-white p-4 rounded-lg space-y-3">
+                                    {/* Type de livraison */}
+                                    <div className="flex items-center text-sm">
+                                      {order.deliveryType === 'PICKUP' ? (
+                                        <>
+                                          <MapPinIcon className="h-4 w-4 mr-2 text-green-500" />
+                                          <span className="font-medium text-green-700">Click & Collect</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <TruckIcon className="h-4 w-4 mr-2 text-blue-500" />
+                                          <span className="font-medium text-blue-700">Livraison à domicile</span>
+                                        </>
+                                      )}
+                                    </div>
+
+                                    {/* Adresse */}
+                                    <div className="flex items-start text-sm">
+                                      <MapPinIcon className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
+                                      <div>
+                                        {order.deliveryType === 'PICKUP' ? (
+                                          <div>
+                                            <div className="font-medium" style={{color: PRIMARY_COLOR}}>Atelier Floral Marie Starck</div>
+                                            <div className="text-gray-600">Centre commercial des Meillottes</div>
+                                            <div className="text-gray-600">1 rue de la forêt de Sénart</div>
+                                            <div className="text-gray-600">91450 Soisy-sur-Seine</div>
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <div className="font-medium" style={{color: PRIMARY_COLOR}}>{order.deliveryAddress || 'Adresse non renseignée'}</div>
+                                            <div style={{color: PRIMARY_COLOR}}>{order.deliveryPostalCode} {order.deliveryCity}</div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* Date prévue */}
+                                    {order.deliveryDate && (
+                                      <div className="flex items-center text-sm">
+                                        <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                                        <span style={{color: PRIMARY_COLOR}}>Date prévue: {formatDate(order.deliveryDate, false)}</span>
+                                      </div>
+                                    )}
+
+                                    {/* Instructions de livraison */}
+                                    {order.deliveryInstructions && (
+                                      <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-800">
+                                        <span className="font-medium">Instructions de livraison :</span> {order.deliveryInstructions}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Articles commandés */}
+                              <div className="space-y-4">
+                                <h4 className="font-medium text-gray-900 mb-3">
+                                  Articles ({order.items.filter(item => !item.productName?.includes('Détails de récupération')).length} article{order.items.filter(item => !item.productName?.includes('Détails de récupération')).length > 1 ? 's' : ''})
+                                </h4>
+                                <div className="bg-white rounded-lg divide-y divide-gray-200">
+                                  {order.items
+                                    .filter(item => !item.productName?.includes('Détails de récupération'))
+                                    .map((item, index) => {
+                                      const productImage = item.product?.images?.[0];
+                                      const savedImage = item.productImage;
+                                      const finalImage = productImage || savedImage;
+                                      
+                                      return (
+                                        <div key={index} className="p-4 flex items-center space-x-4">
+                                          <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
+                                            {finalImage ? (
+                                              <Image
+                                                src={finalImage}
+                                                alt={item.productName}
+                                                width={48}
+                                                height={48}
+                                                className="w-full h-full object-cover"
+                                              />
+                                            ) : (
+                                              <div className="w-full h-full flex items-center justify-center">
+                                                <span className="text-gray-400 text-xs">Img</span>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="flex-1">
+                                            <div className="font-medium text-gray-900">{item.productName}</div>
+                                            <div className="text-sm text-gray-600">
+                                              {item.variantSize && `Taille: ${item.variantSize}`}
+                                              {item.variantColor && ` • Couleur: ${item.variantColor}`}
+                                            </div>
+                                            {item.options?.ribbon?.enabled && (
+                                              <div className="text-sm text-gray-600 mt-1">
+                                                Ruban: "{item.options.ribbon.message}"
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="text-right">
+                                            <div className="font-medium text-gray-900">{formatCurrency(item.price)}</div>
+                                            <div className="text-sm text-gray-600">Qté: {item.quantity}</div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+
+                                {/* Totaux */}
+                                <div className="bg-white p-4 rounded-lg space-y-2">
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Sous-total</span>
+                                    <span className="text-gray-900">{formatCurrency(order.subtotal)}</span>
+                                  </div>
+                                  {order.deliveryFee > 0 && (
+                                    <div className="flex justify-between text-sm">
+                                      <span className="text-gray-600">Livraison</span>
+                                      <span className="text-gray-900">{formatCurrency(order.deliveryFee)}</span>
+                                    </div>
+                                  )}
+                                  <div className="border-t border-gray-200 pt-2 flex justify-between font-medium">
+                                    <span className="text-gray-900">Total</span>
+                                    <span className="text-gray-900">{formatCurrency(order.total)}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
