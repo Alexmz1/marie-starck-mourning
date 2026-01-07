@@ -96,13 +96,24 @@ export default function StatisticsPage() {
   return (
     <div className="max-w-7xl mx-auto py-4 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
       {/* En-tête */}
-      <div className="mb-4 sm:mb-8">
-        <h1 className="text-xl sm:text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
-          Statistiques
-        </h1>
-        <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-light text-gray-600">
-          Vue d'ensemble de l'utilisation de vos ressources
-        </p>
+      <div className="mb-4 sm:mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+            Statistiques
+          </h1>
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-light text-gray-600">
+            Vue d'ensemble de l'utilisation de vos ressources
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            fetchUploadThingStats()
+            fetchNeonStats()
+          }}
+          className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors font-light whitespace-nowrap"
+        >
+          Actualiser tout
+        </button>
       </div>
 
       {error && (
@@ -129,15 +140,6 @@ export default function StatisticsPage() {
             <h2 className="text-base sm:text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
               Stockage UploadThing
             </h2>
-            <button
-              onClick={() => {
-                fetchUploadThingStats()
-                fetchNeonStats()
-              }}
-              className="ml-auto px-2 sm:px-3 py-1 text-xs sm:text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            >
-              Actualiser tout
-            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -243,12 +245,6 @@ export default function StatisticsPage() {
             <h2 className="text-base sm:text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
               Base de données Neon Tech
             </h2>
-            <button
-              onClick={fetchNeonStats}
-              className="ml-auto px-2 sm:px-3 py-1 text-xs sm:text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            >
-              Actualiser
-            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
@@ -379,15 +375,6 @@ export default function StatisticsPage() {
           )}
         </div>
       )}
-
-      {/* Section pour futures statistiques */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-8 text-center">
-        <ChartBarIcon className="h-8 sm:h-12 w-8 sm:w-12 text-gray-400 mx-auto mb-2 sm:mb-4" />
-        <h3 className="text-sm sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">Plus de statistiques bientôt</h3>
-        <p className="text-xs sm:text-sm text-gray-600">
-          Cette section sera enrichie avec des statistiques sur les ventes, les produits populaires, et plus encore.
-        </p>
-      </div>
     </div>
   )
 }

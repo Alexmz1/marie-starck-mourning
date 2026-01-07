@@ -304,10 +304,10 @@ export default function OrdersPage() {
             {/* Commandes actives */}
             <div className="space-y-6 relative">
               {orders.filter(order => order.status !== 'DELIVERED' && order.status !== 'CANCELLED').map((order) => (
-              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-hidden">
+              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible">
                 {/* En-tête de la commande */}
                 <div 
-                  className="p-3 sm:p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
+                  className="p-3 sm:p-6 cursor-pointer hover:bg-gray-50 transition-colors relative rounded-t-lg"
                   onClick={() => toggleOrderExpansion(order.id)}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-2">
@@ -581,10 +581,10 @@ export default function OrdersPage() {
                 {showCompletedOrders && (
                   <div className="space-y-6 relative mt-6">
                     {orders.filter(order => order.status === 'DELIVERED' || order.status === 'CANCELLED').map((order) => (
-                      <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-hidden opacity-75">
+                      <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible opacity-75">
                         {/* En-tête de la commande */}
                         <div 
-                          className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
+                          className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative rounded-t-lg"
                           onClick={() => toggleOrderExpansion(order.id)}
                         >
                           <div className="flex items-center justify-between">

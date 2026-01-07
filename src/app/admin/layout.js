@@ -158,12 +158,6 @@ export default function AdminLayout({ children }) {
                 )
               })}
             </nav>
-            
-            <div className="px-4 py-4 border-t border-gray-200">
-              <div className="text-xs font-light text-gray-600">
-                Base de données: {process.env.NODE_ENV === 'development' ? 'Développement' : 'Production'}
-              </div>
-            </div>
           </div>
         </aside>
 

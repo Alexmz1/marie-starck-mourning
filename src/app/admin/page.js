@@ -6,9 +6,7 @@ import {
   UsersIcon, 
   ArchiveBoxIcon,
   PlusIcon,
-  ClipboardDocumentListIcon,
-  FolderIcon,
-  CheckCircleIcon
+  ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline'
 
 const PRIMARY_COLOR = '#276f88'
@@ -17,10 +15,22 @@ function getStatusLabel(status) {
   const statusLabels = {
     'PENDING': 'En attente',
     'CONFIRMED': 'Confirmée',
-    'PREPARING': 'En préparation',
-    'DELIVERED': 'Livrée'
+    'IN_PROGRESS': 'En cours',
+    'DELIVERED': 'Livrée',
+    'CANCELLED': 'Annulée'
   }
   return statusLabels[status] || status
+}
+
+function getStatusColor(status) {
+  const statusColors = {
+    'PENDING': 'bg-yellow-100 text-yellow-800',
+    'CONFIRMED': 'bg-blue-100 text-blue-800',
+    'IN_PROGRESS': 'bg-purple-100 text-purple-800',
+    'DELIVERED': 'bg-green-100 text-green-800',
+    'CANCELLED': 'bg-red-100 text-red-800'
+  }
+  return statusColors[status] || 'bg-gray-100 text-gray-800'
 }
 
 // Cette fonction sera remplacée par des appels API côté client
@@ -158,12 +168,6 @@ export default function AdminDashboard() {
               href="/admin/orders"
               icon={ClipboardDocumentListIcon}
             />
-            <QuickAction
-              title="Base de données"
-              description="Ouvrir Prisma Studio"
-              href="http://localhost:5555"
-              icon={FolderIcon}
-            />
           </div>
         </div>
 
@@ -196,13 +200,7 @@ export default function AdminDashboard() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                        order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                        order.status === 'PREPARING' ? 'bg-purple-100 text-purple-800' :
-                        order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
                         {getStatusLabel(order.status)}
                       </span>
                     </div>
@@ -219,38 +217,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Informations système */}
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-4 sm:p-8">
-        <h2 className="text-base sm:text-xl font-light text-gray-900 mb-3 sm:mb-6" style={{ color: PRIMARY_COLOR }}>
-          Informations système
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
-          <div>
-            <span className="font-light text-gray-700">Base de données:</span>
-            <span className="ml-2 text-green-600 flex items-center">
-              <CheckCircleIcon className="h-4 w-4 mr-1" />
-              Connectée
-            </span>
-          </div>
-          <div>
-            <span className="font-light text-gray-700">Environnement:</span>
-            <span className="ml-2 font-light text-black">{process.env.NODE_ENV}</span>
-          </div>
-          <div>
-            <span className="font-light text-gray-700">Prisma Studio:</span>
-            <a 
-              href="http://localhost:5555" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="ml-2 font-light hover:underline transition-colors"
-              style={{ color: PRIMARY_COLOR }}
-            >
-              Ouvrir
-            </a>
           </div>
         </div>
       </div>
