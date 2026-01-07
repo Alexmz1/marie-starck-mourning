@@ -97,7 +97,7 @@ const StatusSelector = ({ status, orderId, onStatusChange, isOpen, onToggle }) =
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-sm shadow-lg z-[60] min-w-32">
+          <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-sm shadow-lg z-[60] min-w-32 max-w-[200px] whitespace-nowrap">
             {statusOptions.map((option) => (
               <button
                 key={option.value}
@@ -275,13 +275,13 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <ArchiveBoxIcon className="h-8 w-8" style={{color: PRIMARY_COLOR}} />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <ArchiveBoxIcon className="h-6 sm:h-8 w-6 sm:w-8" style={{color: PRIMARY_COLOR}} />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Commandes</h1>
-                <p className="text-sm text-gray-600">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Commandes</h1>
+                <p className="text-xs sm:text-sm text-gray-600">
                   {orders.length} commande{orders.length > 1 ? 's' : ''} enregistrée{orders.length > 1 ? 's' : ''}
                 </p>
               </div>
@@ -304,35 +304,38 @@ export default function OrdersPage() {
             {/* Commandes actives */}
             <div className="space-y-6 relative">
               {orders.filter(order => order.status !== 'DELIVERED' && order.status !== 'CANCELLED').map((order) => (
-              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible">
+              <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-hidden">
                 {/* En-tête de la commande */}
                 <div 
-                  className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
+                  className="p-3 sm:p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"
                   onClick={() => toggleOrderExpansion(order.id)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-900">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-xs sm:text-lg font-medium text-gray-900 truncate flex-1">
                           Commande #{order.orderNumber}
                         </h3>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <div className="flex items-center text-sm">
-                            <UserIcon className="h-4 w-4 mr-1" style={{color: PRIMARY_COLOR}} />
-                            <span style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
-                          </div>
-                          <div className="flex items-center text-sm text-gray-600">
-                            <TruckIcon className="h-4 w-4 mr-1" />
-                            Livraison: {formatDate(order.deliveryDate || order.pickupDate, false)}
-                          </div>
-                          <div className="flex items-center text-sm text-gray-600">
-                            <CurrencyEuroIcon className="h-4 w-4 mr-1" />
-                            {formatCurrency(order.total)}
-                          </div>
+                        <span className="text-sm text-gray-400 sm:hidden flex-shrink-0">
+                          {expandedOrders.has(order.id) ? '▼' : '▶'}
+                        </span>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-1 gap-1 sm:gap-0">
+                        <div className="flex items-center text-xs sm:text-sm">
+                          <UserIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
+                          <span className="truncate" style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                          <TruckIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">Livraison: {formatDate(order.deliveryDate || order.pickupDate, false)}</span>
+                        </div>
+                        <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                          <CurrencyEuroIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                          {formatCurrency(order.total)}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:space-x-4 flex-shrink-0">
                       <StatusSelector 
                         status={order.status} 
                         orderId={order.id}
@@ -340,7 +343,7 @@ export default function OrdersPage() {
                         isOpen={openStatusDropdowns.has(order.id)}
                         onToggle={() => toggleStatusDropdown(order.id)}
                       />
-                      <span className="text-sm text-gray-400">
+                      <span className="text-sm text-gray-400 hidden sm:inline">
                         {expandedOrders.has(order.id) ? '▼' : '▶'}
                       </span>
                     </div>
@@ -349,60 +352,60 @@ export default function OrdersPage() {
 
                 {/* Détails de la commande */}
                 {expandedOrders.has(order.id) && (
-                  <div className="border-t border-gray-200 p-6 bg-gray-50">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="border-t border-gray-200 p-3 sm:p-6 bg-gray-50">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                       
                       {/* Informations client */}
                       <div className="space-y-4">
-                        <h4 className="font-medium text-gray-900 mb-3">Informations client</h4>
-                        <div className="bg-white p-4 rounded-lg space-y-3">
-                          <div className="flex items-center text-sm">
-                            <UserIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
-                            <span className="font-medium" style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
+                        <h4 className="font-medium text-gray-900 text-sm sm:text-base mb-3">Informations client</h4>
+                        <div className="bg-white p-3 sm:p-4 rounded-lg space-y-3">
+                          <div className="flex items-center text-xs sm:text-sm">
+                            <UserIcon className="h-4 w-4 mr-2 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
+                            <span className="font-medium truncate" style={{color: PRIMARY_COLOR}}>{order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}</span>
                           </div>
-                          <div className="flex items-center text-sm">
-                            <EnvelopeIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
-                            <a href={`mailto:${order.customerInfo?.email || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
+                          <div className="flex items-center text-xs sm:text-sm">
+                            <EnvelopeIcon className="h-4 w-4 mr-2 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
+                            <a href={`mailto:${order.customerInfo?.email || ''}`} className="hover:underline truncate" style={{color: PRIMARY_COLOR}}>
                               {order.customerInfo?.email || 'N/A'}
                             </a>
                           </div>
-                          <div className="flex items-center text-sm">
-                            <PhoneIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                          <div className="flex items-center text-xs sm:text-sm">
+                            <PhoneIcon className="h-4 w-4 mr-2 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
                             <a href={`tel:${order.customerInfo?.phone || ''}`} className="hover:underline" style={{color: PRIMARY_COLOR}}>
                               {order.customerInfo?.phone || 'N/A'}
                             </a>
                           </div>
-                          <div className="flex items-center text-sm">
-                            <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
+                          <div className="flex items-start text-xs sm:text-sm">
+                            <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" style={{color: PRIMARY_COLOR}} />
                             <span style={{color: PRIMARY_COLOR}}>Commande passée le: {formatDate(order.createdAt)}</span>
                           </div>
                         </div>
 
                         {/* Informations de livraison/récupération */}
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">
+                          <h5 className="font-medium text-gray-900 text-sm sm:text-base mb-2">
                             {order.deliveryType === 'PICKUP' ? 'Récupération en boutique' : 'Livraison'}
                           </h5>
-                          <div className="bg-white p-4 rounded-lg space-y-3">
+                          <div className="bg-white p-3 sm:p-4 rounded-lg space-y-3">
                             {/* Type de livraison */}
-                            <div className="flex items-center text-sm">
+                            <div className="flex items-center text-xs sm:text-sm">
                               {order.deliveryType === 'PICKUP' ? (
                                 <>
-                                  <MapPinIcon className="h-4 w-4 mr-2 text-green-500" />
+                                  <MapPinIcon className="h-4 w-4 mr-2 flex-shrink-0 text-green-500" />
                                   <span className="font-medium text-green-700">Click & Collect</span>
                                 </>
                               ) : (
                                 <>
-                                  <TruckIcon className="h-4 w-4 mr-2 text-blue-500" />
+                                  <TruckIcon className="h-4 w-4 mr-2 flex-shrink-0 text-blue-500" />
                                   <span className="font-medium text-blue-700">Livraison à domicile</span>
                                 </>
                               )}
                             </div>
 
                             {/* Adresse */}
-                            <div className="flex items-start text-sm">
+                            <div className="flex items-start text-xs sm:text-sm">
                               <MapPinIcon className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{color: PRIMARY_COLOR}} />
-                              <div>
+                              <div className="min-w-0 flex-1">
                                 {order.deliveryType === 'PICKUP' ? (
                                   <div>
                                     <div className="font-medium" style={{color: PRIMARY_COLOR}}>Atelier Floral Marie Starck</div>
@@ -412,8 +415,8 @@ export default function OrdersPage() {
                                   </div>
                                 ) : (
                                   <div>
-                                    <div className="font-medium" style={{color: PRIMARY_COLOR}}>{order.deliveryAddress || 'Adresse non renseignée'}</div>
-                                    <div style={{color: PRIMARY_COLOR}}>{order.deliveryPostalCode} {order.deliveryCity}</div>
+                                    <div className="font-medium break-words" style={{color: PRIMARY_COLOR}}>{order.deliveryAddress || 'Adresse non renseignée'}</div>
+                                    <div className="break-words" style={{color: PRIMARY_COLOR}}>{order.deliveryPostalCode} {order.deliveryCity}</div>
                                   </div>
                                 )}
                               </div>
@@ -421,7 +424,7 @@ export default function OrdersPage() {
 
                             {/* Date prévue */}
                             {order.deliveryDate && (
-                              <div className="flex items-center text-sm">
+                              <div className="flex items-center text-xs sm:text-sm">
                                 <CalendarIcon className="h-4 w-4 mr-2" style={{color: PRIMARY_COLOR}} />
                                 <span style={{color: PRIMARY_COLOR}}>Date prévue: {formatDate(order.deliveryDate, false)}</span>
                               </div>
@@ -429,7 +432,7 @@ export default function OrdersPage() {
 
                             {/* Instructions de livraison */}
                             {order.deliveryInstructions && (
-                              <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-800">
+                              <div className="mt-2 p-2 bg-gray-50 rounded text-xs sm:text-sm text-gray-800 break-words">
                                 <span className="font-medium">Instructions de livraison :</span> {order.deliveryInstructions}
                               </div>
                             )}
@@ -439,15 +442,15 @@ export default function OrdersPage() {
 
                       {/* Articles commandés */}
                       <div className="space-y-4">
-                        <h4 className="font-medium text-gray-900 mb-3">
+                        <h4 className="font-medium text-gray-900 text-sm sm:text-base mb-3">
                           Articles ({order.items.filter(item => !item.productName?.includes('Détails de récupération')).length} article{order.items.filter(item => !item.productName?.includes('Détails de récupération')).length > 1 ? 's' : ''})
                         </h4>
                         <div className="bg-white rounded-lg divide-y divide-gray-200">
                           {order.items
                             .filter(item => !item.productName?.includes('Détails de récupération'))
                             .map((item, index) => (
-                                    <div key={index} className="p-4 flex items-center space-x-4">
-                                      <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
+                                    <div key={index} className="p-3 sm:p-4 flex items-start space-x-3 sm:space-x-4">
+                                      <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg overflow-hidden">
                                         {(() => {
                                           const productImage = item.product?.images?.[0];
                                           const savedImage = item.productImage;
@@ -471,45 +474,45 @@ export default function OrdersPage() {
                                           );
                                         })()}
                                       </div>
-                                      <div className="flex-1">
-                                        <h6 className="font-medium text-gray-900">{item.product?.name || item.productName}</h6>
-                                        <div className="text-sm text-gray-600">
+                                      <div className="flex-1 min-w-0">
+                                        <h6 className="font-medium text-gray-900 text-xs sm:text-base truncate">{item.product?.name || item.productName}</h6>
+                                        <div className="text-xs sm:text-sm text-gray-600">
                                           {item.selectedSize && <span>Taille: {item.selectedSize} • </span>}
                                           {item.selectedColor && <span>Couleur: {item.selectedColor} • </span>}
                                           Quantité: {item.quantity}
                                         </div>
                                         {item.customMessage && (
-                                          <div className="text-sm text-blue-600 mt-1">
+                                          <div className="text-xs sm:text-sm text-blue-600 mt-1 break-words">
                                             Message: "{item.customMessage}"
                                           </div>
                                         )}
                                         {/* Affichage de la carte comme ligne séparée visuelle */}
                                         {item.hasCard && (
                                           <div className="mt-2 ml-2 pl-4 border-l-2 border-green-200">
-                                            <div className="flex items-center text-xs text-green-700">
-                                              <span className="font-semibold mr-1">Message sur carte :</span>
-                                              <span className="italic">{item.cardText}</span>
+                                            <div className="flex items-start text-xs text-green-700">
+                                              <span className="font-semibold mr-1 flex-shrink-0">Message sur carte :</span>
+                                              <span className="italic break-words">{item.cardText}</span>
                                             </div>
                                           </div>
                                         )}
                                         {/* Affichage du ruban comme ligne séparée visuelle */}
                                         {item.hasRibbon && (
                                           <div className="mt-2 ml-2 pl-4 border-l-2 border-blue-200">
-                                            <div className="flex items-center text-xs text-blue-700">
-                                              <span className="font-semibold mr-1">Ruban personnalisé :</span>
-                                              <span className="italic">{item.ribbonText}</span>
+                                            <div className="flex items-start text-xs text-blue-700">
+                                              <span className="font-semibold mr-1 flex-shrink-0">Ruban personnalisé :</span>
+                                              <span className="italic break-words">{item.ribbonText}</span>
                                               {item.ribbonPrice && (
-                                                <span className="ml-2 text-blue-500 font-medium">(+{formatCurrency(item.ribbonPrice)})</span>
+                                                <span className="ml-2 text-blue-500 font-medium flex-shrink-0">(+{formatCurrency(item.ribbonPrice)})</span>
                                               )}
                                             </div>
                                           </div>
                                         )}
                                       </div>
-                                      <div className="text-right">
-                                        <div className="font-medium text-gray-900">
+                                      <div className="text-right flex-shrink-0">
+                                        <div className="font-medium text-gray-900 text-xs sm:text-base">
                                           {formatCurrency(item.totalPrice)}
                                         </div>
-                                        <div className="text-sm text-gray-500">
+                                        <div className="text-xs sm:text-sm text-gray-500">
                                           {formatCurrency(item.unitPrice)} × {item.quantity}
                                         </div>
                                       </div>
@@ -518,9 +521,9 @@ export default function OrdersPage() {
                         </div>
 
                         {/* Récapitulatif financier */}
-                        <div className="bg-white p-4 rounded-lg border-t-2" style={{borderColor: PRIMARY_COLOR}}>
+                        <div className="bg-white p-3 sm:p-4 rounded-lg border-t-2" style={{borderColor: PRIMARY_COLOR}}>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs sm:text-sm">
                               <span className="text-gray-600">Sous-total:</span>
                               <span className="text-gray-900">
                                 {formatCurrency(order.items
@@ -529,13 +532,13 @@ export default function OrdersPage() {
                                 )}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs sm:text-sm">
                               <span className="text-gray-600">Frais de livraison:</span>
                               <span className="text-gray-900">
-                                {order.deliveryType === 'PICKUP' ? 'Gratuit (récupération)' : formatCurrency(order.deliveryFee || 0)}
+                                {order.deliveryType === 'PICKUP' ? 'Gratuit' : formatCurrency(order.deliveryFee || 0)}
                               </span>
                             </div>
-                            <div className="flex justify-between font-medium text-lg pt-2 border-t">
+                            <div className="flex justify-between font-medium text-sm sm:text-lg pt-2 border-t">
                               <span className="text-gray-900">Total:</span>
                               <span style={{color: PRIMARY_COLOR}}>{formatCurrency(order.total)}</span>
                             </div>
@@ -546,9 +549,9 @@ export default function OrdersPage() {
 
                     {/* Notes */}
                     {order.notes && (
-                      <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-                        <h5 className="font-medium text-gray-900 mb-2">Notes internes</h5>
-                        <p className="text-sm text-gray-700">{order.notes}</p>
+                      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-yellow-50 rounded-lg">
+                        <h5 className="font-medium text-gray-900 text-sm sm:text-base mb-2">Notes internes</h5>
+                        <p className="text-xs sm:text-sm text-gray-700 break-words">{order.notes}</p>
                       </div>
                     )}
                   </div>
@@ -578,7 +581,7 @@ export default function OrdersPage() {
                 {showCompletedOrders && (
                   <div className="space-y-6 relative mt-6">
                     {orders.filter(order => order.status === 'DELIVERED' || order.status === 'CANCELLED').map((order) => (
-                      <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-visible opacity-75">
+                      <div key={order.id} className="bg-white shadow-sm rounded-lg overflow-hidden opacity-75">
                         {/* En-tête de la commande */}
                         <div 
                           className="p-6 cursor-pointer hover:bg-gray-50 transition-colors relative"

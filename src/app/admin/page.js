@@ -26,17 +26,17 @@ function getStatusLabel(status) {
 // Cette fonction sera remplacée par des appels API côté client
 
 const StatCard = ({ title, value, icon: IconComponent }) => (
-  <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
+  <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 sm:p-6">
     <div className="flex items-center">
       <div className="flex-shrink-0">
-        <IconComponent className="h-8 w-8 text-gray-400" />
+        <IconComponent className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
       </div>
-      <div className="ml-5 w-0 flex-1">
+      <div className="ml-3 sm:ml-5 w-0 flex-1">
         <dl>
-          <dt className="text-sm font-light text-gray-700 truncate">
+          <dt className="text-xs sm:text-sm font-light text-gray-700 truncate">
             {title}
           </dt>
-          <dd className="text-2xl font-light text-gray-900">
+          <dd className="text-lg sm:text-2xl font-light text-gray-900">
             {value}
           </dd>
         </dl>
@@ -48,15 +48,15 @@ const StatCard = ({ title, value, icon: IconComponent }) => (
 const QuickAction = ({ title, description, href, icon: IconComponent }) => (
   <a
     href={href}
-    className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+    className="block p-3 sm:p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
   >
     <div className="flex items-center">
-      <div className="rounded-lg p-3" style={{ backgroundColor: PRIMARY_COLOR }}>
-        <IconComponent className="h-6 w-6 text-white" />
+      <div className="rounded-lg p-2 sm:p-3" style={{ backgroundColor: PRIMARY_COLOR }}>
+        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
       </div>
-      <div className="ml-4">
-        <h3 className="text-lg font-light text-gray-900">{title}</h3>
-        <p className="text-sm font-light text-gray-600">{description}</p>
+      <div className="ml-3 sm:ml-4">
+        <h3 className="text-sm sm:text-lg font-light text-gray-900">{title}</h3>
+        <p className="text-xs sm:text-sm font-light text-gray-600">{description}</p>
       </div>
     </div>
   </a>
@@ -103,13 +103,13 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="max-w-7xl mx-auto py-4 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
       {/* En-tête */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+      <div className="mb-4 sm:mb-8">
+        <h1 className="text-xl sm:text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
           Tableau de bord
         </h1>
-        <p className="mt-2 text-sm font-light text-gray-600">
+        <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-light text-gray-600">
           Vue d'ensemble de vos produits et commandes
         </p>
       </div>
@@ -137,15 +137,15 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Actions rapides */}
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg">
-          <div className="px-8 py-6 border-b border-gray-200">
-            <h2 className="text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+          <div className="px-4 sm:px-8 py-3 sm:py-6 border-b border-gray-200">
+            <h2 className="text-base sm:text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
               Actions rapides
             </h2>
           </div>
-          <div className="p-8 space-y-4">
+          <div className="p-4 sm:p-8 space-y-3 sm:space-y-4">
             <QuickAction
               title="Ajouter un produit"
               description="Créer un nouveau produit floral"
@@ -169,29 +169,29 @@ export default function AdminDashboard() {
 
         {/* Commandes récentes */}
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg">
-          <div className="px-8 py-6 border-b border-gray-200">
-            <h2 className="text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+          <div className="px-4 sm:px-8 py-3 sm:py-6 border-b border-gray-200">
+            <h2 className="text-base sm:text-xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
               Commandes récentes
             </h2>
           </div>
-          <div className="p-8">
+          <div className="p-4 sm:p-8">
             {stats.recentOrders.length === 0 ? (
-              <div className="text-center py-8">
-                <ArchiveBoxIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="font-light text-gray-600">Aucune commande pour le moment</p>
-                <p className="text-sm font-light text-gray-500 mt-2">
+              <div className="text-center py-6 sm:py-8">
+                <ArchiveBoxIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                <p className="font-light text-gray-600 text-sm sm:text-base">Aucune commande pour le moment</p>
+                <p className="text-xs sm:text-sm font-light text-gray-500 mt-1 sm:mt-2">
                   Les nouvelles commandes apparaîtront ici
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {stats.recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={order.id} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-gray-900 text-xs sm:text-base">
                         {order.customerInfo?.firstName || 'N/A'} {order.customerInfo?.lastName || 'N/A'}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         {order.items.length} article(s) - {order.total}€
                       </p>
                     </div>
@@ -224,11 +224,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Informations système */}
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-8">
-        <h2 className="text-xl font-light text-gray-900 mb-6" style={{ color: PRIMARY_COLOR }}>
+      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-4 sm:p-8">
+        <h2 className="text-base sm:text-xl font-light text-gray-900 mb-3 sm:mb-6" style={{ color: PRIMARY_COLOR }}>
           Informations système
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
           <div>
             <span className="font-light text-gray-700">Base de données:</span>
             <span className="ml-2 text-green-600 flex items-center">

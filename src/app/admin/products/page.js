@@ -126,7 +126,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="bg-white shadow-sm border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition-all duration-200 overflow-hidden">
       {/* Image du produit */}
-      <div className="h-40 bg-gray-100 relative overflow-hidden">
+      <div className="h-32 sm:h-40 bg-gray-100 relative overflow-hidden">
         {product.images && product.images.length > 0 ? (
           <Image 
             src={product.images[0]} 
@@ -154,8 +154,8 @@ const ProductCard = ({ product }) => {
         
         {/* Badge produit en vedette */}
         {product.featured && (
-          <div className="absolute top-2 left-2">
-            <div className="bg-yellow-400 text-yellow-800 px-2 py-1 rounded text-xs font-medium">
+          <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
+            <div className="bg-yellow-400 text-yellow-800 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium">
               ⭐
             </div>
           </div>
@@ -163,35 +163,35 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Contenu de la carte */}
-      <div className="p-4">
-        <div className="mb-3">
-          <div className="flex items-center justify-between mb-1">
-            <h3 className="text-sm font-medium text-gray-900 truncate flex-1 mr-2" title={product.name}>
+      <div className="p-2 sm:p-4">
+        <div className="mb-2 sm:mb-3">
+          <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-900 truncate flex-1 mr-1 sm:mr-2" title={product.name}>
               {product.name}
             </h3>
             {/* Indicateur de stock à côté du nom */}
-            <div className={`w-3 h-3 rounded-full flex-shrink-0 ${product.inStock ? 'bg-green-400' : 'bg-red-400'}`} 
+            <div className={`w-2 sm:w-3 h-2 sm:h-3 rounded-full flex-shrink-0 ${product.inStock ? 'bg-green-400' : 'bg-red-400'}`} 
                  title={product.inStock ? 'En stock' : 'Rupture de stock'} />
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-[10px] sm:text-xs text-gray-500">
             {product.category} • {subCategoryNames[product.subCategory]}
           </p>
         </div>
 
         {/* Couleurs disponibles (pastilles) */}
         {product.productColors && product.productColors.length > 0 && (
-          <div className="mb-3">
-            <div className="flex items-center gap-1 flex-wrap">
-              <span className="text-xs text-gray-500 mr-1">Couleurs:</span>
+          <div className="mb-2 sm:mb-3">
+            <div className="flex items-center gap-0.5 sm:gap-1 flex-wrap">
+              <span className="text-[10px] sm:text-xs text-gray-500 mr-0.5 sm:mr-1">Couleurs:</span>
               {product.productColors.slice(0, 6).map((colorItem, index) => (
                 <div
                   key={index}
-                  className={`w-4 h-4 rounded-full border border-gray-300 ${COLORS[colorItem.color]?.colorClass || 'bg-gray-200'}`}
+                  className={`w-3 sm:w-4 h-3 sm:h-4 rounded-full border border-gray-300 ${COLORS[colorItem.color]?.colorClass || 'bg-gray-200'}`}
                   title={COLORS[colorItem.color]?.label || colorItem.color}
                 />
               ))}
               {product.productColors.length > 6 && (
-                <span className="text-xs text-gray-500 ml-1">
+                <span className="text-[10px] sm:text-xs text-gray-500 ml-0.5 sm:ml-1">
                   +{product.productColors.length - 6}
                 </span>
               )}
@@ -200,9 +200,9 @@ const ProductCard = ({ product }) => {
         )}
 
         {/* Prix et informations */}
-        <div className="mb-3">
-          <div className="text-lg font-medium text-green-600 mb-1">{priceRange}</div>
-          <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="mb-2 sm:mb-3">
+          <div className="text-sm sm:text-lg font-medium text-green-600 mb-0.5 sm:mb-1">{priceRange}</div>
+          <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-500">
             <span>{product.productVariants.length} taille{product.productVariants.length > 1 ? 's' : ''}</span>
             <span>{product.productColors.length} couleur{product.productColors.length > 1 ? 's' : ''}</span>
           </div>
@@ -333,65 +333,66 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="max-w-7xl mx-auto py-4 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
       {/* En-tête */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
+          <h1 className="text-xl sm:text-3xl font-light text-gray-900" style={{ color: PRIMARY_COLOR }}>
             Produits
           </h1>
-          <p className="mt-2 text-sm font-light text-gray-600">
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-light text-gray-600">
             Gérez votre catalogue de créations florales
           </p>
         </div>
         <Link
           href="/admin/products/new"
           prefetch={false}
-          className="py-3 px-6 text-white rounded-lg font-light transition-colors hover:opacity-90 flex items-center"
+          className="py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-base text-white rounded-lg font-light transition-colors hover:opacity-90 flex items-center"
           style={{ backgroundColor: PRIMARY_COLOR }}
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Ajouter un produit
+          <PlusIcon className="h-4 sm:h-5 w-4 sm:w-5 mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Ajouter un produit</span>
+          <span className="sm:hidden">Ajouter</span>
         </Link>
       </div>
 
       {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
-          <div className="text-2xl font-light text-gray-900">{products.length}</div>
-          <div className="text-sm font-light text-gray-600">Produits total</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 sm:p-6">
+          <div className="text-lg sm:text-2xl font-light text-gray-900">{products.length}</div>
+          <div className="text-xs sm:text-sm font-light text-gray-600">Produits total</div>
         </div>
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
-          <div className="text-2xl font-light text-green-600">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 sm:p-6">
+          <div className="text-lg sm:text-2xl font-light text-green-600">
             {products.filter(p => p.inStock).length}
           </div>
-          <div className="text-sm font-light text-gray-600">En stock</div>
+          <div className="text-xs sm:text-sm font-light text-gray-600">En stock</div>
         </div>
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
-          <div className="text-2xl font-light text-yellow-600">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 sm:p-6">
+          <div className="text-lg sm:text-2xl font-light text-yellow-600">
             {products.filter(p => p.featured).length}
           </div>
-          <div className="text-sm font-light text-gray-600">En vedette</div>
+          <div className="text-xs sm:text-sm font-light text-gray-600">En vedette</div>
         </div>
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
-          <div className="text-2xl font-light" style={{ color: PRIMARY_COLOR }}>
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 sm:p-6">
+          <div className="text-lg sm:text-2xl font-light" style={{ color: PRIMARY_COLOR }}>
             {products.reduce((acc, p) => acc + p.productVariants.length, 0)}
           </div>
-          <div className="text-sm font-light text-gray-600">Variantes total</div>
+          <div className="text-xs sm:text-sm font-light text-gray-600">Variantes total</div>
         </div>
       </div>
 
       {/* Barre de recherche et filtres */}
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-8" onClick={closeAllDropdowns}>
-        <h2 className="text-xl font-light text-gray-900 mb-6" style={{ color: PRIMARY_COLOR }}>
+      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-4 sm:p-8" onClick={closeAllDropdowns}>
+        <h2 className="text-base sm:text-xl font-light text-gray-900 mb-3 sm:mb-6" style={{ color: PRIMARY_COLOR }}>
           Recherche et filtres
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-6">
           {/* Barre de recherche */}
           <div className="md:col-span-1">
-            <label className="flex text-sm font-medium text-gray-800 mb-2 items-center">
-              <MagnifyingGlassIcon className="h-4 w-4 mr-2" />
+            <label className="flex text-xs sm:text-sm font-medium text-gray-800 mb-1 sm:mb-2 items-center">
+              <MagnifyingGlassIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Rechercher
             </label>
             <input
@@ -399,28 +400,28 @@ export default function ProductsPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Nom ou description..."
-              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-white border border-gray-300 rounded-lg text-sm sm:text-base text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           {/* Dropdown Catégorie */}
           <div className="relative">
-            <label className="flex text-sm font-medium text-gray-800 mb-2 items-center">
-              <FolderIcon className="h-4 w-4 mr-2" />
+            <label className="flex text-xs sm:text-sm font-medium text-gray-800 mb-1 sm:mb-2 items-center">
+              <FolderIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Catégorie
             </label>
             <div
-              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-white border border-gray-300 rounded-lg text-sm sm:text-base text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               onClick={(e) => {
                 e.stopPropagation()
                 setCategoryDropdownOpen(!categoryDropdownOpen)
               }}
             >
-              <span className="text-gray-800">
+              <span className="text-gray-800 truncate">
                 {CATEGORIES.find(c => c.value === categoryFilter)?.label || 'Toutes les catégories'}
               </span>
               <svg 
-                className={`w-5 h-5 text-gray-500 transition-transform ${categoryDropdownOpen ? 'rotate-180' : ''}`} 
+                className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-500 transition-transform flex-shrink-0 ${categoryDropdownOpen ? 'rotate-180' : ''}`} 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -433,7 +434,7 @@ export default function ProductsPage() {
                 {CATEGORIES.map((category) => (
                   <div
                     key={category.value}
-                    className="py-3 px-4 hover:bg-gray-50 cursor-pointer text-gray-800 transition-colors"
+                    className="py-2 sm:py-3 px-3 sm:px-4 hover:bg-gray-50 cursor-pointer text-sm sm:text-base text-gray-800 transition-colors"
                     onClick={() => {
                       setCategoryFilter(category.value)
                       setCategoryDropdownOpen(false)
@@ -448,12 +449,12 @@ export default function ProductsPage() {
 
           {/* Dropdown Sous-catégorie */}
           <div className="relative">
-            <label className="flex text-sm font-medium text-gray-800 mb-2 items-center">
-              <FolderIcon className="h-4 w-4 mr-2" />
+            <label className="flex text-xs sm:text-sm font-medium text-gray-800 mb-1 sm:mb-2 items-center">
+              <FolderIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Sous-catégorie
             </label>
             <div
-              className={`w-full py-3 px-4 bg-white border border-gray-300 rounded-lg cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+              className={`w-full py-2 sm:py-3 px-3 sm:px-4 bg-white border border-gray-300 rounded-lg cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base ${
                 !categoryFilter ? 'opacity-50 cursor-not-allowed' : 'text-gray-800'
               }`}
               onClick={(e) => {
@@ -463,14 +464,14 @@ export default function ProductsPage() {
                 }
               }}
             >
-              <span className="text-gray-800">
+              <span className="text-gray-800 truncate">
                 {categoryFilter && SUBCATEGORIES[categoryFilter] 
                   ? SUBCATEGORIES[categoryFilter].find(s => s.value === subCategoryFilter)?.label || 'Toutes les sous-catégories'
                   : 'Sélectionnez d\'abord une catégorie'
                 }
               </span>
               <svg 
-                className={`w-5 h-5 text-gray-500 transition-transform ${subCategoryDropdownOpen ? 'rotate-180' : ''}`} 
+                className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-500 transition-transform flex-shrink-0 ${subCategoryDropdownOpen ? 'rotate-180' : ''}`} 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -483,7 +484,7 @@ export default function ProductsPage() {
                 {SUBCATEGORIES[categoryFilter].map((subCategory) => (
                   <div
                     key={subCategory.value}
-                    className="py-3 px-4 hover:bg-gray-50 cursor-pointer text-gray-800 transition-colors"
+                    className="py-2 sm:py-3 px-3 sm:px-4 hover:bg-gray-50 cursor-pointer text-sm sm:text-base text-gray-800 transition-colors"
                     onClick={() => {
                       setSubCategoryFilter(subCategory.value)
                       setSubCategoryDropdownOpen(false)
@@ -498,22 +499,22 @@ export default function ProductsPage() {
 
           {/* Dropdown Statut */}
           <div className="relative">
-            <label className="flex text-sm font-medium text-gray-800 mb-2 items-center">
-              <TagIcon className="h-4 w-4 mr-2" />
+            <label className="flex text-xs sm:text-sm font-medium text-gray-800 mb-1 sm:mb-2 items-center">
+              <TagIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Statut
             </label>
             <div
-              className="w-full py-3 px-4 bg-white border border-gray-300 rounded-lg text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-white border border-gray-300 rounded-lg text-sm sm:text-base text-gray-800 cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               onClick={(e) => {
                 e.stopPropagation()
                 setStatusDropdownOpen(!statusDropdownOpen)
               }}
             >
-              <span className="text-gray-800">
+              <span className="text-gray-800 truncate">
                 {STATUS_FILTERS.find(s => s.value === statusFilter)?.label || 'Tous les statuts'}
               </span>
               <svg 
-                className={`w-5 h-5 text-gray-500 transition-transform ${statusDropdownOpen ? 'rotate-180' : ''}`} 
+                className={`w-4 sm:w-5 h-4 sm:h-5 text-gray-500 transition-transform flex-shrink-0 ${statusDropdownOpen ? 'rotate-180' : ''}`} 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -526,7 +527,7 @@ export default function ProductsPage() {
                 {STATUS_FILTERS.map((status) => (
                   <div
                     key={status.value}
-                    className="py-3 px-4 hover:bg-gray-50 cursor-pointer text-gray-800 transition-colors"
+                    className="py-2 sm:py-3 px-3 sm:px-4 hover:bg-gray-50 cursor-pointer text-sm sm:text-base text-gray-800 transition-colors"
                     onClick={() => {
                       setStatusFilter(status.value)
                       setStatusDropdownOpen(false)
@@ -541,7 +542,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Indicateur de résultats */}
-        <div className="mt-6 text-sm font-light text-gray-600">
+        <div className="mt-3 sm:mt-6 text-xs sm:text-sm font-light text-gray-600">
           {filteredProducts.length === products.length 
             ? `${products.length} produit${products.length > 1 ? 's' : ''} au total`
             : `${filteredProducts.length} résultat${filteredProducts.length > 1 ? 's' : ''} sur ${products.length} produit${products.length > 1 ? 's' : ''}`
@@ -551,26 +552,26 @@ export default function ProductsPage() {
 
       {/* Liste des produits */}
       {filteredProducts.length === 0 ? (
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-12 text-center">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6 sm:p-12 text-center">
           {products.length === 0 ? (
             <>
-              <div className="flex justify-center mb-4">
-                <div className="h-16 w-16 rounded-full bg-pink-100 flex items-center justify-center">
-                  <svg className="h-8 w-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex justify-center mb-3 sm:mb-4">
+                <div className="h-12 sm:h-16 w-12 sm:w-16 rounded-full bg-pink-100 flex items-center justify-center">
+                  <svg className="h-6 sm:h-8 w-6 sm:w-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-light text-gray-900 mb-2">
+              <h3 className="text-base sm:text-xl font-light text-gray-900 mb-2">
                 Aucun produit pour le moment
               </h3>
-              <p className="font-light text-gray-600 mb-6">
+              <p className="text-sm sm:text-base font-light text-gray-600 mb-4 sm:mb-6">
                 Commencez par ajouter votre première création florale
               </p>
               <Link
                 href="/admin/products/new"
                 prefetch={false}
-                className="py-3 px-6 text-white rounded-lg font-light inline-block transition-colors hover:opacity-90"
+                className="py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-base text-white rounded-lg font-light inline-block transition-colors hover:opacity-90"
                 style={{ backgroundColor: PRIMARY_COLOR }}
               >
                 Créer mon premier produit
@@ -578,11 +579,11 @@ export default function ProductsPage() {
             </>
           ) : (
             <>
-              <MagnifyingGlassIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-light text-gray-900 mb-2">
+              <MagnifyingGlassIcon className="h-12 sm:h-16 w-12 sm:w-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-xl font-light text-gray-900 mb-2">
                 Aucun résultat trouvé
               </h3>
-              <p className="font-light text-gray-600 mb-6">
+              <p className="text-sm sm:text-base font-light text-gray-600 mb-4 sm:mb-6">
                 Essayez de modifier vos critères de recherche
               </p>
               <button
@@ -593,7 +594,7 @@ export default function ProductsPage() {
                   setStatusFilter('')
                   closeAllDropdowns()
                 }}
-                className="py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-light hover:bg-gray-200 transition-colors"
+                className="py-2 px-3 sm:px-4 text-sm sm:text-base bg-gray-100 text-gray-700 rounded-lg font-light hover:bg-gray-200 transition-colors"
               >
                 Réinitialiser les filtres
               </button>
@@ -602,7 +603,7 @@ export default function ProductsPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
             {displayedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -614,7 +615,7 @@ export default function ProductsPage() {
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="py-3 px-6 bg-white border border-gray-300 text-gray-700 rounded-lg font-light hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:opacity-50"
+                className="py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-base bg-white border border-gray-300 text-gray-700 rounded-lg font-light hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:opacity-50"
               >
                 {loadingMore ? 'Chargement...' : `Voir plus (${filteredProducts.length - displayedProducts.length} restants)`}
               </button>

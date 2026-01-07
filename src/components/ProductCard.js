@@ -67,11 +67,6 @@ export default function ProductCard({ product }) {
           />
         )}
         
-        {/* Badge de prix */}
-        <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 text-sm font-light">
-          {product.priceRange}
-        </div>
-        
         {/* Badge featured pour les produits de la BDD */}
         {isDbProduct && product.featured && (
           <div className="absolute top-4 left-4 bg-yellow-500 text-black px-2 py-1 text-xs font-medium rounded">

@@ -124,10 +124,10 @@ export default function CartPage() {
             {/* Liste des articles */}
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-center space-x-4">
+                <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-6">
+                  <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
                     {/* Image du produit */}
-                    <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="flex-shrink-0 w-16 sm:w-20 h-16 sm:h-20 bg-gray-100 rounded-lg overflow-hidden">
                       {item.productImage ? (
                         <Image
                           src={item.productImage}
@@ -145,9 +145,9 @@ export default function CartPage() {
 
                     {/* Détails du produit */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-medium text-gray-900">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm sm:text-base font-medium text-gray-900 truncate">
                             <Link 
                               href={`/produit/${item.productSlug}`}
                               className="hover:text-gray-700 transition-colors"
@@ -155,45 +155,45 @@ export default function CartPage() {
                               {item.productName}
                             </Link>
                           </h3>
-                          <div className="mt-1 space-y-1">
-                            <p className="text-sm text-gray-600">
+                          <div className="mt-1 space-y-0.5 sm:space-y-1">
+                            <p className="text-xs sm:text-sm text-gray-600">
                               Catégorie: {CATEGORIES[item.category]}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-xs sm:text-sm text-gray-600">
                               Taille: {SIZES[item.size]}
                             </p>
                             {item.color && (
-                              <div className="flex items-center text-sm text-gray-600">
+                              <div className="flex items-center text-xs sm:text-sm text-gray-600">
                                 <span>Couleur: </span>
                                 <div className="flex items-center ml-2">
                                   <div 
-                                    className="w-4 h-4 rounded-full border border-gray-300 mr-2"
+                                    className="w-3 sm:w-4 h-3 sm:h-4 rounded-full border border-gray-300 mr-1 sm:mr-2 flex-shrink-0"
                                     style={{ backgroundColor: item.color.hex || '#e5e7eb' }}
                                   ></div>
-                                  {item.color.name}
+                                  <span className="truncate">{item.color.name}</span>
                                 </div>
                               </div>
                             )}
                             {/* Affichage des options */}
                             {item.options?.card?.enabled && (
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
+                              <div className="space-y-0.5 sm:space-y-1">
+                                <p className="text-xs sm:text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
                                   + Message sur carte (+5€)
                                 </p>
                                 {item.options.card.message && (
-                                  <p className="text-sm font-light text-gray-600 italic">
+                                  <p className="text-xs sm:text-sm font-light text-gray-600 italic truncate">
                                     "{item.options.card.message}"
                                   </p>
                                 )}
                               </div>
                             )}
                             {item.options?.ribbon?.enabled && (
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
+                              <div className="space-y-0.5 sm:space-y-1">
+                                <p className="text-xs sm:text-sm font-medium" style={{ color: PRIMARY_COLOR }}>
                                   + Ruban avec message (+5€)
                                 </p>
                                 {item.options.ribbon.message && (
-                                  <p className="text-sm font-light text-gray-600 italic">
+                                  <p className="text-xs sm:text-sm font-light text-gray-600 italic truncate">
                                     "{item.options.ribbon.message}"
                                   </p>
                                 )}
@@ -203,39 +203,39 @@ export default function CartPage() {
                         </div>
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors p-1"
+                          className="text-red-500 hover:text-red-700 transition-colors p-0.5 sm:p-1 flex-shrink-0"
                           title="Supprimer l'article"
                         >
-                          <TrashIcon className="h-5 w-5" />
+                          <TrashIcon className="h-4 sm:h-5 w-4 sm:w-5" />
                         </button>
                       </div>
 
                       {/* Quantité et prix */}
-                      <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
+                      <div className="mt-3 sm:mt-4 flex items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2 sm:space-x-3">
                           <button
                             onClick={() => handleQuantityChange(item.id, -1)}
-                            className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
+                            className="p-0.5 sm:p-1 text-gray-500 hover:text-gray-700 transition-colors"
                             disabled={item.quantity <= 1}
                           >
-                            <MinusIcon className="h-4 w-4" />
+                            <MinusIcon className="h-3 sm:h-4 w-3 sm:w-4" />
                           </button>
-                          <span className="font-medium text-gray-900 min-w-[2rem] text-center">
+                          <span className="font-medium text-sm sm:text-base text-gray-900 min-w-[1.5rem] sm:min-w-[2rem] text-center">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => handleQuantityChange(item.id, 1)}
-                            className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
+                            className="p-0.5 sm:p-1 text-gray-500 hover:text-gray-700 transition-colors"
                           >
-                            <PlusIcon className="h-4 w-4" />
+                            <PlusIcon className="h-3 sm:h-4 w-3 sm:w-4" />
                           </button>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-medium text-gray-900">
+                          <p className="text-base sm:text-lg font-medium text-gray-900">
                             {((item.totalPrice || item.price) * item.quantity).toFixed(2)}€
                           </p>
                           {item.quantity > 1 && (
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               {(item.totalPrice || item.price).toFixed(2)}€ l'unité
                             </p>
                           )}
@@ -348,25 +348,25 @@ export default function CartPage() {
 
       {/* Modal de confirmation pour vider le panier */}
       {showClearConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-sm w-full">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
               Vider le panier
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
               Êtes-vous sûr de vouloir supprimer tous les articles de votre panier ?
               Cette action est irréversible.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => setShowClearConfirm(false)}
-                className="btn-secondary-gray flex-1 px-6 py-3 font-light tracking-wide"
+                className="btn-secondary-gray flex-1 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-light tracking-wide"
               >
                 Annuler
               </button>
               <button
                 onClick={handleClearCart}
-                className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-light tracking-wide hover:transform hover:-translate-y-0.5"
+                className="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-light tracking-wide hover:transform hover:-translate-y-0.5"
               >
                 Vider le panier
               </button>
